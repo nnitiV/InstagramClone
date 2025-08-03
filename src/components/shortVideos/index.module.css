@@ -1,0 +1,68 @@
+.shortVideos {
+    height: 100vh;
+    width: 40vw;
+    position: absolute;
+    margin-top: 2vw;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+.shortVideos .content {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 1.5vw;
+}
+
+.shortVideos .content .video {
+    width: 25vw;
+    height: 95vh;
+    padding: 1vw;
+    background-color: rgba(203, 183, 215, 0.369);
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    align-items: start;
+}
+
+.shortVideos .content .video .user {
+    width: 7vw;
+    display: flex;
+    justify-content: space-between;
+}
+
+.shortVideos .content .video .description {
+    margin: 2vw 0 1.25vw;
+}
+
+.shortVideos .content .options {
+    width: 5vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: end;
+    row-gap: .5vw;
+}
+
+.shortVideos .content .options div {
+    height: 3.5vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.shortVideos .content .options div:hover {
+    cursor: pointer;
+}
+
+.shortVideos .content .options .likes,
+.shortVideos .content .options .comments {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.shortVideos .content .options p {
+    font-size: .75vw;
+}

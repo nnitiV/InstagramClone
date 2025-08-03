@@ -1,0 +1,68 @@
+.stories {
+    display: flex;
+    justify-content: space-between;
+    position: relative;
+    width: 50vw;
+    overflow-x: auto;
+    scrollbar-width: none;
+    margin: 2vh auto;
+}
+
+.stories .arrows {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 100%;
+    background-color: blue;
+    z-index: 99;
+}
+
+.stories .arrowLeft,
+.stories .arrowRight {
+    position: absolute;
+    background-color: rgb(214, 210, 210);
+    color: rgba(10, 10, 10, 0.5);
+    padding: .5vw;
+    border-radius: 16vw;
+    top: 45%;
+    transform: translateY(-50%);
+}
+
+.stories .arrowLeft:hover,
+.stories .arrowRight:hover {
+    cursor: pointer;
+}
+
+.stories .arrowLeft {
+    left: 1.5%;
+}
+
+.stories .arrowRight {
+    right: 1.5%;
+}
+
+.stories .storiesWrapper {
+    display: flex;
+    width: 50vw;
+    transition: .15s ease all;
+}
+
+.stories .story {
+    flex: 0 0 6.25vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.stories .story .image {
+    background-color: green;
+    width: 4vw;
+    height: 4vw;
+    border-radius: 16vw;
+    border: 4px solid black;
+}
+
+.stories .story p {
+    font-weight: bold;
+}

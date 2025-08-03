@@ -1,0 +1,173 @@
+.searchbar {
+    position: fixed;
+    height: 100vh;
+    width: 15vw;
+    top: 0;
+    left: -17vw;
+    opacity: 0;
+    transition: .3s ease-in all;
+    background-color: white;
+    border-right: 1px solid rgba(179, 170, 170, 0.75);
+    z-index: 99;
+}
+
+.searchbar.active {
+    left: 3.5vw;
+    opacity: 1;
+}
+
+.searchbar h1 {
+    margin: 2vw 1vw;
+}
+
+.searchbar input {
+    width: 15vw;
+    padding: .75vw 1vw;
+    border-radius: .5vw;
+    background-color: rgba(233, 226, 226, 0.75);
+    margin-bottom: 1vw;
+    margin-left: 1vw;
+    outline: none;
+    border: none;
+}
+
+.searchbar hr {
+    border: 1px solid rgba(217, 208, 208, 0.75);
+}
+
+.recent {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1vw 1.5vw;
+    color: rgba(150, 150, 150, 1);
+    font-weight: bold;
+}
+
+.recent .showAllText {
+    color: rgb(23, 187, 187);
+    font-weight: bold;
+}
+
+.recent .showAllText:hover {
+    cursor: pointer;
+}
+
+.users {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 1vw;
+}
+
+.users .user {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1vw .1vw;
+}
+
+.users .user i {
+    font-size: 1.75vw;
+    color: rgba(97, 97, 97, 0.75);
+}
+
+.users .user:hover {
+    cursor: pointer;
+}
+
+.users .user .info a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.users .user .info i {
+    font-size: 1vw;
+    margin-right: 1vw;
+    border: 1px solid rgba(217, 208, 208, 0.75);
+    color: rgba(97, 97, 97, 0.75);
+    padding: .75vw;
+    border-radius: 16vw;
+}
+
+.users .user .info .userInfo .userName {
+    color: black;
+    font-weight: bold;
+    margin-bottom: .25vw;
+}
+
+.users .user .info .userInfo p {
+    color: rgba(117, 108, 108, 0.75);
+}
+
+.users .noUsers {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: rgba(117, 108, 108, 0.75);
+}
+
+
+.bg {
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    z-index: 999;
+    height: 100%;
+    background-color: rgba(10, 10, 10, 0.25);
+}
+
+.confirmvwoveAll {
+    width: 25vw;
+    height: 30vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    text-align: center;
+    background-color: white;
+    border-radius: .35vw;
+}
+
+.confirmvwoveAll .info {
+    margin-top: 4vw;
+}
+
+.confirmvwoveAll .info h2 {
+    margin-bottom: 1vw;
+}
+
+.confirmvwoveAll .info p {
+    color: rgba(10, 10, 10, 0.75);
+}
+
+.actions {
+    display: flex;
+    flex-direction: column;
+}
+
+.actions button {
+    background-color: transparent;
+    outline: transparent;
+    padding: 1vw;
+    border: transparent;
+    border-top: 1px solid rgba(179, 170, 170, 0.75);
+    color: rgba(131, 127, 127, 0.75);
+    font-weight: bold;
+}
+
+.actions button:hover {
+    background-color: rgba(201, 194, 194, 0.5);
+    cursor: pointer;
+}
+
+.actions button:first-of-type:hover {
+    background-color: rgba(225, 0, 0, 0.15);
+}
+
+.actions button:first-of-type {
+    color: red;
+}

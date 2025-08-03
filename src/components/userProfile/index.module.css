@@ -1,0 +1,169 @@
+.userProfile {
+    width: 100vw;
+    height: 100vh;
+    padding-left: 5vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.userProfile .userInformation {
+    width: 60%;
+    height: 20vh;
+    margin-top: 6vw;
+    margin-bottom: 2vw;
+    display: flex;
+    align-items: center;
+}
+
+.userProfile .userInformation .profilePicture {
+    font-size: 4vw;
+    border: 1px solid black;
+    padding: 2vw 2.25vw;
+    border-radius: 16vw;
+    height: max-content;
+}
+
+.userProfile .userInformation .userHeader {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-left: 8vw;
+    height: max-content;
+}
+
+.userProfile .userInformation .userHeader .userActions {
+    width: 40vw;
+    display: flex;
+    justify-content: space-between;
+}
+
+.userProfile .userHeader .userActions .buttons .addUser:hover {
+    cursor: pointer;
+    background-color: red;
+}
+
+.userProfile .userInformation .userHeader .userActions .buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 65%;
+}
+
+.userProfile .userInformation .userHeader .userActions .buttons button {
+    border: transparent;
+    background-color: rgba(237, 233, 233, 0.9);
+    padding: .25vw 1vw;
+    font-size: 1.25vw;
+    font-weight: bold;
+    border-radius: .5vw;
+}
+
+.userProfile .userInformation .userHeader .userNumbers {
+    display: flex;
+    justify-content: space-between;
+    width: 60%;
+    padding: 2vw;
+    padding-left: 0;
+    padding-right: 4vw;
+    color: rgba(107, 103, 103, 0.7);
+}
+
+.userProfile .userInformation .userHeader .userNumbers span {
+    color: black;
+    font-weight: bold;
+}
+
+.userProfile .userInformation .userHeader .userNameAndPronouns {
+    display: flex;
+    align-items: center;
+}
+
+.userProfile .userInformation .userHeader .userNameAndPronouns h2 {
+    font-size: 1.25vw;
+}
+
+.userProfile .userInformation .userHeader .userNameAndPronouns p {
+    height: fit-content;
+    font-size: 1vw;
+    color: rgba(107, 103, 103, 0.7);
+    margin-left: 2vw;
+}
+
+.userProfile .userInformation .userHeader .description {
+    width: max-content;
+    display: inline-block;
+    margin: 1vw 0;
+    color: rgba(107, 103, 103, 0.7);
+}
+
+.userProfile .userInformation .userHeader .followers {
+    color: rgba(107, 103, 103, 0.7);
+}
+
+.userProfile .userInformation .userHeader .followers span {
+    color: rgba(17, 13, 13, 1);
+}
+
+.userProfile .userInformation .userHeader .followers span:hover {
+    cursor: pointer;
+}
+
+.userProfile hr {
+    width: 98%;
+    height: 2px;
+    background-color: rgba(107, 103, 103, 0.7);
+}
+
+.userProfile .userNav {
+    width: max-content;
+}
+
+.userProfile .userNav ul {
+    width: 20vw;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    font-size: 1.25vw;
+    user-select: none;
+}
+
+.userProfile .userNav ul li {
+    padding-top: 1vw;
+    color: rgba(107, 103, 103, 0.7);
+    padding: 1vw;
+    margin-top: -2px;
+}
+
+.userProfile .userNav ul li:hover {
+    cursor: pointer;
+    color: black;
+    background-color: rgba(107, 103, 103, 0.05);
+}
+
+.userProfile .userNav ul li.active {
+    color: rgba(17, 13, 13, 1);
+    font-weight: bold;
+    border-top: 2px solid black;
+}
+
+.userProfile .userPhotos {
+    width: 95%;
+    columns: 3 15vw;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: .5vw;
+    margin-top: 2em;
+}
+
+.userProfile .userPhotos img {
+    width: 100%;
+    height: 40dvh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2vw;
+    font-weight: bold;
+    border-radius: .1em;
+    position: relative;
+}

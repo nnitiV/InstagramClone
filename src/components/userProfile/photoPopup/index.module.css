@@ -1,0 +1,181 @@
+.wrapper {
+    position: fixed;
+    left: 0;
+    top: 0;
+    background-color: rgba(5, 5, 5, 0.15);
+    backdrop-filter: blur(2px);
+    width: 100vw;
+    height: 100dvh;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    visibility: hidden;
+    opacity: 0;
+    transition: .2s ease-in-out all;
+}
+
+.wrapper.active {
+    visibility: visible;
+    opacity: 1;
+}
+
+.wrapper .closeIcon {
+    position: absolute;
+    top: 5%;
+    right: 5%;
+    font-size: 2vw;
+    color: rgb(46, 44, 47);
+    font-weight: bold;
+    transition: .3s ease-in-out all;
+}
+
+.wrapper .closeIcon:hover {
+    transform: rotateZ(90deg);
+    cursor: pointer;
+}
+
+.photoPopup {
+    display: flex;
+    background-color: white;
+    overflow: hidden;
+    border-radius: 4px;
+    position: relative;
+    z-index: 999;
+}
+
+.photoPopup img {
+    width: 25vw;
+}
+
+.photoPopup .rightSide {
+    width: 25vw;
+    padding: 1vw .5vw 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.photoPopup .rightSide .header,
+.photoPopup .rightSide .header .userInfo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: calc(.6vw + .6vw);
+}
+
+.photoPopup .rightSide .header .userInfo {
+    width: calc(4.5vw + 4.5vw);
+}
+
+.photoPopup .rightSide .header .userInfo i {
+    padding: .75vw;
+    border: 1px solid black;
+    border-radius: 16vw;
+}
+
+.photoPopup .rightSide .comments {
+    height: 15vw;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    row-gap: 1vw;
+}
+
+.photoPopup .rightSide .likeSection {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.photoPopup .rightSide .actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 1vw 0;
+}
+
+.photoPopup .rightSide .actions .mainActions {
+    width: fit-content;
+    display: flex;
+    align-items: center;
+}
+
+.photoPopup .rightSide .actions img,
+.photoPopup .rightSide .actions svg {
+    width: 2vw;
+    height: 2vw;
+    margin-right: 2vw;
+}
+
+.photoPopup .rightSide .actions i {
+    font-size: 1.5vw;
+}
+
+.photoPopup .rightSide .actions img:hover,
+.photoPopup .rightSide .actions svg:hover,
+.photoPopup .rightSide .actions i:hover {
+    cursor: pointer;
+}
+
+.photoPopup .rightSide .insertComment {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    font-size: 1.1vw;
+}
+
+.photoPopup .rightSide .insertComment input {
+    width: 100%;
+    padding: 1vw;
+    border-color: transparent;
+    outline: none;
+}
+
+.photoPopup .rightSide .peopleLiked {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1vw;
+}
+
+.photoPopup .rightSide .peopleLiked i:first-of-type {
+    margin-left: 0;
+}
+
+.photoPopup .rightSide .peopleLiked i {
+    clip-path: circle();
+    font-size: 2vw;
+    background-color: rgb(207, 193, 219);
+    margin-left: -.75vw;
+}
+
+.photoPopup .rightSide .peopleLiked p {
+    margin-left: 1vw;
+    color: rgb(146, 142, 142);
+}
+
+.photoPopup .rightSide .peopleLiked p span {
+    color: black;
+    font-weight: bold;
+}
+
+.photoPopup .rightSide hr {
+    border: 1px solid rgb(210, 206, 206);
+    height: fit-content;
+    width: 100%;
+}
+
+.photoPopup .rightSide .insertComment {
+    height: fit-content;
+}
+
+.photoPopup .rightSide .insertComment i {
+    cursor: pointer;
+}
+
+.photoPopup .rightSide .insertComment p {
+    color: aqua;
+    cursor: pointer;
+}

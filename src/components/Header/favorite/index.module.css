@@ -1,0 +1,32 @@
+.favoriteSlider {
+    width: 15vw;
+    height: 100%;
+    background-color: white;
+    border-right: 1px solid rgba(215, 215, 215, 0.75);
+    position: fixed;
+    left: -20%;
+    top: 0;
+    opacity: 0;
+    z-index: -1;
+    transition: .3s ease-in-out all;
+}
+
+.favoriteSlider.active {
+    left: 3.5vw;
+    opacity: 1;
+    z-index: 99;
+}
+
+.favoriteSlider h1 {
+    margin: 1vw;
+    font-size: 1.5vw;
+}
+
+.favoriteSlider p {
+    margin: 1vw;
+}
+
+.favoriteSlider hr {
+    height: fit-content;
+    border-color: rgba(215, 215, 215, 0.75);
+}
