@@ -16,7 +16,7 @@ const ShortVideos = ({ toggleMenu, toggleFavorite }: Arguments) => {
       toggleFavorite();
       toggleMenu();
     }}>
-      {Array(1000).fill(1).map((el, index) => (
+      {Array(1000).fill(1).map((el, _) => (
         <div className={styles.content} key={el} >
           <div className={styles.video}>
             <div className={styles.user}>

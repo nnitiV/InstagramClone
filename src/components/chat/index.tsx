@@ -22,7 +22,7 @@ const Direct = ({ toggleMenu, toggleFavorite }: Arguments) => {
   const listOfUserFriends = useSelector((state: RootState) => state.users.loggedUser.friends);
   const [isChatOpen, setIsChatOpen] = useState<boolean>(false);
   const [chatId, setChatId] = useState<number>(-1);
-  const [messages, setMessages] = useState<Message[]>();
+  const [messages, _] = useState<Message[]>();
 
 
   const openChat = (id: number) => {

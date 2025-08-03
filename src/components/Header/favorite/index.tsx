@@ -7,7 +7,7 @@ interface Arguments {
     isActiveFavorite: boolean;
     toggleFavorite: (val: boolean) => void;
 }
-const Favorite = ({ isActive, toggleMenu, isActiveFavorite, toggleFavorite }: Arguments) => {
+const Favorite = ({ isActiveFavorite }: Arguments) => {
     return (
         <div className={`${styles.favoriteSlider} ${isActiveFavorite && styles.active}`}>
             <h1>Notifications</h1>

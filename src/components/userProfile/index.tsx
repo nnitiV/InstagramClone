@@ -11,7 +11,7 @@ interface Arguments {
 }
 
 const UserProfile = ({ toggleMenu, toggleFavorite }: Arguments) => {
-    const [posts, setPosts] = useState<{
+    const [posts, _] = useState<{
         id: number,
         postPhotoUrl: string,
         wasLiked: boolean

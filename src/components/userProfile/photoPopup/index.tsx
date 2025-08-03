@@ -12,7 +12,7 @@ interface Arguments {
 }
 
 export default function PhotoPopup({ photoPopup, setPhotoPopup, post }: Arguments) {
-    const [photoLike, setPhotoLike] = useState<boolean>(post.wasLiked);
+    const [_, setPhotoLike] = useState<boolean>(post.wasLiked);
     const toggleLike = () => {
         post.wasLiked = !post.wasLiked;
         setPhotoLike(prev => !prev)
