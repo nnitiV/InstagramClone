@@ -22,12 +22,17 @@ const Stories = () => {
                 <i className={`fa-solid fa-arrow-right ${styles.arrowRight}`} onClick={next}></i>
             </div>
             <div className={styles.storiesWrapper} style={{ transform: `translateX(-${curr * (100 / visibleStories)}%)` }}>
-                {stories.map((story) => (
-                    <div className={styles.story} key={story.id}>
-                        <div className={styles.image}></div>
-                        <p>Name {story.id + 1}</p>
-                    </div>
-                ))}
+                {stories.map((story) => {
+                    const photoNumber = Math.floor(Math.random() * 100) + 100;
+                    return (
+                        <div className={styles.story} key={story.id}>
+                            <div className={styles.image}>
+                                <img src={`https://picsum.photos/${photoNumber}/${photoNumber}`} />
+                            </div>
+                            <p>Name {story.id + 1}</p>
+                        </div>
+                    )
+                })}
             </div>
         </div >
     )

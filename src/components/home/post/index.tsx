@@ -10,11 +10,12 @@ interface Arguments {
 }
 
 const Post = ({ postId, current, images, prev, next, setActiveIndexes }: Arguments) => {
+    const photoNumber = Math.floor(Math.random() * 100) + 100;
     return (
         <div className={styles.post} key={postId}>
             <div className={styles.userInfo}>
                 <div className={styles.userPhotoAndName}>
-                    <i className={`fa-solid fa-user ${styles.userProfile}`}></i>
+                    <img src={`https://picsum.photos/${photoNumber}/${photoNumber}`} />
                     <p>User name <span>● 4d</span></p>
                 </div>
                 <div className={styles.options}>

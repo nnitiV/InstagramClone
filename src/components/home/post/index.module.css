@@ -18,6 +18,13 @@
      justify-content: center;
  }
 
+ .post .userInfo .userPhotoAndName img {
+     border-radius: 16rem;
+     height: 4rem;
+     width: 4rem;
+     border: 2px solid black;
+ }
+
  .post .userInfo .userPhotoAndName .userProfile {
      border: 1px solid black;
      border-radius: 16vw;

@@ -55,7 +55,7 @@
     justify-content: center;
 }
 
-.stories .story .image {
+.stories .story .image img {
     background-color: green;
     width: 4vw;
     height: 4vw;
