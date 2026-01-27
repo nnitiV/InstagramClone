@@ -1,6 +1,10 @@
-﻿namespace Domain.Entities
+﻿using Domain.Common;
+
+namespace Domain.Entities
 {
-    internal class Follower
+    public class Follower: BaseEntity
     {
+        public int UserIdFollowed { get; set; }
+        public int UserIdFollowing { get; set; }
     }
 }
