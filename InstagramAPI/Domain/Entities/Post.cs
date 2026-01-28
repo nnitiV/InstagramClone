@@ -7,6 +7,7 @@ namespace Domain.Entities
         public string Title { get; set; } = string.Empty;
         public string Caption { get; set; } = string.Empty;
         public int UserId { get; set; }
-        public ICollection<PostContent> Content { get; set; } = new List<PostContent>();
+        public virtual User User { get; set; } = null;
+        public ICollection<PostContent> Contents { get; set; } = new List<PostContent>();
     }
 }
