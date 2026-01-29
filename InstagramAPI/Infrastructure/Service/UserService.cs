@@ -1,11 +1,8 @@
 ﻿using Application.Dtos;
 using Application.Interfaces;
 using Application.Services;
-using DevOne.Security.Cryptography.BCrypt;
 using Domain.Entities;
 using Domain.Exceptions;
-using Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Service
 {
@@ -43,7 +40,7 @@ namespace Infrastructure.Service
             return userDto;
         }
 
-        public async Task AddUser(CreateUserDto userDto)
+        public async Task<int> AddUser(CreateUserDto userDto)
         {
             if(userDto == null)
             {
@@ -69,6 +66,8 @@ namespace Infrastructure.Service
             };
             
             await _userRepository.AddUser(user);
+
+            return user.Id;
         }
 
         public async Task<bool> DeleteUserById(int userId)

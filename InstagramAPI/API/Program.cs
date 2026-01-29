@@ -21,7 +21,9 @@ builder.Services.AddScoped<IUserService, UserService>();
 
 builder.Services.AddControllers();
 
-var app = builder.Build();  
+var app = builder.Build();
+
+app.UseMiddleware<API.Middleware.ExceptionMiddleware>();
 
 // Configure the HTTP request pipeline.
 
