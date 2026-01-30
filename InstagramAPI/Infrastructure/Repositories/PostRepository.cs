@@ -1,0 +1,44 @@
+﻿using Application.Dtos;
+using Application.Interfaces;
+using Domain.Entities;
+using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+
+namespace Infrastructure.Repositories
+{
+    public class PostRepository : IPostRepository
+    {
+        private readonly AppDbContext _context;
+        public PostRepository(AppDbContext context)
+        {
+            _context = context;
+        }
+        public async Task AddPostAsync(Post post)
+        {
+            await _context.Posts.AddAsync(post);
+            await _context.SaveChangesAsync();
+        }
+        public async Task<List<Post>> GetAllUserPostsAsync(int userId, int page, int pageSize)
+        {
+            return await _context.Posts.Where(p => p.UserId == userId).OrderByDescending(p => p.CreatedAt).Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+        }
+        public async Task<int> GetUserPostCountAsync(int userId)
+        {
+            return await _context.Posts.CountAsync(p => p.UserId == userId);
+        }
+        public async Task<Post?> GetPostByIdAsync(int postId)
+        {
+            return await _context.Posts.Include(p => p.Contents).Include(p => p.User).Where(p => p.Id == postId).FirstOrDefaultAsync();
+        }
+        public async Task<bool> UpdatePostAsync(Post updatePost)
+        {
+            var rowsChanged = await _context.SaveChangesAsync();
+            return rowsChanged > 0;
+        }
+        public async Task<bool> DeletePostByIdAsync(int postId, int userId)
+        {
+            var rowsChanged = await _context.Posts.Where(p => p.Id == postId && p.UserId == userId).ExecuteDeleteAsync();
+            return rowsChanged > 0;
+        }
+    }
+}

@@ -7,7 +7,7 @@ namespace Domain.Entities
     {
         public string ContentUrl { get; set; } = string.Empty;
         public int PostId { get; set; }
-        public virtual Post Post { get; set; } = null!;
         public int OrderIndex { get; set; }
+        public virtual Post Post { get; set; } = null!;
     }
 }

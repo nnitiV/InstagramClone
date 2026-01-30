@@ -16,8 +16,11 @@ var connectionSting = builder.Configuration.GetConnectionString("Url");
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionSting));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IPostRepository, PostRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IPostService, PostService>();
+builder.Services.AddScoped<IFileService, FileService>();
 
 builder.Services.AddControllers();
 

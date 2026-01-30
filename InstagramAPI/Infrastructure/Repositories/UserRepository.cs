@@ -37,10 +37,8 @@ namespace Infrastructure.Repositories
             return rowsAffect > 0;
         }
 
-
         public async Task<bool> UpdateUser(User user)
         {
-            _context.Users.Update(user);
             var rowsAffected = await _context.SaveChangesAsync();
             return rowsAffected > 0;
         }
