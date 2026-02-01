@@ -16,5 +16,23 @@ namespace Infrastructure.Repositories
         {
             return await _context.Comments.Where(c => c.PostId == postId).ToListAsync();
         }
+        public async Task<Comment?> GetCommentByIdAsync(int commentId)
+        {
+            return await _context.Comments.Where(c => c.Id == commentId).FirstOrDefaultAsync();
+        }
+        public async Task AddCommentAsync(Comment comment)
+        {
+            await _context.Comments.AddAsync(comment);
+        }
+        public async Task<bool> DeleteCommentByIdAsync(int commentId, int userId)
+        {
+            var rowsChanged = await _context.Comments.Where(c => c.Id == commentId && c.UserId == userId).ExecuteDeleteAsync();
+            return rowsChanged > 0;
+        }
+        public async Task<bool> UpdateCommentAsync()
+        {
+            var rowsChanged = await _context.SaveChangesAsync();
+            return rowsChanged > 0;
+        }
     }
 }
