@@ -7,7 +7,7 @@ namespace Application.Services
     {
         Task<ResponseUserDto?> GetById(int id);
         Task<int> AddUser(CreateUserDto user);
-        Task<bool> UpdateUser(UpdateUserDto user);
+        Task<bool> UpdateUser(UpdateUserDto user, int userId);
         Task<bool> DeleteUserById(int userId);
     }
 }

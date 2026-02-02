@@ -1,4 +1,5 @@
-﻿using Application.Dtos;
+﻿using API.Extensions;
+using Application.Dtos;
 using Application.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -28,7 +29,7 @@ namespace API.Controllers
             var comment = await _commentService.GetCommentByIdAsync(commentId);
             if (comment == null)
             {
-                return NotFound($"Couldn't find comment with id {commentId}");
+                return NotFound(new { message = $"Couldn't find comment with id {commentId}" });
             }
             return Ok(comment);
         }
@@ -36,41 +37,29 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddComment(CreateCommentDto createCommentDto)
         {
-            var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (!int.TryParse(userIdStr, out int userId))
-            {
-                return Unauthorized("Invalid token user ID");
-            }
+            int userId = User.GetUserId();
             if (createCommentDto == null)
             {
-                return BadRequest("Comment can't be null.");
+                return BadRequest(new { message = "Comment can't be null." });
             }
             int createdCommentId = await _commentService.AddCommentAsync(createCommentDto, userId);
-            return CreatedAtAction(nameof(GetCommentById), new { commentId = createdCommentId }, "Created comment with success!");
+            return CreatedAtAction(nameof(GetCommentById), new { commentId = createdCommentId }, new { message = "Comment created successfully", id = createdCommentId });
         }
         [Authorize]
         [HttpPut]
         public async Task<IActionResult> UpdateComment(CommentDto updateCommentDto)
         {
-            var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (!int.TryParse(userIdStr, out int userId))
-            {
-                return Unauthorized("Invalid token user ID");
-            }
+            int userId = User.GetUserId();
             var wasUpdated = await _commentService.UpdateCommentAsync(updateCommentDto, userId);
-            return Ok("Comment updated succesfully!");
+            return Ok(new { message = "Comment updated successfully" });
         }
         [Authorize]
         [HttpDelete("{commentId}")]
         public async Task<IActionResult> DeleteComment(int commentId)
         {
-            var userIdStr = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (!int.TryParse(userIdStr, out int userId))
-            {
-                return Unauthorized("Invalid token user ID");
-            }
+            int userId = User.GetUserId();
             var wasUpdated = await _commentService.DeleteCommentByIdAsync(commentId, userId);
-            return Ok("Deleted comment with success!");
+            return Ok(new { message = "Comment deleted successfully" });
         }
     }
 }

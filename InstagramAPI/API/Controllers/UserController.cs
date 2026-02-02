@@ -1,5 +1,7 @@
-﻿using Application.Dtos;
+﻿using API.Extensions;
+using Application.Dtos;
 using Application.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -21,39 +23,40 @@ namespace API.Controllers
             responseUserDto = await _userService.GetById(id);
             if (responseUserDto == null)
             {
-                return NotFound($"User with id {id} not found.");
+                return NotFound(new { message = $"User with id {id} not found." });
             }
 
             return Ok(responseUserDto);
         }
-
         [HttpPost]
         public async Task<IActionResult> AddUser(CreateUserDto createUserDto)
         {
             int createdUserId = await _userService.AddUser(createUserDto);
             return CreatedAtAction(nameof(GetUserById), new { id = createdUserId }, createUserDto);
         }
-
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUserById(int id)
+        [Authorize]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteUserById()
         {
-            var wasDeleted = await _userService.DeleteUserById(id);
+            int userId = User.GetUserId();
+            var wasDeleted = await _userService.DeleteUserById(userId);
             if(!wasDeleted)
             {
-                return NotFound($"Could not delete user with id {id} or didn't exist");
+                return NotFound(new { message = $"Could not delete user with id {userId} or didn't exist" });
             }
-            return Ok("User deleted succesfully.");
+            return Ok(new { message = "User deleted successfully" });
         }
-
+        [Authorize]
         [HttpPut]
         public async Task<IActionResult> UpdateUserAsync(UpdateUserDto updateUserDto)
         {
-            bool wasUpdated = await _userService.UpdateUser(updateUserDto);
+            int userId = User.GetUserId();
+            bool wasUpdated = await _userService.UpdateUser(updateUserDto, userId);
             if(!wasUpdated)
             {
-                return NotFound("Could not update user.");
+                return NotFound(new { message = "Could not update user." });
             }
-            return Ok("User updated succesfully.");
+            return Ok(new { message = "User updated successfully" });
         }
     }
 }

@@ -81,7 +81,7 @@ namespace Infrastructure.Service
         }
 
 
-        public async Task<bool> UpdateUser(UpdateUserDto userDto)
+        public async Task<bool> UpdateUser(UpdateUserDto userDto, int userId)
         {
             if(userDto == null)
             {
@@ -92,6 +92,10 @@ namespace Infrastructure.Service
             if (user == null)
             {
                 throw new ArgumentException("Provided user doesn't exist.");
+            }
+            if(user.Id != userId)
+            {
+                throw new UnauthorizedAccessException("You can only delete yourself.");
             }
 
             user.Username = userDto.Username;

@@ -23,7 +23,7 @@ namespace API.Controllers
             ResponsePostDto? post = await _postService.GetPostByIdAsync(postId);
             if(post == null)
             {
-                return NotFound($"Couldn't find post with id {postId}");
+                return NotFound(new { message = $"Couldn't find post with id {postId}" });
             }
             return Ok(post);
         }
@@ -34,7 +34,7 @@ namespace API.Controllers
             PagedResult<ResponsePostDto>? posts = await _postService.GetAllUserPostsAsync(userId, page, pageSize);
             if (posts == null)
             {
-                return NotFound($"Couldn't find posts from user with id {userId}");
+                return NotFound(new { message = $"Couldn't find posts from user with id {userId}" });
             }
             return Ok(posts);
         }
@@ -43,11 +43,10 @@ namespace API.Controllers
         [HttpPost]
         public async Task<IActionResult> AddPost(CreatePostDto post)
         {
-            int? userIdOrNull = User.GetUserId();
-            int userId = userIdOrNull.Value;
+            int userId = User.GetUserId();
             if (post == null)
             {
-                return BadRequest("Post can't be null.");
+                return BadRequest(new { message = "Post can't be null." });
             }
             int postId = await _postService.AddPostAsync(post, userId);
             var response = new { message = "Added post with success!", id = postId };
@@ -60,14 +59,13 @@ namespace API.Controllers
         {
             if (post == null)
             {
-                return BadRequest("Post can't be null.");
+                return BadRequest(new { message = "Post can't be null." });
             }
-            int? userIdOrNull = User.GetUserId();
-            int userId = userIdOrNull.Value;
+            int userId = User.GetUserId();
             var wasUpdated = await _postService.UpdatePostAsync(post, userId);
             if(!wasUpdated)
             {
-                return NotFound("Post not found or you are not the owner.");
+                return NotFound(new { message = "Post not found or you are not the owner." });
             }
 
             return Ok(new { message = "Post updated successfully!", id = post.Id });
@@ -79,14 +77,13 @@ namespace API.Controllers
         {
             if(postId <= 0)
             {
-                return BadRequest("Please, provide a valid post id.");
+                return BadRequest(new { message = "Please, provide a valid post id." });
             }
-            int? userIdOrNull = User.GetUserId();
-            int userId = userIdOrNull.Value;
+            int userId = User.GetUserId();
             var wasDeleted = await _postService.DeletePostByIdAsync(postId, userId);
             if (!wasDeleted)
             {
-                return NotFound("Post not found or you are not the owner.");
+                return NotFound(new { message = "Post not found or you are not the owner." });
             }
 
             return Ok(new { message = "Post deleted succcessfully!", id = postId });
