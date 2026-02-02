@@ -29,7 +29,7 @@ namespace Infrastructure.Service
             }
             if (userId <= 0)
             {
-                throw new ArgumentException("Please, provide a valid comment like id.");
+                throw new ArgumentException("Please, provide a valid user id.");
             }
             return await _commentLikeRepository.HasUserLikedItAsync(commentId, userId);
         }
@@ -61,7 +61,7 @@ namespace Infrastructure.Service
             }
             if (userId <= 0)
             {
-                throw new ArgumentException("Please, provide a valid comment like id.");
+                throw new ArgumentException("Please, provide a valid user id.");
             }
             return await _commentLikeRepository.UnlikeCommentAsync(commentId, userId);
         }
