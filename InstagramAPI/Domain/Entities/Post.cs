@@ -9,5 +9,6 @@ namespace Domain.Entities
         public int UserId { get; set; }
         public virtual User User { get; set; } = null;
         public ICollection<PostContent> Contents { get; set; } = new List<PostContent>();
+        public virtual ICollection<Comment> Comments { get; set; } = new List<Comment>();
     }
 }

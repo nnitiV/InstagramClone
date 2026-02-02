@@ -42,7 +42,11 @@ namespace API.Middleware
                     message = ex.Message;
                     break;
                 case ArgumentException:
-                    statusCode = (int)HttpStatusCode.BadRequest;
+                    statusCode = (int)HttpStatusCode.BadRequest; // 400
+                    message = ex.Message;
+                    break;
+                case UnauthorizedAccessException:
+                    statusCode = (int)HttpStatusCode.Unauthorized; // 401
                     message = ex.Message;
                     break;
             }
