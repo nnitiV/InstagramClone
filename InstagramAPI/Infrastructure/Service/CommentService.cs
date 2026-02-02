@@ -2,9 +2,6 @@
 using Application.Interfaces;
 using Application.Services;
 using Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Infrastructure.Service
 {
@@ -72,11 +69,15 @@ namespace Infrastructure.Service
             };
             return result;
         }
-        public async Task AddCommentAsync(CreateCommentDto comment)
+        public async Task<int> AddCommentAsync(CreateCommentDto comment, int userId)
         {
             if(comment == null)
             {
                 throw new ArgumentException("Comment can't be null.");
+            }
+            if(userId <= 0)
+            {
+                throw new ArgumentException("Invalid user id.");
             }
             if(string.IsNullOrEmpty(comment.Text))
             {
@@ -108,11 +109,34 @@ namespace Infrastructure.Service
             {
                 Text = comment.Text,
                 PostId = comment.PostId,
-                UserId = comment.UserId,
+                UserId = userId,
                 ParentCommentId = comment.ParentCommentId,
                 CreatedAt = DateTimeOffset.UtcNow,
             };
             await _commentRepository.AddCommentAsync(commentToSave);
+            return commentToSave.Id;
+        }
+        public async Task<bool> UpdateCommentAsync(CommentDto commentToUpdate, int userId)
+        {
+            if (commentToUpdate == null)
+            {
+                throw new ArgumentException("Comment can't be null.");
+            }
+            if (commentToUpdate.Id <= 0)
+            {
+                throw new ArgumentException("Comment id can't be null.");
+            }
+            Comment? comment = await _commentRepository.GetCommentByIdAsync(commentToUpdate.Id);
+            if (comment == null)
+            {
+                return false;
+            }
+            if (comment.UserId != userId)
+            {
+                throw new UnauthorizedAccessException("You can only edit your own comments.");
+            }
+            comment.Text = commentToUpdate.Text;
+            return await _commentRepository.UpdateCommentAsync();
         }
         public async Task<bool> DeleteCommentByIdAsync(int commentId, int userId)
         {
@@ -130,28 +154,6 @@ namespace Infrastructure.Service
                 return false;
             }
             return await _commentRepository.DeleteCommentByIdAsync(commentId, userId);
-        }
-        public async Task<bool> UpdateCommentAsync(CommentDto commentToUpdate)
-        {
-            if (commentToUpdate == null)
-            {
-                throw new ArgumentException("Comment can't be null.");
-            }
-            if(commentToUpdate.Id <= 0)
-            {
-                throw new ArgumentException("Comment id can't be null.");
-            }
-            Comment? comment = await _commentRepository.GetCommentByIdAsync(commentToUpdate.Id);
-            if(comment == null)
-            {
-                return false;
-            }
-            if(comment.UserId != commentToUpdate.UserId) 
-            {
-                throw new UnauthorizedAccessException("You can only edit your own comments.");
-            }
-            comment.Text = commentToUpdate.Text;
-            return await _commentRepository.UpdateCommentAsync();
         }
     }
 }

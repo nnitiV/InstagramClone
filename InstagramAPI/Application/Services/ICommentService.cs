@@ -6,8 +6,8 @@ namespace Application.Services
     {
         Task<List<CommentDto>> GetAllCommentsFromPostAsync(int postId);
         Task<CommentDto?> GetCommentByIdAsync(int commentId);
-        Task AddCommentAsync(CreateCommentDto comment);
+        Task<int> AddCommentAsync(CreateCommentDto comment, int userId);
         Task<bool> DeleteCommentByIdAsync(int commentId, int userId);
-        Task<bool> UpdateCommentAsync(CommentDto commentToUpdate);
+        Task<bool> UpdateCommentAsync(CommentDto commentToUpdate, int userId);
     }
 }
