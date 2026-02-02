@@ -14,15 +14,16 @@ namespace Infrastructure.Repositories
         }
         public async Task<List<Comment>> GetAllCommentsFromPostAsync(int postId)
         {
-            return await _context.Comments.Where(c => c.PostId == postId).ToListAsync();
+            return await _context.Comments.Include(c => c.User).Where(c => c.PostId == postId).ToListAsync();
         }
         public async Task<Comment?> GetCommentByIdAsync(int commentId)
         {
-            return await _context.Comments.Where(c => c.Id == commentId).FirstOrDefaultAsync();
+            return await _context.Comments.Include(c => c.User).Where(c => c.Id == commentId).FirstOrDefaultAsync();
         }
         public async Task AddCommentAsync(Comment comment)
         {
             await _context.Comments.AddAsync(comment);
+            await _context.SaveChangesAsync();
         }
         public async Task<bool> DeleteCommentByIdAsync(int commentId, int userId)
         {
