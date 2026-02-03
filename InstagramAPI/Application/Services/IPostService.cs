@@ -8,6 +8,7 @@ namespace Application.Services
         Task<ResponsePostDto?> GetPostByIdAsync(int postId);
         Task<PagedResult<ResponsePostDto>> GetAllUserPostsAsync(int userId, int page, int pageSize);
         Task<int> GetUserPostCount(int userId);
+        Task<List<ResponsePostDto>> GetUserFeedAsync(int currentUserId, int page, int pageSize);
         Task<int> AddPostAsync(CreatePostDto createPostDto, int userId);
         Task<bool> UpdatePostAsync(UpdatePostDto updatePostDto, int userId);
         Task<bool> DeletePostByIdAsync(int postId, int userId);

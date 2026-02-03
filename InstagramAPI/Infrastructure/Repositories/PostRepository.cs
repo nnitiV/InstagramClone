@@ -20,7 +20,21 @@ namespace Infrastructure.Repositories
         }
         public async Task<List<Post>> GetAllUserPostsAsync(int userId, int page, int pageSize)
         {
-            return await _context.Posts.Where(p => p.UserId == userId).OrderByDescending(p => p.CreatedAt).Skip((page - 1) * pageSize).Take(pageSize).ToListAsync();
+            return await _context.Posts.Where(p => p.UserId == userId)
+                .Include(p => p.Comments)
+                .Include(p => p.User)
+                .Include(p => p.PostLikes)
+                .Include(p => p.Contents)
+                .OrderByDescending(p => p.CreatedAt).Skip((page - 1) * pageSize).Take(pageSize).AsSplitQuery().ToListAsync();
+        }
+        public async Task<List<Post>> GetUserFeedAsync(int userId, int page, int pageSize)
+        {
+            return await _context.Posts.Where(p => _context.Followers.Any(f => f.UserIdFollowing == userId && f.UserIdFollowed == p.UserId))
+            .Include(p => p.Comments)
+            .Include(p => p.User)
+            .Include(p => p.PostLikes)
+            .Include(p => p.Contents)
+            .OrderByDescending(p => p.CreatedAt).Skip((page - 1) * pageSize).Take(pageSize).AsSplitQuery().ToListAsync();
         }
         public async Task<int> GetUserPostCountAsync(int userId)
         {

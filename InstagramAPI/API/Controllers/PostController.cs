@@ -38,7 +38,15 @@ namespace API.Controllers
             }
             return Ok(posts);
         }
+        [HttpGet("feed")]
+        public async Task<IActionResult> GetUserFeed([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        {
+            int userId = User.GetUserId();
 
+            var feed = await _postService.GetUserFeedAsync(userId, page, pageSize);
+
+            return Ok(new { data = feed });
+        }
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddPost(CreatePostDto post)

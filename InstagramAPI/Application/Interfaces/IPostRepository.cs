@@ -7,6 +7,7 @@ namespace Application.Interfaces
     {
         Task<Post?> GetPostByIdAsync(int postId);
         Task<List<Post>> GetAllUserPostsAsync(int userId, int page, int pageSize);
+        Task<List<Post>> GetUserFeedAsync(int userId, int page, int pageSize);
         Task<int> GetUserPostCountAsync(int userId);
         Task AddPostAsync(Post post);
         Task<bool> UpdatePostAsync(Post updatePost);
