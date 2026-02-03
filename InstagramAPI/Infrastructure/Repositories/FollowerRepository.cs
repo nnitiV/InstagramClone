@@ -19,11 +19,21 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<List<Follower>> GetListOfFollowersAsync(int userId)
+        {
+            return await _context.Followers.Where(f => f.UserIdFollowed == userId).Include(f => f.UserFollowing).ToListAsync();
+        }
+
+        public async Task<List<Follower>> GetListOfFollowingAsync(int userId)
+        {
+            return await _context.Followers.Where(f => f.UserIdFollowing == userId).Include(f => f.UserFollowed).ToListAsync();
+        }
+
         public async Task<int> GetTotalFollowersAsync(int userId)
         {
             return await _context.Followers.CountAsync(f => f.UserIdFollowed == userId);
         }
-
+            
         public async Task<int> GetTotalFollowingAsync(int userId)
         {
             return await _context.Followers.CountAsync(f => f.UserIdFollowing == userId);

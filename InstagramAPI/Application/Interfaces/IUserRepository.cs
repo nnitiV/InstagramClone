@@ -6,6 +6,7 @@ namespace Application.Interfaces
     {
         Task<User?> GetById(int id);
         Task<User?> GetUserByEmail(string email);
+        Task<User?> GetUserByUsername(string username);
         Task AddUser(User user);
         Task<bool> UpdateUser(User user);
         Task<bool> DeleteUserById(int userId);

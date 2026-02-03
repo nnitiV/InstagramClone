@@ -1,4 +1,5 @@
 ﻿
+using Application.Dtos;
 using Application.Interfaces;
 using Application.Services;
 using Domain.Entities;
@@ -28,6 +29,38 @@ namespace Infrastructure.Service
                 throw new ArgumentException("You are already following this user.");
             }
             await _followerRepository.FollowUserAsync(follower);
+        }
+
+        public async Task<List<FollowerDto>> GetListOfFollowersAsync(int userId)
+        {
+            if(userId <= 0)
+            {
+                throw new ArgumentException("Please, provide a valid user id.");
+            }
+            List<Follower> followers = await _followerRepository.GetListOfFollowersAsync(userId);
+            return [.. followers.Select(f => new FollowerDto
+            {
+                UserId = f.UserFollowing.Id,
+                Name = f.UserFollowing.Name,
+                Username = f.UserFollowing.Username,
+                ProfilePictureUrl = f.UserFollowing.ProfilePictureUrl
+            })];
+        }
+
+        public async Task<List<FollowerDto>> GetListOfFollowingAsync(int userId)
+        {
+            if (userId <= 0)
+            {
+                throw new ArgumentException("Please, provide a valid user id.");
+            }
+            List<Follower> followers = await _followerRepository.GetListOfFollowingAsync(userId);
+            return [.. followers.Select(f => new FollowerDto
+            {
+                UserId = f.UserFollowed.Id,
+                Name = f.UserFollowed.Name,
+                Username = f.UserFollowed.Username,
+                ProfilePictureUrl = f.UserFollowed.ProfilePictureUrl
+            })];
         }
 
         public async Task<int> GetTotalFollowersAsync(int userId)

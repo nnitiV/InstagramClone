@@ -40,6 +40,54 @@ namespace Infrastructure.Service
             return userDto;
         }
 
+        public async Task<ResponseUserDto?> GetUserByUsername(string username)
+        {
+            if (string.IsNullOrEmpty(username))
+            {
+                throw new ArgumentException("Username can't be null!");
+            }
+            User? userDB = await _userRepository.GetUserByUsername(username);
+            if (userDB == null)
+            {
+                return null;
+            }
+            ResponseUserDto? userDto = new ResponseUserDto
+            {
+                Id = userDB.Id,
+                Username= userDB.Username,
+                Email = userDB.Email,
+                Bio = userDB.Bio,
+                FollowersCount= userDB.FollowersCount,
+                FollowingCount= userDB.FollowingCount,
+                PostsCount= userDB.PostsCount
+            };
+            return userDto;
+        }
+
+        public async Task<ResponseUserDto?> GetUserByEmail(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                throw new ArgumentException("Email can't be null!");
+            }
+            User? userDB = await _userRepository.GetUserByEmail(email);
+            if (userDB == null)
+            {
+                return null;
+            }
+            ResponseUserDto? userDto = new ResponseUserDto
+            {
+                Id = userDB.Id,
+                Username = userDB.Username,
+                Email = userDB.Email,
+                Bio = userDB.Bio,
+                FollowersCount = userDB.FollowersCount,
+                FollowingCount = userDB.FollowingCount,
+                PostsCount = userDB.PostsCount
+            };
+            return userDto;
+        }
+
         public async Task<int> AddUser(CreateUserDto userDto)
         {
             if(userDto == null)
@@ -50,12 +98,18 @@ namespace Infrastructure.Service
             User? userDB = await _userRepository.GetUserByEmail(userDto.Email);
             if(userDB != null)
             {
-                throw new UserAlreadyExistsException("User is alraedy taken.");
+                throw new UserAlreadyExistsException("Email is already taken.");
+            }
+            userDB = await _userRepository.GetUserByUsername(userDto.Username);
+            if(userDB != null)
+            {
+                throw new UserAlreadyExistsException("Username is already taken.");
             }
 
             User user = new User
             {
                 Username = userDto.Username,
+                Name = userDto.Name,
                 Email = userDto.Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password),
                 Bio = userDto.Bio,
