@@ -98,12 +98,12 @@ namespace Infrastructure.Service
             User? userDB = await _userRepository.GetUserByEmail(userDto.Email);
             if(userDB != null)
             {
-                throw new UserAlreadyExistsException("User is alraedy taken.");
+                throw new UserAlreadyExistsException("Email is already taken.");
             }
             userDB = await _userRepository.GetUserByUsername(userDto.Username);
             if(userDB != null)
             {
-                throw new UserAlreadyExistsException("User is alraedy taken.");
+                throw new UserAlreadyExistsException("Username is already taken.");
             }
 
             User user = new User
