@@ -4,6 +4,7 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260203152721_FixedTypeInMessageEntity")]
+    partial class FixedTypeInMessageEntity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -112,62 +115,6 @@ namespace Infrastructure.Migrations
                     b.ToTable("Followers");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Group", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("GroupImage")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Groups");
-                });
-
-            modelBuilder.Entity("Domain.Entities.GroupMember", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTimeOffset>("CreatedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<int>("GroupId")
-                        .HasColumnType("int");
-
-                    b.Property<bool>("IsAdmin")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset>("JoinedAt")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("GroupMembers");
-                });
-
             modelBuilder.Entity("Domain.Entities.Message", b =>
                 {
                     b.Property<int>("Id")
@@ -184,24 +131,19 @@ namespace Infrastructure.Migrations
                     b.Property<DateTimeOffset>("CreatedAt")
                         .HasColumnType("datetimeoffset");
 
-                    b.Property<int?>("GroupId")
-                        .HasColumnType("int");
-
                     b.Property<bool>("IsRead")
                         .HasColumnType("bit");
 
-                    b.Property<int?>("ReceiverId")
+                    b.Property<int>("ReceiverId")
                         .HasColumnType("int");
 
                     b.Property<int>("SenderId")
                         .HasColumnType("int");
 
-                    b.Property<DateTimeOffset>("SentAt")
-                        .HasColumnType("datetimeoffset");
+                    b.Property<DateTime>("SentAt")
+                        .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("GroupId");
 
                     b.HasIndex("ReceiverId");
 
@@ -425,44 +367,19 @@ namespace Infrastructure.Migrations
                     b.Navigation("UserFollowing");
                 });
 
-            modelBuilder.Entity("Domain.Entities.GroupMember", b =>
-                {
-                    b.HasOne("Domain.Entities.Group", "Group")
-                        .WithMany("Members")
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Entities.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Group");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Domain.Entities.Message", b =>
                 {
-                    b.HasOne("Domain.Entities.Group", "Group")
-                        .WithMany("Messages")
-                        .HasForeignKey("GroupId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
                     b.HasOne("Domain.Entities.User", "Receiver")
                         .WithMany()
                         .HasForeignKey("ReceiverId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.HasOne("Domain.Entities.User", "Sender")
                         .WithMany()
                         .HasForeignKey("SenderId")
                         .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
-
-                    b.Navigation("Group");
 
                     b.Navigation("Receiver");
 
@@ -513,13 +430,6 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.Comment", b =>
                 {
                     b.Navigation("Replies");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Group", b =>
-                {
-                    b.Navigation("Members");
-
-                    b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("Domain.Entities.Post", b =>

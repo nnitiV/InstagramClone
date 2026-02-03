@@ -49,6 +49,14 @@ namespace API.Middleware
                     statusCode = (int)HttpStatusCode.Unauthorized; // 401
                     message = ex.Message;
                     break;
+                case NotFoundException:
+                    statusCode = (int)HttpStatusCode.NotFound; // 404
+                    message = ex.Message;
+                    break;
+                default:
+                    statusCode = (int)HttpStatusCode.InternalServerError; // 404
+                    message = ex.Message;
+                    break;
             }
             context.Response.StatusCode = statusCode;
 

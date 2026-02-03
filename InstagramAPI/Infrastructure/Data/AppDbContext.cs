@@ -13,6 +13,9 @@ namespace Infrastructure.Data
         public DbSet<PostContent> PostContents { get; set; }
         public DbSet<PostLike> PostLikes { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<Message> Messages { get; set; }
+        public DbSet<Group> Groups { get; set; }
+        public DbSet<GroupMember> GroupMembers { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
