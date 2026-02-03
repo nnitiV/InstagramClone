@@ -109,6 +109,7 @@ namespace Infrastructure.Service
             User user = new User
             {
                 Username = userDto.Username,
+                Name = userDto.Name,
                 Email = userDto.Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password),
                 Bio = userDto.Bio,
