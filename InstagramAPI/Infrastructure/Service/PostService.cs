@@ -14,7 +14,7 @@ namespace Infrastructure.Service
             _postRepository = postRepository;
         }
 
-        public async Task<ResponsePostDto?> GetPostByIdAsync(int postId)
+        public async Task<ResponsePostDto?> GetPostByIdAsync(int currentUserId, int postId)
         {
             if (postId <= 0)
             {
@@ -31,13 +31,18 @@ namespace Infrastructure.Service
                 Title = post.Title,
                 Caption = post.Caption,
                 UserId = post.UserId,
-                Contents = post.Contents,
+                AuthorName = post.User?.Name ?? "Unknown", 
+                AuthorProfilePicture = post.User?.ProfilePictureUrl ?? string.Empty,
+                LikeCount = post.PostLikes?.Count ?? 0,
+                CommentCount = post.Comments?.Count ?? 0,
+                IsLiked = post.PostLikes?.Any(pl => pl.UserId == currentUserId) ?? false,
+                ContentUrls = post.Contents.Select(c => c.ContentUrl).ToList(),
                 CreatedAt = post.CreatedAt
             };
             return postToReturn;
         }
 
-        public async Task<PagedResult<ResponsePostDto>> GetAllUserPostsAsync(int userId, int page, int pageSize)
+        public async Task<PagedResult<ResponsePostDto>> GetAllUserPostsAsync(int currentUserId, int userId, int page, int pageSize)
         {
             if (userId <= 0)
             {
@@ -58,7 +63,12 @@ namespace Infrastructure.Service
                 Id = post.Id,
                 Title = post.Title,
                 Caption = post.Caption,
-                Contents = post.Contents,
+                AuthorName = post.User?.Name ?? "Unknown", 
+                AuthorProfilePicture = post.User?.ProfilePictureUrl ?? string.Empty,
+                LikeCount = post.PostLikes?.Count ?? 0,
+                CommentCount = post.Comments?.Count ?? 0,
+                IsLiked = post.PostLikes?.Any(pl => pl.UserId == currentUserId) ?? false,
+                ContentUrls = post.Contents.Select(c => c.ContentUrl).ToList(),
                 UserId = post.UserId,
                 CreatedAt = post.CreatedAt
             }).ToList();
@@ -71,13 +81,13 @@ namespace Infrastructure.Service
                 PageSize = pageSize
             };
         }
-        public async Task<List<ResponsePostDto>> GetUserFeedAsync(int currentUserId, int page, int pageSize)
+        public async Task<List<ResponsePostDto>> GetUserFeedAsync(int currentUserId, DateTime? cursor, int pageSize)
         {
-            var posts = await _postRepository.GetUserFeedAsync(currentUserId, page, pageSize);
+            var posts = await _postRepository.GetUserFeedAsync(currentUserId, cursor, pageSize);
             return posts.Select(p => new ResponsePostDto
             {
                 Id = p.Id,
-                CreatedAt = p.CreatedAt,
+                CreatedAt = p.CreatedAt, 
                 Title = p.Title,
                 Caption = p.Caption,
                 UserId = p.UserId,

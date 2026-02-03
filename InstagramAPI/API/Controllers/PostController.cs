@@ -20,7 +20,8 @@ namespace API.Controllers
         [HttpGet("{postId}")]
         public async Task<IActionResult> GetPostById(int postId)
         {
-            ResponsePostDto? post = await _postService.GetPostByIdAsync(postId);
+            int currentUserId = User.GetUserId();
+            ResponsePostDto? post = await _postService.GetPostByIdAsync(currentUserId, postId);
             if(post == null)
             {
                 return NotFound(new { message = $"Couldn't find post with id {postId}" });
@@ -31,21 +32,21 @@ namespace API.Controllers
         [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetAllUserPostsByUserId(int userId, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
-            PagedResult<ResponsePostDto>? posts = await _postService.GetAllUserPostsAsync(userId, page, pageSize);
+            int currentUserId = User.GetUserId();
+            PagedResult<ResponsePostDto>? posts = await _postService.GetAllUserPostsAsync(currentUserId, userId, page, pageSize);
             if (posts == null)
             {
                 return NotFound(new { message = $"Couldn't find posts from user with id {userId}" });
             }
             return Ok(posts);
         }
+        [Authorize]
         [HttpGet("feed")]
-        public async Task<IActionResult> GetUserFeed([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
+        public async Task<IActionResult> GetUserFeed([FromQuery] DateTime? cursor = null, [FromQuery] int pageSize = 10) 
         {
             int userId = User.GetUserId();
-
-            var feed = await _postService.GetUserFeedAsync(userId, page, pageSize);
-
-            return Ok(new { data = feed });
+            var feed = await _postService.GetUserFeedAsync(userId, cursor, pageSize);
+            return Ok(feed); // Returns the list. Frontend takes the last 'CreatedAt' to ask for the next batch.
         }
         [Authorize]
         [HttpPost]

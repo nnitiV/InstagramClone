@@ -18,6 +18,15 @@ namespace Infrastructure.Repositories
             await _context.Posts.AddAsync(post);
             await _context.SaveChangesAsync();
         }
+        public async Task<Post?> GetPostByIdAsync(int postId)
+        {
+            return await _context.Posts.Where(p => p.Id == postId)
+                .Include(p => p.Contents)
+                .Include(p => p.User)
+                .Include(p => p.PostLikes)
+                .Include(p => p.Comments)
+                .FirstOrDefaultAsync();
+        }
         public async Task<List<Post>> GetAllUserPostsAsync(int userId, int page, int pageSize)
         {
             return await _context.Posts.Where(p => p.UserId == userId)
@@ -25,24 +34,28 @@ namespace Infrastructure.Repositories
                 .Include(p => p.User)
                 .Include(p => p.PostLikes)
                 .Include(p => p.Contents)
+                .Include(p => p.Comments)
                 .OrderByDescending(p => p.CreatedAt).Skip((page - 1) * pageSize).Take(pageSize).AsSplitQuery().ToListAsync();
         }
-        public async Task<List<Post>> GetUserFeedAsync(int userId, int page, int pageSize)
+        public async Task<List<Post>> GetUserFeedAsync(int userId, DateTime? cursor, int pageSize)
         {
-            return await _context.Posts.Where(p => _context.Followers.Any(f => f.UserIdFollowing == userId && f.UserIdFollowed == p.UserId))
-            .Include(p => p.Comments)
-            .Include(p => p.User)
-            .Include(p => p.PostLikes)
-            .Include(p => p.Contents)
-            .OrderByDescending(p => p.CreatedAt).Skip((page - 1) * pageSize).Take(pageSize).AsSplitQuery().ToListAsync();
+            DateTime cutoffDate = cursor ?? DateTime.UtcNow;
+
+            return await _context.Posts
+                .Where(p => _context.Followers.Any(f => f.UserIdFollowing == userId && f.UserIdFollowed == p.UserId))
+                .Where(p => p.CreatedAt < cutoffDate)
+                .Include(p => p.Comments)
+                .Include(p => p.User)
+                .Include(p => p.PostLikes)
+                .Include(p => p.Contents)
+                .OrderByDescending(p => p.CreatedAt)
+                .Take(pageSize) 
+                .AsSplitQuery()
+                .ToListAsync();
         }
         public async Task<int> GetUserPostCountAsync(int userId)
         {
             return await _context.Posts.CountAsync(p => p.UserId == userId);
-        }
-        public async Task<Post?> GetPostByIdAsync(int postId)
-        {
-            return await _context.Posts.Include(p => p.Contents).Include(p => p.User).Where(p => p.Id == postId).FirstOrDefaultAsync();
         }
         public async Task<bool> UpdatePostAsync(Post updatePost)
         {
