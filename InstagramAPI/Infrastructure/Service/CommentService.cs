@@ -16,13 +16,13 @@ namespace Infrastructure.Service
             _postService = postService;
             _userService = userService;
         }
-        public async Task<List<CommentDto>> GetAllCommentsFromPostAsync(int postId)
+        public async Task<List<CommentDto>> GetAllCommentsFromPostAsync(int currentUserId, int postId)
         {
             if(postId <= 0)
             {
                 throw new ArgumentException("Post id can't be null.");
             }
-            ResponsePostDto? post = await _postService.GetPostByIdAsync(postId);
+            ResponsePostDto? post = await _postService.GetPostByIdAsync(currentUserId, postId);
             if (post == null)
             {
                 return null;
@@ -95,7 +95,7 @@ namespace Infrastructure.Service
             {
                 throw new ArgumentException("Invalid post id.");
             }
-            ResponsePostDto? postDto = await _postService.GetPostByIdAsync(comment.PostId); 
+            ResponsePostDto? postDto = await _postService.GetPostByIdAsync(userId, comment.PostId); 
             if (postDto == null)
             {
                 throw new ArgumentException($"Post {comment.PostId} not found.");

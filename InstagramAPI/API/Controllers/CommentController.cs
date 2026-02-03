@@ -18,7 +18,8 @@ namespace API.Controllers
         [HttpGet("allComments/{postId}")]
         public async Task<IActionResult> GetCommentsByPostId(int postId)
         {
-            var comments = await _commentService.GetAllCommentsFromPostAsync(postId);
+            var currentUserId = User.GetUserId();
+            var comments = await _commentService.GetAllCommentsFromPostAsync(currentUserId, postId);
             return Ok(comments);
         }
         [HttpGet("comment/{commentId}")]
