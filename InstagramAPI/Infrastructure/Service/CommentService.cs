@@ -5,7 +5,7 @@ using Domain.Entities;
 
 namespace Infrastructure.Service
 {
-    internal class CommentService: ICommentService
+    public class CommentService: ICommentService
     {
         private readonly ICommentRepository _commentRepository;
         private readonly IPostService _postService;

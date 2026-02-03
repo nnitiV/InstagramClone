@@ -5,7 +5,7 @@ using Domain.Entities;
 
 namespace Infrastructure.Service
 {
-    internal class PostLikeService : IPostLikeService
+    public class PostLikeService : IPostLikeService
     {
         private readonly IPostLikeRepository _postLikeRepository;
         public PostLikeService(IPostLikeRepository postLikeRepository)
