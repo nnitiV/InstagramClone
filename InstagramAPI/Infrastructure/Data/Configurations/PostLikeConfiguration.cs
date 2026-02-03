@@ -13,7 +13,7 @@ namespace Infrastructure.Data.Configurations
 
             builder.HasOne<User>(pl => pl.User).WithMany().HasForeignKey(pl => pl.UserId)
                 .OnDelete(DeleteBehavior.Restrict);
-            builder.HasOne<Post>(pl => pl.Post).WithMany().HasForeignKey(pl => pl.PostId)
+            builder.HasOne<Post>(pl => pl.Post).WithMany(p => p.PostLikes).HasForeignKey(pl => pl.PostId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.HasIndex(pl => new { pl.UserId, pl.PostId }).IsUnique();
