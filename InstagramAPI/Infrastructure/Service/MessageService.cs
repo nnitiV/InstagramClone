@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Infrastructure.Service
 {
-    public class MessageService: IMessageService
+    public class MessageService : IMessageService
     {
         private readonly IMessageRepository _messageRepository;
         private readonly IUserService _userService;
@@ -20,12 +20,12 @@ namespace Infrastructure.Service
         public async Task<List<MessageDto>> GetChatHistoryAsync(int currentUserId, int otherUserId)
         {
             var otherUser = await _userService.GetById(otherUserId);
-            if(otherUser == null)
+            if (otherUser == null)
             {
                 throw new NotFoundException($"User with ID {otherUserId} not found.");
             }
             var messages = await _messageRepository.GetChatHistoryAsync(currentUserId, otherUserId);
-            
+
             return messages.Select(m => new MessageDto
             {
                 Id = m.Id,
@@ -41,31 +41,35 @@ namespace Infrastructure.Service
 
         public async Task<MessageDto> SendMessageAsync(int currentUserId, SendMessageDto messageDto)
         {
-            if(currentUserId <= 0)
-            {
-                throw new ArgumentException("Please, provide a valid current user id.");
-            }
-            if (messageDto.ReceiverId <= 0)
-            {
-                throw new ArgumentException("Please, provide a valid receiver id.");
-            }
-            if(string.IsNullOrEmpty(messageDto.Content))
+            if (string.IsNullOrEmpty(messageDto.Content))
             {
                 throw new ArgumentException("Please, provide the content of the message.");
             }
-            var receiver = await _userService.GetById(messageDto.ReceiverId);
-            if(receiver == null)
+            if (messageDto.ReceiverId == null && messageDto.GroupId == null)
             {
-                throw new NotFoundException($"User with ID {messageDto.ReceiverId} not found.");
+                throw new ArgumentException("You must provide either a ReceiverId or a GroupId.");
             }
             Message message = new Message
             {
                 SenderId = currentUserId,
                 Content = messageDto.Content,
-                ReceiverId = messageDto.ReceiverId,
                 SentAt = DateTimeOffset.UtcNow,
                 IsRead = false,
             };
+
+            if (messageDto.GroupId.HasValue)
+            {
+                message.GroupId = messageDto.GroupId;
+            }
+            else if(messageDto.ReceiverId.HasValue)
+            {
+                var receiver = await _userService.GetById(messageDto.ReceiverId.Value);
+                if (receiver == null)
+                {
+                    throw new NotFoundException($"User with ID {messageDto.ReceiverId} not found.");
+                }
+                message.ReceiverId = messageDto.ReceiverId;
+            }
 
             await _messageRepository.AddMessageAsync(message);
             return new MessageDto
@@ -76,7 +80,50 @@ namespace Infrastructure.Service
                 Content = message.Content,
                 SentAt = message.SentAt,
                 IsRead = message.IsRead
-            }; 
+            };
+        }
+        public async Task<Group> CreateGroupAsync(int creatorId, CreateGroupDto groupDto)
+        {
+            Group group = new Group
+            {
+                Name = groupDto.Name,
+                CreatedAt = DateTimeOffset.UtcNow
+            };
+            await _messageRepository.CreateGroupAsync(group);
+
+            await _messageRepository.AddMemberToGroupAsync(new GroupMember
+            {
+                GroupId = group.Id,
+                UserId = creatorId,
+                IsAdmin = true
+            });
+
+            foreach (var userId in groupDto.MemberIds.Where(id => id != creatorId).Distinct())
+            {
+                await _messageRepository.AddMemberToGroupAsync(new GroupMember
+                {
+                    GroupId = group.Id,
+                    UserId = userId,
+                    IsAdmin = false
+                });
+            }
+            return group;
+        }
+
+        public async Task<List<MessageDto>> GetGroupChatHistoryAsync(int groupId)
+        {
+            List<Message> messages = await _messageRepository.GetGroupChatHistory(groupId);
+            return messages.Select(m => new MessageDto
+            {
+                Id = m.Id,
+                SenderId = m.SenderId,
+                SenderUsername = m.Sender?.Username ?? "Unknown",
+                SenderPhotoUrl = m.Sender?.ProfilePictureUrl ?? "",
+                GroupId = m.GroupId,
+                Content = m.Content,
+                SentAt = m.SentAt,
+                IsRead = m.IsRead
+            }).ToList();
         }
     }
 }

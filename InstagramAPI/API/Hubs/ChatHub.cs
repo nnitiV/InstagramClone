@@ -25,9 +25,24 @@ namespace API.Hubs
 
             var savedMessage = await _messageService.SendMessageAsync(userId, sendMessageDto);
 
-            await Clients.User(sendMessageDto.ReceiverId.ToString()).SendAsync("ReceiveMessage", savedMessage);
+            if(sendMessageDto.GroupId.HasValue)
+            {
+                await Clients.Group(sendMessageDto.GroupId.Value.ToString()).SendAsync("ReceiveMessage", savedMessage);
+            }
+            else if (sendMessageDto.ReceiverId.HasValue)
+            {
+                await Clients.User(sendMessageDto.ReceiverId.Value.ToString()).SendAsync("ReceiveMessage", savedMessage);
 
-            await Clients.Caller.SendAsync("ReceiveMessage", savedMessage);
+                await Clients.Caller.SendAsync("ReceiveMessage", savedMessage);
+            }
+        }
+        public async Task JoinGroup(int groupId)
+        {
+            await Groups.AddToGroupAsync(Context.ConnectionId, groupId.ToString());
+        }
+        public async Task LeaveGroup(int groupId)
+        {
+            await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupId.ToString());
         }
     }
 }
