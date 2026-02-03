@@ -29,7 +29,10 @@ namespace Infrastructure.Repositories
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
         }
-
+        public async Task<List<User>> SearchUsersAsync(string search)
+        {
+            return await _context.Users.Where(u => u.Username.ToLower().Contains(search.ToLower())).ToListAsync();
+        }
         public async Task AddUser(User user)
         {
             await _context.Users.AddAsync(user);

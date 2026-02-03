@@ -93,6 +93,21 @@ namespace Infrastructure.Service
             };
             return userDto;
         }
+        public async Task<List<SearchUserDto>> SearchUsersAsync(string search)
+        {
+            if(string.IsNullOrEmpty(search))
+            {
+                return null;
+            }
+            List<User> users = await _userRepository.SearchUsersAsync(search);
+            return users.Select(u => new SearchUserDto
+            {
+                Id = u.Id,
+                Username = u.Username,
+                Name = u.Name,
+                ProfilePictureUrl = u.ProfilePictureUrl,
+            }).ToList();
+        }
 
         public async Task<int> AddUser(CreateUserDto userDto)
         {
