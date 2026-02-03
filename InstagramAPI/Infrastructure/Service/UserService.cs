@@ -32,6 +32,8 @@ namespace Infrastructure.Service
                 Username = user.Username,
                 Email = user.Email,
                 Bio = user.Bio,
+                DateOfBirth = user.DateOfBirth,
+                Age = user.Age,
                 FollowersCount = user.FollowersCount,
                 FollowingCount = user.FollowingCount,
                 PostsCount = user.PostsCount
@@ -57,6 +59,8 @@ namespace Infrastructure.Service
                 Username= userDB.Username,
                 Email = userDB.Email,
                 Bio = userDB.Bio,
+                DateOfBirth = userDB.DateOfBirth,
+                Age = userDB.Age,
                 FollowersCount= userDB.FollowersCount,
                 FollowingCount= userDB.FollowingCount,
                 PostsCount= userDB.PostsCount
@@ -81,6 +85,8 @@ namespace Infrastructure.Service
                 Username = userDB.Username,
                 Email = userDB.Email,
                 Bio = userDB.Bio,
+                DateOfBirth = userDB.DateOfBirth,
+                Age = userDB.Age,
                 FollowersCount = userDB.FollowersCount,
                 FollowingCount = userDB.FollowingCount,
                 PostsCount = userDB.PostsCount
@@ -106,6 +112,15 @@ namespace Infrastructure.Service
                 throw new UserAlreadyExistsException("Username is already taken.");
             }
 
+            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+
+            int age = today.Year - userDto.DateOfBirth.Year;
+
+            if(today.DayOfYear < userDto.DateOfBirth.DayOfYear)
+            {
+                age--;
+            }
+
             User user = new User
             {
                 Username = userDto.Username,
@@ -113,6 +128,8 @@ namespace Infrastructure.Service
                 Email = userDto.Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password),
                 Bio = userDto.Bio,
+                DateOfBirth = userDto.DateOfBirth,
+                Age = age,
                 ProfilePictureUrl = userDto.ProfilePictureUrl,
                 FollowersCount = 0,
                 FollowingCount = 0,
