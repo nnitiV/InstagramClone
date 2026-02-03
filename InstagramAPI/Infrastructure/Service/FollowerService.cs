@@ -38,18 +38,13 @@ namespace Infrastructure.Service
                 throw new ArgumentException("Please, provide a valid user id.");
             }
             List<Follower> followers = await _followerRepository.GetListOfFollowersAsync(userId);
-            List<FollowerDto> followerDtos = new List<FollowerDto>();
-            foreach (Follower follower in followers)
+            return [.. followers.Select(f => new FollowerDto
             {
-                followerDtos.Add(new FollowerDto
-                {
-                    UserId = follower.UserFollowing.Id,
-                    Name = follower.UserFollowing.Name,
-                    ProfilePictureUrl = follower.UserFollowing.ProfilePictureUrl,
-                    Username = follower.UserFollowing.Username,
-                });
-            }
-            return followerDtos;
+                UserId = f.UserFollowing.Id,
+                Name = f.UserFollowing.Name,
+                Username = f.UserFollowing.Username,
+                ProfilePictureUrl = f.UserFollowing.ProfilePictureUrl
+            })];
         }
 
         public async Task<List<FollowerDto>> GetListOfFollowingAsync(int userId)
@@ -59,18 +54,13 @@ namespace Infrastructure.Service
                 throw new ArgumentException("Please, provide a valid user id.");
             }
             List<Follower> followers = await _followerRepository.GetListOfFollowingAsync(userId);
-            List<FollowerDto> followerDtos = new List<FollowerDto>();
-            foreach (Follower follower in followers)
+            return [.. followers.Select(f => new FollowerDto
             {
-                followerDtos.Add(new FollowerDto
-                {
-                    UserId = follower.UserFollowed.Id,
-                    Name = follower.UserFollowed.Name,
-                    ProfilePictureUrl = follower.UserFollowed.ProfilePictureUrl,
-                    Username = follower.UserFollowed.Username,
-                });
-            }
-            return followerDtos;
+                UserId = f.UserFollowed.Id,
+                Name = f.UserFollowed.Name,
+                Username = f.UserFollowed.Username,
+                ProfilePictureUrl = f.UserFollowed.ProfilePictureUrl
+            })];
         }
 
         public async Task<int> GetTotalFollowersAsync(int userId)
