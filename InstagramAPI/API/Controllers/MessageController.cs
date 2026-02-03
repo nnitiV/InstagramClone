@@ -1,6 +1,7 @@
 ﻿using API.Extensions;
 using Application.Dtos;
 using Application.Services;
+using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -29,6 +30,19 @@ namespace API.Controllers
             var currentUserId = User.GetUserId();
             var message = await _messageService.SendMessageAsync(currentUserId, sendMessageDto);
             return Ok(new { message = message });
+        }
+        [HttpGet("groups/{groupId}")]
+        public async Task<IActionResult> GetGroupHistory(int groupId)
+        {
+            List<MessageDto> messages = await _messageService.GetGroupChatHistoryAsync(groupId);
+            return Ok(new { messages = messages });
+        }
+        [HttpPost("groups")]
+        public async Task<IActionResult> CreateGroup(CreateGroupDto createGroupDto)
+        {
+            var currentUserId = User.GetUserId();
+            Group group = await _messageService.CreateGroupAsync(currentUserId, createGroupDto);
+            return Ok(new { group = group });
         }
     }
 }
