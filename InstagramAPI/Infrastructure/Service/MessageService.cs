@@ -32,7 +32,7 @@ namespace Infrastructure.Service
                 SenderId = m.SenderId,
                 SenderUsername = m.Sender?.Username ?? "Unknown",
                 SenderPhotoUrl = m.Sender?.ProfilePictureUrl ?? "",
-                ReceiverId = m.ReceiverId,
+                ReceiverId = m.ReceiverId, // Keep it nullable in DTO if possible
                 Content = m.Content,
                 SentAt = m.SentAt,
                 IsRead = m.IsRead
@@ -63,7 +63,7 @@ namespace Infrastructure.Service
                 SenderId = currentUserId,
                 Content = messageDto.Content,
                 ReceiverId = messageDto.ReceiverId,
-                SentAt = DateTime.UtcNow,
+                SentAt = DateTimeOffset.UtcNow,
                 IsRead = false,
             };
 

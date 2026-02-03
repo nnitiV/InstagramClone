@@ -24,8 +24,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddControllers();
-
 var connectionSting = builder.Configuration.GetConnectionString("Url");
 
 builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionSting));
@@ -79,6 +77,8 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
 });
 
 var app = builder.Build();
+
+app.UseCors("CorsPolicy");
 
 app.MapHub<ChatHub>("/hubs/chat");
 
