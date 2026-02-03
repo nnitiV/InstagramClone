@@ -58,5 +58,11 @@ namespace API.Controllers
             }
             return Ok(new { message = "User updated successfully" });
         }
+        [HttpGet("search")]
+        public async Task<IActionResult> Search([FromQuery] string search)
+        {
+            var users = await _userService.SearchUsersAsync(search);
+            return Ok(new { result = users });
+        }
     }
 }
