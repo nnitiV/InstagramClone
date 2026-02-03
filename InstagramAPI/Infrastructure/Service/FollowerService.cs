@@ -1,4 +1,5 @@
 ﻿
+using Application.Dtos;
 using Application.Interfaces;
 using Application.Services;
 using Domain.Entities;
@@ -28,6 +29,48 @@ namespace Infrastructure.Service
                 throw new ArgumentException("You are already following this user.");
             }
             await _followerRepository.FollowUserAsync(follower);
+        }
+
+        public async Task<List<FollowerDto>> GetListOfFollowersAsync(int userId)
+        {
+            if(userId <= 0)
+            {
+                throw new ArgumentException("Please, provide a valid user id.");
+            }
+            List<Follower> followers = await _followerRepository.GetListOfFollowersAsync(userId);
+            List<FollowerDto> followerDtos = new List<FollowerDto>();
+            foreach (Follower follower in followers)
+            {
+                followerDtos.Add(new FollowerDto
+                {
+                    UserId = follower.UserFollowing.Id,
+                    Name = follower.UserFollowing.Name,
+                    ProfilePictureUrl = follower.UserFollowing.ProfilePictureUrl,
+                    Username = follower.UserFollowing.Username,
+                });
+            }
+            return followerDtos;
+        }
+
+        public async Task<List<FollowerDto>> GetListOfFollowingAsync(int userId)
+        {
+            if (userId <= 0)
+            {
+                throw new ArgumentException("Please, provide a valid user id.");
+            }
+            List<Follower> followers = await _followerRepository.GetListOfFollowingAsync(userId);
+            List<FollowerDto> followerDtos = new List<FollowerDto>();
+            foreach (Follower follower in followers)
+            {
+                followerDtos.Add(new FollowerDto
+                {
+                    UserId = follower.UserFollowed.Id,
+                    Name = follower.UserFollowed.Name,
+                    ProfilePictureUrl = follower.UserFollowed.ProfilePictureUrl,
+                    Username = follower.UserFollowed.Username,
+                });
+            }
+            return followerDtos;
         }
 
         public async Task<int> GetTotalFollowersAsync(int userId)
