@@ -1,4 +1,5 @@
 ﻿using API.Extensions;
+using Application.Dtos;
 using Application.Interfaces;
 using Application.Services;
 using Domain.Entities;
@@ -28,6 +29,16 @@ namespace API.Controllers
         public async Task<IActionResult> GetTotalFollowing(int userId)
         {
             return Ok(new { followingCount = await _followerService.GetTotalFollowingAsync(userId) });
+        }
+        [HttpGet("{userId}/followers")]
+        public async Task<IActionResult> GetListOfFollowersAsync(int userId)
+        {
+            return Ok(new { followers = await _followerService.GetListOfFollowersAsync(userId) });
+        }
+        [HttpGet("{userId}/following")]
+        public async Task<IActionResult> GetListOfFollowingAsync(int userId)
+        {
+            return Ok(new { following = await _followerService.GetListOfFollowingAsync(userId) });
         }
 
         [Authorize]
