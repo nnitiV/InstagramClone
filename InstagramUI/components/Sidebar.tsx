@@ -1,3 +1,4 @@
+import { handleLogout } from "@/feature/auth/services/auth-service";
 import Link from "next/link";
 import { ReactNode } from "react";
 
@@ -66,7 +67,7 @@ const Sidebar = ({ children }: { children: ReactNode }) => {
               <li><Link className="dropdown-item" href="#">Settings</Link></li>
               <li><Link className="dropdown-item" href="#">Profile</Link></li>
               <li><hr className="dropdown-divider" /></li>
-              <li><Link className="dropdown-item" href="/login">Sign out</Link></li>
+              <li><Link onClick={handleLogout} className="dropdown-item" href="#">Sign out</Link></li>
             </ul>
           </div>
 

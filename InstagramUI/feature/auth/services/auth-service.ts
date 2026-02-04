@@ -3,6 +3,7 @@ import { BASE_ROUTE_URL, tokenName } from "@/constants";
 import { cookies } from "next/headers"
 import { RegisterUser, TokenPayload } from "../../../types/auth";
 import { jwtDecode } from "jwt-decode";
+import { redirect } from "next/navigation";
 
 const route = "/auth"
 
@@ -23,24 +24,21 @@ export const handleLogin = async (login: string, password: string, rememberMe: b
     }
     const data = await res.json();
 
-    console.log("Token:", data.token);
-    const decode = jwtDecode<TokenPayload>(data.token);
-    console.log("Decode:", decode);
-
-    // if (rememberMe) {
-    //     const expireDate = new Date(decode.exp * 1000);
-    //     cookieStore.set({
-    //         name: "ig_token",
-    //         httpOnly: false,
-    //         value: data.token,
-    //         expires: expireDate
-    //     });
-    // } else {
-    //     cookieStore.set({
-    //         name: "ig_token",
-    //         value: data.token,
-    //     });
-    // }
+    if (rememberMe) {
+        const decode = jwtDecode<TokenPayload>(data.token);
+        const expireDate = new Date(decode.exp * 1000);
+        cookieStore.set({
+            name: tokenName,
+            httpOnly: true,
+            value: data.token,
+            expires: expireDate
+        });
+    } else {
+        cookieStore.set({
+            name: tokenName,
+            value: data.token,
+        });
+    }
 }
 
 export const handleRegister = async (registerInfo: RegisterUser) => {
@@ -57,6 +55,12 @@ export const handleRegister = async (registerInfo: RegisterUser) => {
         const json = JSON.parse(text);
         throw new Error(json.Message);
     }
+}
+
+export const handleLogout = async () => {
+    const cookieStore = await cookies();
+    cookieStore.delete(tokenName);
+    redirect("/login");
 }
 
 export const isAuthenticated = async () => {
