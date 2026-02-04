@@ -1,59 +1,74 @@
+import Link from "next/link";
 import { ReactNode } from "react";
 
 const Sidebar = ({ children }: { children: ReactNode }) => {
   return (
     <div className="container-fluid">
-      <div className="row">
-        <div className="col-sm-auto bg-light sticky-top">
-          <div className="d-flex flex-sm-column flex-row flex-nowrap bg-light align-items-center sticky-top">
-            <a href="/" className="d-block p-3 link-dark text-decoration-none" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Icon-only">
-              <i className="bi bi-instagram fs-3"></i>
-            </a>
-            <ul className="nav nav-pills nav-flush flex-sm-column flex-row flex-nowrap mb-auto mx-auto text-center align-items-center">
+      <div className="row flex-nowrap">
+        <div className="col-auto col-md-3 col-xl-2 px-sm-2 px-0 shadow-sm me-3" style={{ maxWidth: "200px" }}>
+          <div className="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 min-vh-100">
+            <Link href="/" className="d-flex align-items-center pb-3 mb-5 me-md-auto text-decoration-none">
+              <i className="fs-2 bi-instagram"></i>
+            </Link>
+            <ul className="nav nav-pills flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start mt-5" id="menu">
               <li className="nav-item">
-                <a href="#" className="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Home">
-                  <i className="bi-house fs-3"></i>
-                </a>
+                <Link href="#" className="nav-link align-middle px-0">
+                  <i className="fs-4 bi-house"></i> <span className="ms-1 d-none d-sm-inline">Home</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link href="#" className="nav-link align-middle px-0">
+                  <i className="fs-4 bi-camera-reels"></i> <span className="ms-1 d-none d-sm-inline">Reels</span>
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link href="#" className="nav-link align-middle px-0">
+                  <i className="fs-4 bi-chat-right"></i> <span className="ms-1 d-none d-sm-inline">Messages</span>
+                </Link>
               </li>
               <li>
-                <a href="#" className="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Dashboard">
-                  <i className="bi-speedometer2 fs-3"></i>
-                </a>
+                <Link href="#" className="nav-link px-0 align-middle">
+                  <i className="fs-4 bi-search"></i> <span className="ms-1 d-none d-sm-inline">Search</span></Link>
               </li>
               <li>
-                <a href="#" className="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Orders">
-                  <i className="bi-table fs-3"></i>
-                </a>
+                <Link href="#" className="nav-link px-0 align-middle">
+                  <i className="fs-4 bi-compass"></i> <span className="ms-1 d-none d-sm-inline">Explore</span></Link>
               </li>
               <li>
-                <a href="#" className="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Products">
-                  <i className="bi-heart fs-3"></i>
-                </a>
+                <Link href="#" className="nav-link px-0 align-middle">
+                  <i className="fs-4 bi-heart"></i> <span className="ms-1 d-none d-sm-inline">Notifications</span></Link>
               </li>
               <li>
-                <a href="#" className="nav-link py-3 px-2" title="" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-original-title="Customers">
-                  <i className="bi-people fs-3"></i>
-                </a>
+                <Link href="#" className="nav-link px-0 align-middle">
+                  <i className="fs-4 bi-plus-square"></i> <span className="ms-1 d-none d-sm-inline">Create</span></Link>
+              </li>
+              <li>
+                <Link href="#" className="nav-link px-0 align-middle">
+                  <i className="fs-4 bi-person-circle"></i> <span className="ms-1 d-none d-sm-inline">Profile</span></Link>
               </li>
             </ul>
-            <div className="dropdown">
-              <a href="#" className="d-flex align-items-center justify-content-center p-3 link-dark text-decoration-none dropdown-toggle" id="dropdownUser3" data-bs-toggle="dropdown" aria-expanded="false">
-                <i className="bi-person-circle h2"></i>
-              </a>
-              <ul className="dropdown-menu text-small shadow" aria-labelledby="dropdownUser3">
-                <li><a className="dropdown-item" href="#">New project...</a></li>
-                <li><a className="dropdown-item" href="#">Settings</a></li>
-                <li><a className="dropdown-item" href="#">Profile</a></li>
+            <hr />
+            <div className="dropdown pb-4">
+              <Link href="#" className="d-flex align-items-center text-decoration-none" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                <i className="fs-1 bi-list"></i> <span className="ms-1 fs-5 d-none d-sm-inline">More</span>
+              </Link>
+              <ul className="dropdown-menu text-small shadow">
+                <li><Link className="dropdown-item" href="#">New project...</Link></li>
+                <li><Link className="dropdown-item" href="#">Settings</Link></li>
+                <li><Link className="dropdown-item" href="#">Profile</Link></li>
+                <li>
+                  <hr className="dropdown-divider" />
+                </li>
+                <li><Link className="dropdown-item" href="/login">Sign out</Link></li>
               </ul>
             </div>
           </div>
         </div>
-        <div className="col-sm p-3 min-vh-100">
-          {/* Content */}
+        <div className="col py-3">
           {children}
         </div>
       </div>
-    </div>
+    </div >
 
   )
 };
