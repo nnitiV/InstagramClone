@@ -37,6 +37,5 @@ export const getPosts = async () => {
         console.error(res.status);
         return [];
     }
-    // return await res.json();
-    return [1, 2, 3];
+    return await res.json();
 }

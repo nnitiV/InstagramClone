@@ -12,7 +12,7 @@ export default function EmptyPost() {
                 When you follow people, you'll see the photos and videos they post here.
             </p>
             <div className="d-grid gap-2 col-10 col-sm-6 col-md-4">
-                <Link href="/explore" className="btn btn-primary btn-sm fw-semibold">
+                <Link href="#" className="btn btn-primary btn-sm fw-semibold">
                     Find People to Follow
                 </Link>
             </div>
