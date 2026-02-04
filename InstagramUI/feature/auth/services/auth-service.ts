@@ -26,6 +26,7 @@ export const handleLogin = async (login: string, password: string, rememberMe: b
 
     if (rememberMe) {
         const decode = jwtDecode<TokenPayload>(data.token);
+        console.log("Decode:", decode);
         const expireDate = new Date(decode.exp * 1000);
         cookieStore.set({
             name: tokenName,
@@ -68,4 +69,15 @@ export const isAuthenticated = async () => {
     const cookie = cookieStore.get(tokenName);
     const token = cookie?.value;
     return !!token;
+}
+
+export const getUserInfo = async () => {
+    const cookieStore = await cookies();
+    const cookie = cookieStore.get(tokenName);
+    const token = cookie?.value;
+    if (token == null) {
+        throw new Error("Not logged in!!");
+    }
+    const decode = jwtDecode<TokenPayload>(token);
+    return decode;
 }

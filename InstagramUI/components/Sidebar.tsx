@@ -2,12 +2,13 @@ import { handleLogout } from "@/feature/auth/services/auth-service";
 import Link from "next/link";
 import { ReactNode } from "react";
 
-const Sidebar = ({ children }: { children: ReactNode }) => {
+export default function Sidebar({ children, picture }: { children: ReactNode, picture: string }) {
+
   return (
     <div className="d-flex vh-100 overflow-hidden">
       <div
         className="d-flex flex-column flex-shrink-0 bg-white shadow-sm"
-        style={{ width: "auto", maxWidth: "280px" }} // Let "col-auto" logic styling handle width
+        style={{ width: "auto" }}
       >
         <div className="d-flex flex-column align-items-center align-items-sm-start px-3 pt-2 h-100 text-dark">
 
@@ -53,7 +54,7 @@ const Sidebar = ({ children }: { children: ReactNode }) => {
             </li>
             <li className="nav-item w-100">
               <Link href="#" className="nav-link align-middle px-0 text-dark">
-                <i className="fs-4 bi-person-circle"></i> <span className="ms-3 d-none d-sm-inline">Profile</span>
+                <img src={picture.length > 0 ? picture : "https://cdn-icons-png.flaticon.com/512/6522/6522516.png"} style={{ marginRight: "-12px", width: "35px", height: "35px" }} /> <span className="ms-3 d-none d-sm-inline">{username}</span>
               </Link>
             </li>
           </ul>
@@ -81,5 +82,3 @@ const Sidebar = ({ children }: { children: ReactNode }) => {
     </div>
   );
 };
-
-export default Sidebar;

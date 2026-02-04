@@ -10,6 +10,7 @@ export type RegisterUser = {
 export type TokenPayload = {
     sub: string;
     name: string;
+    picture: string;
     exp: number;
     iss: string;
     aud: string;
