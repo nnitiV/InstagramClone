@@ -25,7 +25,7 @@ export default function Login() {
         }
     }
     return (
-        <form className="w-50 shadow rounded-3 p-5" onSubmit={handleSubmit}>
+        <form className="row col-11 col-md-8 col-lg-5 shadow rounded-3 p-5" onSubmit={handleSubmit}>
             <h1 className="col-12 text-center">Login</h1>
             {error && <div className="alert alert-danger">{error}</div>}
             <div className="mb-3 col-12">

@@ -12,7 +12,7 @@ export function middleware(request: NextRequest) {
         return NextResponse.redirect(new URL('/login', request.url));
     }
 
-    if (currentPath == '/login' && token) {
+    if ((currentPath == '/login' && token) || (currentPath == '/register' && token)) {
         return NextResponse.redirect(new URL('/', request.url));
     }
 

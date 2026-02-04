@@ -54,7 +54,7 @@ export default function Sidebar({ children, picture }: { children: ReactNode, pi
             </li>
             <li className="nav-item w-100">
               <Link href="#" className="nav-link align-middle px-0 text-dark">
-                <img src={picture.length > 0 ? picture : "https://cdn-icons-png.flaticon.com/512/6522/6522516.png"} style={{ marginRight: "-12px", width: "35px", height: "35px" }} /> <span className="ms-3 d-none d-sm-inline">{username}</span>
+                <img src={picture.length > 0 ? picture : "https://cdn-icons-png.flaticon.com/512/6522/6522516.png"} style={{ marginRight: "-12px", width: "30px", height: "30px" }} /> <span className="ms-3 d-none d-sm-inline">Profile</span>
               </Link>
             </li>
           </ul>

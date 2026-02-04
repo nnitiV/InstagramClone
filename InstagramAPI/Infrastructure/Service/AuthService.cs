@@ -92,9 +92,9 @@ namespace Infrastructure.Service
                 throw new ArgumentException("Invalid username or password.");
             }
 
-            return CreateToken(user);
+            return CreateToken(user, loginDto.RememberMe);
         }
-        private string CreateToken(User user)
+        private string CreateToken(User user, bool rememberMe)
         {
             List<Claim> claims = new List<Claim>
             {
@@ -106,12 +106,12 @@ namespace Infrastructure.Service
 
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature);
-
+            var expirationDate = rememberMe ? DateTime.Now.AddDays(30) : DateTime.Now.AddDays(1);
             var token = new JwtSecurityToken(
                 issuer: _configuration["Jwt:Issuer"],
                 audience: _configuration["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.Now.AddDays(7),
+                expires: expirationDate,
                 signingCredentials: creds
             );
 

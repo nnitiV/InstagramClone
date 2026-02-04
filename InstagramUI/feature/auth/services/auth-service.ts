@@ -11,7 +11,7 @@ export const handleLogin = async (login: string, password: string, rememberMe: b
     const cookieStore = await cookies();
     const res = await fetch(`${BASE_ROUTE_URL}${route}/login`, {
         method: "POST",
-        body: JSON.stringify({ login, password }),
+        body: JSON.stringify({ login, password, rememberMe }),
         headers: {
             "Content-Type": "application/json"
         }
@@ -38,6 +38,8 @@ export const handleLogin = async (login: string, password: string, rememberMe: b
         cookieStore.set({
             name: tokenName,
             value: data.token,
+            httpOnly: true,
+            secure: true,
         });
     }
 }
