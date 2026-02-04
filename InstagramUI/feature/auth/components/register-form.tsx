@@ -1,9 +1,10 @@
 "use client";
-import { FormEvent, useState } from "react";
+import { FormEvent, useEffect, useState } from "react";
 import { handleRegister } from "../services/auth-service";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { RegisterUser } from "../types";
+import { RegisterUser } from "../../../types/auth";
+import { register } from "module";
 
 const Register = () => {
     const route = useRouter();
@@ -14,20 +15,50 @@ const Register = () => {
         username: "",
         name: "",
         password: "",
-        confirmPassword: ""
+        confirmPassword: "",
+        dateOfBirth: "",
     });
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setIsRegistering(true);
+        if (registerInfo.email.length <= 0) {
+            setError("Please, provide email!");
+            setIsRegistering(false);
+            return;
+        }
+        if (registerInfo.username.length <= 0) {
+            setError("Please, provide username!");
+            setIsRegistering(false);
+            return;
+        }
+        if (registerInfo.name.length <= 0) {
+            setError("Please, provide name!");
+            setIsRegistering(false);
+            return;
+        }
+        if (registerInfo.password.length <= 0 || registerInfo.confirmPassword.length <= 0) {
+            setError("Please, provide passwords!");
+            setIsRegistering(false);
+            return;
+        }
+        if (registerInfo.password.toLocaleLowerCase() != registerInfo.confirmPassword.toLocaleLowerCase()) {
+            setError("Passwords doesn't match!");
+            setIsRegistering(false);
+            return;
+        }
         try {
-            await handleRegister();
+            await handleRegister(registerInfo);
             route.push("/login");
+            setError("");
         } catch (error) {
             setError((error as Error).message);
         } finally {
             setIsRegistering(false);
         }
     }
+    useEffect(() => {
+        console.log(registerInfo);
+    }, [registerInfo])
     return (
         <form className="w-50 shadow rounded-3 p-5 row g-3" onSubmit={handleSubmit}>
             <h1 className="col-12 text-center">Register</h1>
@@ -59,9 +90,14 @@ const Register = () => {
             </div>
             <div className="mb-3 col-lg-6 col-12">
                 <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
-                <input type="confirmPassword" className="form-control" id="confirmPassword"
+                <input type="password" className="form-control" id="confirmPassword"
                     value={registerInfo.confirmPassword} onChange={(e) => setRegisterInfo(prev => ({ ...prev, confirmPassword: e.target.value }))}
                 />
+            </div>
+            <div className="mb-3 col-12">
+                <label className="form-label">Select Date</label>
+                {/* The 'form-control' class makes it look like a Bootstrap input */}
+                <input type="date" className="form-control" value={registerInfo.dateOfBirth} onChange={(e) => setRegisterInfo(prev => ({ ...prev, dateOfBirth: e.target.value }))} />
             </div>
             <div className="col-12 d-flex">
                 {isRegistering ?

@@ -17,7 +17,7 @@ const Login = () => {
         try {
             await handleLogin(login, password, rememberMe);
             route.push("/");
-            console.log("Pushing");
+            setError("");
         } catch (error) {
             setError((error as Error).message);
         } finally {
