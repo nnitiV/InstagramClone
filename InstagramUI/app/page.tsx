@@ -1,14 +1,36 @@
 import Sidebar from "@/components/Sidebar"
 import { getUserInfo } from "@/feature/auth/services/auth-service";
-import EmptyFeed from "@/feature/feed/components/EmptyFeed";
+import EmptyPost from "@/feature/feed/components/EmptyPost";
+import EmptyStory from "@/feature/feed/components/EmptyStory";
+import Posts from "@/feature/feed/components/posts";
+import Stories from "@/feature/feed/components/stories";
+import { getPosts, getStories } from "@/feature/feed/services/feed-service";
 
 export default async function Home() {
-  const [token] = await Promise.all([
+  const [token, stories, posts] = await Promise.all([
     getUserInfo(),
+    getStories(),
+    getPosts()
   ]);
+
   return (
     <Sidebar picture={token.picture}>
-      <EmptyFeed />
+      <div className="container-fluid mt-3">
+        <div className="row justify-content-center">
+          <div className="col-12 col-md-9 col-lg-6">
+            {stories.length > 0 ? (
+              <Stories stories={stories} userPhoto={token.picture} />
+            ) : (
+              <EmptyStory />
+            )}
+            {posts.length <= 0 ?
+              <EmptyPost />
+              :
+              <Posts posts={posts} />
+            }
+          </div>
+        </div>
+      </div>
     </Sidebar>
   );
 }

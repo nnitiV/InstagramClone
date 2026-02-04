@@ -22,7 +22,7 @@ namespace API.Controllers
         {
             int userId = User.GetUserId();
             List<StoryDto> stories = await _storyService.GetActiveStoriesAsync(userId);
-            return Ok(new { stories = stories });
+            return Ok(new { stories });
         }
         [HttpPost]
         public async Task<IActionResult> CreateStory([FromForm] CreateStoryDto storyDto)

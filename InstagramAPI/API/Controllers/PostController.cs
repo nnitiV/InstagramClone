@@ -46,7 +46,7 @@ namespace API.Controllers
         {
             int userId = User.GetUserId();
             var feed = await _postService.GetUserFeedAsync(userId, cursor, pageSize);
-            return Ok(feed); // Returns the list. Frontend takes the last 'CreatedAt' to ask for the next batch.
+            return Ok(feed);
         }
         [Authorize]
         [HttpPost]

@@ -76,6 +76,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
             return Task.CompletedTask;
         }
     };
+    options.RequireHttpsMetadata = false;
 });
 
 var app = builder.Build();
@@ -85,10 +86,6 @@ app.UseCors("CorsPolicy");
 app.MapHub<ChatHub>("/hubs/chat");
 
 app.UseMiddleware<API.Middleware.ExceptionMiddleware>();
-
-// Configure the HTTP request pipeline.
-
-app.UseHttpsRedirection();
 
 app.UseAuthentication();
 app.UseAuthorization();

@@ -73,6 +73,12 @@ export const isAuthenticated = async () => {
     return !!token;
 }
 
+export const getLoggedUserToken = async () => {
+    const cookieStore = await cookies();
+    const token = cookieStore.get(tokenName)?.value;
+    return token || null;
+}
+
 export const getUserInfo = async () => {
     const cookieStore = await cookies();
     const cookie = cookieStore.get(tokenName);
