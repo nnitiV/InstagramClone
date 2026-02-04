@@ -1,9 +1,11 @@
-const Register = () => {
+import Register from "@/feature/auth/components/register-form";
+
+const RegisterPage = () => {
     return (
-        <div>
-            Register
+        <div className="vh-100 d-flex justify-content-center align-items-center">
+            <Register />
         </div>
     )
 };
 
-export default Register;
+export default RegisterPage;
