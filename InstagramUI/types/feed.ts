@@ -18,3 +18,19 @@ export type Post = {
     isLiked: boolean;
     createdAt: string;
 }
+
+export type PostComment = {
+    id: number;
+    text: string;
+    postId: number;
+    userId: number;
+    username: string;
+    profilePictureUrl: string | null;
+    parentCommentId: number | null;
+    createdAt: string;
+}
+
+export interface PostCommentTree {
+    comment: PostComment;
+    replies: PostCommentTree[];
+}

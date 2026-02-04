@@ -39,3 +39,18 @@ export const getPosts = async () => {
     }
     return await res.json();
 }
+
+export const getPostComments = async (postId: number) => {
+    const res = await fetch(`${BASE_ROUTE_URL}/comment/allComments/${postId}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        cache: "no-store"
+    });
+    if (!res.ok) {
+        console.error(res.status);
+        return [];
+    }
+    return await res.json();
+}

@@ -1,18 +1,26 @@
-export default function RootLayout({
+import "./global.css";
+import Sidebar from "@/components/Sidebar";
+import { getUserInfo } from "@/feature/auth/services/auth-service";
+import { getPosts, getStories } from "@/feature/feed/services/feed-service";
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [token] = await Promise.all([
+    getUserInfo(),
+  ]);
   return (
     <html lang="en" data-bs-theme="light">
       <head>
         <title>Instagram CLONE</title>
         <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossOrigin="anonymous" />
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" />
-        <link rel="stylesheet" href="./globa.css" />
       </head>
       <body>
-        {children}
+        <Sidebar picture={token.picture}>
+          {children}
+        </Sidebar>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossOrigin="anonymous"></script>
       </body>
     </html>
