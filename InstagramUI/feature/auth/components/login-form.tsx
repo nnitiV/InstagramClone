@@ -4,7 +4,7 @@ import { handleLogin } from "../services/auth-service";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 
-const Login = () => {
+export default function Login() {
     const route = useRouter();
     const [isLogginIn, setIsLogginIn] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
@@ -58,5 +58,3 @@ const Login = () => {
         </form>
     )
 };
-
-export default Login;

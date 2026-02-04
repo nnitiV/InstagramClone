@@ -1,11 +1,10 @@
 import Sidebar from "@/components/Sidebar"
+import EmptyFeed from "@/feature/feed/components/EmptyFeed";
 
 export default function Home() {
   return (
     <Sidebar>
-      <div className="bg-danger w-75 m-auto" style={{ height: "150rem" }}>
-        hi
-      </div>
+      <EmptyFeed />
     </Sidebar>
   );
 }

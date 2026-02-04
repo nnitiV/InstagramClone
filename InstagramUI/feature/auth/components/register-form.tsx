@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { RegisterUser } from "../../../types/auth";
 import { register } from "module";
 
-const Register = () => {
+export default function Register() {
     const route = useRouter();
     const [error, setError] = useState<string>("");
     const [isRegistering, setIsRegistering] = useState<boolean>(false);
@@ -118,4 +118,3 @@ const Register = () => {
     )
 };
 
-export default Register;
