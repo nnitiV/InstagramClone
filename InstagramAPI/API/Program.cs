@@ -46,6 +46,7 @@ builder.Services.AddScoped<ICommentLikeService, CommentLikeService>();
 builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IFollowerService, FollowerService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
+builder.Services.AddScoped<IStoryService, StoryService>();
 
 builder.Services.AddControllers();
 

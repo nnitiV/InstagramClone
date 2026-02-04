@@ -56,9 +56,9 @@ namespace Infrastructure.Service
             };
         }
 
-        public async Task<List<StoryDto>> GetActiveStoriesAsync()
+        public async Task<List<StoryDto>> GetActiveStoriesAsync(int currentUserId)
         {
-            var stories = await _storyRepository.GetActiveStoriesAsync();
+            var stories = await _storyRepository.GetActiveStoriesAsync(currentUserId);
 
             var storyDtos = stories.Select(story => new StoryDto
             {
