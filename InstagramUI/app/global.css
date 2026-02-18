@@ -6,3 +6,10 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
 }
+.cursor-pointer {
+    cursor: pointer !important;
+}
+
+.transparent-input::placeholder {
+    color: white !important;
+} 

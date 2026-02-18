@@ -18,7 +18,7 @@ export default function Sidebar({ children, picture }: { children: ReactNode, pi
 
           <ul className="nav nav-pills flex-column mb-auto align-items-center align-items-sm-start w-100" id="menu">
             <li className="nav-item w-100">
-              <Link href="#" className="nav-link align-middle px-0 text-dark">
+              <Link href="/" className="nav-link align-middle px-0 text-dark">
                 <i className="fs-4 bi-house"></i> <span className="ms-3 d-none d-sm-inline">Home</span>
               </Link>
             </li>
@@ -28,22 +28,22 @@ export default function Sidebar({ children, picture }: { children: ReactNode, pi
               </Link>
             </li>
             <li className="nav-item w-100">
-              <Link href="#" className="nav-link align-middle px-0 text-dark">
+              <Link href="/explore" className="nav-link align-middle px-0 text-dark">
                 <i className="fs-4 bi-compass"></i> <span className="ms-3 d-none d-sm-inline">Explore</span>
               </Link>
             </li>
             <li className="nav-item w-100">
-              <Link href="#" className="nav-link align-middle px-0 text-dark">
+              <Link href="/reels" className="nav-link align-middle px-0 text-dark">
                 <i className="fs-4 bi-camera-reels"></i> <span className="ms-3 d-none d-sm-inline">Reels</span>
               </Link>
             </li>
             <li className="nav-item w-100">
-              <Link href="#" className="nav-link align-middle px-0 text-dark">
+              <Link href="/messages" className="nav-link align-middle px-0 text-dark">
                 <i className="fs-4 bi-chat-right"></i> <span className="ms-3 d-none d-sm-inline">Messages</span>
               </Link>
             </li>
             <li className="nav-item w-100">
-              <Link href="#" className="nav-link align-middle px-0 text-dark">
+              <Link href="/notifications" className="nav-link align-middle px-0 text-dark">
                 <i className="fs-4 bi-heart"></i> <span className="ms-3 d-none d-sm-inline">Notifications</span>
               </Link>
             </li>
@@ -53,7 +53,7 @@ export default function Sidebar({ children, picture }: { children: ReactNode, pi
               </Link>
             </li>
             <li className="nav-item w-100">
-              <Link href="#" className="nav-link align-middle px-0 text-dark">
+              <Link href="/profile" className="nav-link align-middle px-0 text-dark">
                 <img src={picture.length > 0 ? picture : "https://cdn-icons-png.flaticon.com/512/6522/6522516.png"} style={{ marginRight: "-12px", width: "30px", height: "30px" }} /> <span className="ms-3 d-none d-sm-inline">Profile</span>
               </Link>
             </li>
