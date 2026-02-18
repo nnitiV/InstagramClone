@@ -17,7 +17,7 @@ export default async function Home() {
     id: 999,
     authorName: "TestingUser",
     authorProfilePicture: "https://cdn-icons-png.flaticon.com/512/149/149071.png",
-    caption: "Testing the modal logic! UwU",
+    caption: "Testing the modal logic!",
     title: "Test Post",
     userId: 1,
     contentUrls: [

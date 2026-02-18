@@ -20,7 +20,7 @@ export const handleLogin = async (login: string, password: string, rememberMe: b
         let errorMessage = "Login failed";
         const text = await res.text();
         const error = JSON.parse(text);
-        throw new Error(error.Message);
+        throw new Error(error.Message + " " + errorMessage);
     }
     const data = await res.json();
 
