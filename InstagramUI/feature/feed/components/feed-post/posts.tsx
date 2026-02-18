@@ -3,7 +3,7 @@ import { Post } from "@/types/feed";
 import PostMedia from "./postMedia";
 import PostActions from "./PostActions";
 import { useState } from "react";
-import CommentModal from "./CommentModal";
+import CommentModal from "../feed-comment/CommentModal";
 import PostPopUp from "./PostPopUp";
 
 type PostsProps = {

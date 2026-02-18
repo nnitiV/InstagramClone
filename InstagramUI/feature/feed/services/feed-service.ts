@@ -53,4 +53,5 @@ export const getPostComments = async (postId: number) => {
     //     return [];
     // }
     // return await res.json();
+    return [];
 }

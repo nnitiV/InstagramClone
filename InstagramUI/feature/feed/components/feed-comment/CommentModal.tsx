@@ -1,10 +1,10 @@
 "use client";
 
-import PostMedia from "./postMedia";
-import PostActions from "./PostActions";
+import PostMedia from "../feed-post/postMedia";
+import PostActions from "../feed-post/PostActions";
 import { Post, PostComment, PostCommentTree } from "@/types/feed";
 import { useEffect, useState, useCallback } from "react";
-import { getPostComments } from "../services/feed-service";
+import { getPostComments } from "../../services/feed-service";
 import CommentsList from "./CommentList";
 
 type CommentModalProps = {
@@ -104,7 +104,7 @@ export default function CommentModal({ post, onClose }: CommentModalProps) {
                 const apiComments = await getPostComments(post.id);
                 let finalComments: PostComment[] = apiComments;
 
-                if (apiComments.length === 0) {
+                if (finalComments.length === 0) {
                     finalComments = [
                         {
                             id: 1,
@@ -198,7 +198,7 @@ export default function CommentModal({ post, onClose }: CommentModalProps) {
                         }
                     ];
                 }
-
+                console.log(finalComments);
                 setComments(finalComments);
                 setTree(buildCommentTree(finalComments));
             } catch (error) {

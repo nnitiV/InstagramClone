@@ -86,7 +86,6 @@ export default function PostMedia({ contentUrls }: PostMediaProps) {
                         {contentUrls.map((_, idx) => (
                             <div
                                 key={idx}
-                                className="rounded-circle"
                                 style={{
                                     width: "6px",
                                     height: "6px",

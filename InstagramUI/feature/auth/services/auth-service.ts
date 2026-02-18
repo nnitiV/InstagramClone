@@ -84,7 +84,8 @@ export const getUserInfo = async () => {
     const cookie = cookieStore.get(tokenName);
     const token = cookie?.value;
     if (token == null) {
-        throw new Error("Not logged in!!");
+        // throw new Error("Not logged in!!");
+        return null;
     }
     const decode = jwtDecode<TokenPayload>(token);
     return decode;
