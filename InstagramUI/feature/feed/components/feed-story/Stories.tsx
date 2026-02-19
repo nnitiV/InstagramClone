@@ -53,7 +53,7 @@ export default function Stories({ stories, userPhoto }: StoriesProps) {
                     </Link>
 
                 {stories.map((story, index) => (
-                    <Link href={`/stories/${story.username}`} className="text-decoration-none text-body">
+                    <Link href={`/stories/${story.username}/${story.id}`} className="text-decoration-none text-body">
                         <div
                             key={index}
                             className="d-flex flex-column align-items-center px-2 cursor-pointer"
