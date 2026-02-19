@@ -13,3 +13,11 @@
 .transparent-input::placeholder {
     color: white !important;
 } 
+
+.transparent-background-hover:hover {
+    background: rgba(175, 175, 175, 0.25);
+}
+.flip-horizontal {
+  display: inline-block; /* Inline elements cannot be transformed */
+  transform: scaleX(-1);
+}

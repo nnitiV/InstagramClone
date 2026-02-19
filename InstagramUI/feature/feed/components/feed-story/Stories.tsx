@@ -40,7 +40,7 @@ export default function Stories({ stories, userPhoto }: StoriesProps) {
                         >
                             <div className="p-1 rounded-circle border border-2 border-danger position-relative">
                                 <img
-                                    src={userPhoto}
+                                    src={userPhoto == null || userPhoto.length <= 0 ? "https://cdn-icons-png.flaticon.com/512/6522/6522516.png" : userPhoto}
                                     alt="Story"
                                     className="rounded-circle"
                                     style={{ width: "62px", height: "62px", objectFit: "cover", border: "2px solid white" }}
