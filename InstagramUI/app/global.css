@@ -43,3 +43,7 @@
 .scrollbox:hover{
   visibility: visible;
 }
+
+.scrollbar-invisible::-webkit-scrollbar {
+  visibility: hidden;
+}
