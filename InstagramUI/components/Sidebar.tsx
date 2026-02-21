@@ -17,47 +17,47 @@ export default function Sidebar({ children, picture }: { children: ReactNode, pi
           </Link>
 
           <ul className="nav nav-pills flex-column mb-auto align-items-center align-items-sm-start w-100"id="menu">
-            <li className="nav-item w-100 transparent-background-hover d-flex align-items-center px-2 rounded rounded-2 mb-2 cursor-pointer">
-              <Link href="/" className="nav-link align-middle px-0 text-dark">
+            <Link href="/" className="nav-item text-decoration-none w-100 transparent-background-hover d-flex align-items-center px-2 rounded rounded-2 mb-2 cursor-pointer">
+              <li className="nav-link align-middle px-0 text-dark">
                 <i className="fs-5 bi-house"></i> <span className="ms-3 d-none d-sm-inline">Home</span>
-              </Link>
-            </li>
-            <li className="nav-item w-100 transparent-background-hover d-flex align-items-center px-2 rounded rounded-2 mb-2 cursor-pointer">
-              <Link href="/reels" className="nav-link align-middle px-0 text-dark">
+              </li>
+            </Link>
+            <Link href="/reels" className="nav-item text-decoration-none w-100 transparent-background-hover d-flex align-items-center px-2 rounded rounded-2 mb-2 cursor-pointer">
+              <li  className="nav-link align-middle px-0 text-dark">
                 <i className="fs-5 bi-camera-reels"></i> <span className="ms-3 d-none d-sm-inline">Reels</span>
-              </Link>
-            </li>
-            <li className="nav-item w-100 transparent-background-hover d-flex align-items-center px-2 rounded rounded-2 mb-2 cursor-pointer">
-              <Link href="/messages" className="nav-link align-middle px-0 text-dark">
+              </li>
+            </Link>
+            <Link href="/messages" className="nav-item text-decoration-none w-100 transparent-background-hover d-flex align-items-center px-2 rounded rounded-2 mb-2 cursor-pointer">
+              <li  className="nav-link align-middle px-0 text-dark">
                 <i className="fs-5 bi-chat-right"></i> <span className="ms-3 d-none d-sm-inline">Messages</span>
-              </Link>
-            </li>
-            <li className="nav-item w-100 transparent-background-hover d-flex align-items-center px-2 rounded rounded-2 mb-2 cursor-pointer" data-bs-toggle="offcanvas" data-bs-target="#searchOffcanvas" aria-controls="searchOffcanvas">
-              <Link href="#" className="nav-link align-middle px-0 text-dark">
+              </li>
+            </Link>
+            <Link href="#" className="nav-item text-decoration-none w-100 transparent-background-hover d-flex align-items-center px-2 rounded rounded-2 mb-2 cursor-pointer" data-bs-toggle="offcanvas" data-bs-target="#searchOffcanvas" aria-controls="searchOffcanvas">
+              <li className="nav-link align-middle px-0 text-dark">
                 <i className="fs-5 bi-search"></i> <span className="ms-3 d-none d-sm-inline">Search</span>
-              </Link>
-            </li>
-            <li className="nav-item w-100 transparent-background-hover d-flex align-items-center px-2 rounded rounded-2 mb-2 cursor-pointer">
-              <Link href="/explore" className="nav-link align-middle px-0 text-dark">
+              </li>
+            </Link>
+            <Link href="/explore" className="nav-item text-decoration-none w-100 transparent-background-hover d-flex align-items-center px-2 rounded rounded-2 mb-2 cursor-pointer">
+              <li  className="nav-link align-middle px-0 text-dark">
                 <i className="fs-5 bi-compass"></i> <span className="ms-3 d-none d-sm-inline">Explore</span>
-              </Link>
-            </li>
+              </li>
+            </Link>
 
-            <li className="nav-item w-100 transparent-background-hover d-flex align-items-center px-2 rounded rounded-2 mb-2 cursor-pointer">
-              <Link href="/notifications" className="nav-link align-middle px-0 text-dark">
+            <Link href="/notification" className="nav-item text-decoration-none w-100 transparent-background-hover d-flex align-items-center px-2 rounded rounded-2 mb-2 cursor-pointer">
+              <li  className="nav-link align-middle px-0 text-dark">
                 <i className="fs-5 bi-heart"></i> <span className="ms-3 d-none d-sm-inline">Notifications</span>
-              </Link>
-            </li>
-            <li className="nav-item w-100 transparent-background-hover d-flex align-items-center px-2 rounded rounded-2 mb-2 cursor-pointer ">
-              <Link href="#" className="nav-link align-middle px-0 text-dark">
+              </li>
+            </Link>
+            <Link href="#" className="nav-item text-decoration-none w-100 transparent-background-hover d-flex align-items-center px-2 rounded rounded-2 mb-2 cursor-pointer ">
+              <li className="nav-link align-middle px-0 text-dark">
                 <i className="fs-5 bi-plus-square"></i> <span className="ms-3 d-none d-sm-inline">Create</span>
-              </Link>
-            </li>
-            <li className="nav-item w-100 transparent-background-hover d-flex align-items-center px-2 rounded rounded-2 mb-2 cursor-pointer ">
-              <Link href="/profile" className="nav-link align-middle px-0 text-dark">
+              </li>
+            </Link>
+            <Link href="/profile" className="nav-item text-decoration-none w-100 transparent-background-hover d-flex align-items-center px-2 rounded rounded-2 mb-2 cursor-pointer ">
+              <li  className="nav-link align-middle px-0 text-dark">
                 <img src={picture.length > 0 ? picture : "https://cdn-icons-png.flaticon.com/512/6522/6522516.png"} style={{ marginRight: "-12px", width: "30px", height: "30px" }} /> <span className="ms-3 d-none d-sm-inline">Profile</span>
-              </Link>
-            </li>
+              </li>
+            </Link>
           </ul>
 
           <div className="dropdown p-2 mt-4 transparent-background-hover rounded rounded-2">

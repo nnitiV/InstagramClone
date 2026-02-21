@@ -21,3 +21,25 @@
   display: inline-block; /* Inline elements cannot be transformed */
   transform: scaleX(-1);
 }
+
+.scrollbox {
+  overflow: auto;
+  visibility: hidden;
+}
+
+.scrollbox::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+.scrollbox::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+
+.scrollbox::-webkit-scrollbar {
+  width: 10px;
+}
+
+.scrollbox-content,
+.scrollbox:hover{
+  visibility: visible;
+}
