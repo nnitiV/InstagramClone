@@ -47,7 +47,6 @@ export default function SingleReel({ reel }: SingleReelProps) {
   return (
     <div className="w-50 d-flex my-3" style={{ scrollSnapAlign: "start" }} ref={containerRef}>
       <div className="d-flex justify-content-center align-items-center rounded rounded-3" onClick={() => setIsPlaying(prev => !prev)} style={{ background: "rgba(0,0,0,1)", width: "27vw", height: "95vh" }}>
-        {/* <video src="blob:https://www.instagram.com/464b7444-c101-4960-be77-6104310c49ae"></video> */}
         <ReactPlayer
           key={resetKey}
           src={reel.videoUrl}
