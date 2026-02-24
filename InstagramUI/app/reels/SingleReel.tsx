@@ -307,6 +307,7 @@ export default function SingleReel({ reel }: SingleReelProps) {
             </div>
           </div>
         </div>
+
       )}
     </>
   )

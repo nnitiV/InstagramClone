@@ -1,24 +1,32 @@
 .no-scrollbar::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
 .no-scrollbar {
-    -ms-overflow-style: none;
-    scrollbar-width: none;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
+
 .cursor-pointer {
-    cursor: pointer !important;
+  cursor: pointer !important;
 }
 
 .transparent-input::placeholder {
-    color: white !important;
-} 
+  color: white !important;
+}
 
 .transparent-background-hover:hover {
-    background: rgba(175, 175, 175, 0.25);
+  background: rgba(175, 175, 175, 0.25);
 }
+
+.transparent-background-hover-2:hover {
+  cursor: pointer;
+  filter: brightness(0.7);
+}
+
 .flip-horizontal {
-  display: inline-block; /* Inline elements cannot be transformed */
+  display: inline-block;
+  /* Inline elements cannot be transformed */
   transform: scaleX(-1);
 }
 
@@ -28,11 +36,11 @@
 }
 
 .scrollbox::-webkit-scrollbar-thumb {
-  background: #888; 
+  background: #888;
 }
 
 .scrollbox::-webkit-scrollbar-thumb:hover {
-  background: #555; 
+  background: #555;
 }
 
 .scrollbox::-webkit-scrollbar {
@@ -40,7 +48,7 @@
 }
 
 .scrollbox-content,
-.scrollbox:hover{
+.scrollbox:hover {
   visibility: visible;
 }
 
