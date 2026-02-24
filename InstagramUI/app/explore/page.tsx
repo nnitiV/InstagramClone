@@ -1,10 +1,10 @@
 "use client";
-import CommentModal from "@/feature/feed/components/feed-comment/CommentModal";
 import { Post } from "@/types/feed";
 import { useState } from "react";
 import ReactPlayer from "react-player";
+import ExploreModal from "./ExploreModal";
 
-export const mockExplorePosts: Post[] = [
+const mockExplorePosts: Post[] = [
     {
         id: 3001,
         authorName: "GlassAndSteel",
@@ -12,7 +12,7 @@ export const mockExplorePosts: Post[] = [
         caption: "Staring up into the abyss of modern corporate life. 🏢",
         title: "Corporate Skyscraper",
         userId: 101,
-        // Image: Tall building
+        // Single Image
         contentUrls: ["https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=500"],
         likeCount: 1420,
         commentCount: 89,
@@ -23,11 +23,14 @@ export const mockExplorePosts: Post[] = [
         id: 3002,
         authorName: "OceanExplorer",
         profilePictureUrl: "https://randomuser.me/api/portraits/women/44.jpg",
-        caption: "Nothing beats the sound of the waves. Take a minute to relax. 🌊",
+        caption: "Photos don't do it justice, so I added a video too. Swipe to see the waves! 🌊",
         title: "Ocean Waves",
         userId: 102,
-        // Video: Oceans
-        contentUrls: ["https://vjs.zencdn.net/v/oceans.mp4"],
+        // MIX: Image -> Video
+        contentUrls: [
+            "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&q=80&w=500",
+            "https://vjs.zencdn.net/v/oceans.mp4"
+        ],
         likeCount: 3200,
         commentCount: 156,
         isLiked: true,
@@ -35,13 +38,16 @@ export const mockExplorePosts: Post[] = [
     },
     {
         id: 3003,
-        authorName: "ConcreteJungle",
+        authorName: "AbstractArch",
         profilePictureUrl: "https://randomuser.me/api/portraits/men/85.jpg",
-        caption: "Forest architecture meeting urban spread.",
-        title: "Urban Forest",
+        caption: "Angles that break the mind. Watch the quick tour, then check the stills.",
+        title: "Abstract Geometry Tour",
         userId: 103,
-        // Image: Forest/Urban
-        contentUrls: ["https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&q=80&w=500"],
+        // MIX: Video -> Image
+        contentUrls: [
+            "https://vjs.zencdn.net/v/oceans.mp4",
+            "https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&q=80&w=500"
+        ],
         likeCount: 840,
         commentCount: 22,
         isLiked: false,
@@ -54,7 +60,7 @@ export const mockExplorePosts: Post[] = [
         caption: "The sheer power of the ocean in one clip.",
         title: "Ocean Currents",
         userId: 104,
-        // Video: Oceans
+        // Single Video
         contentUrls: ["https://vjs.zencdn.net/v/oceans.mp4"],
         likeCount: 4500,
         commentCount: 310,
@@ -63,13 +69,17 @@ export const mockExplorePosts: Post[] = [
     },
     {
         id: 3005,
-        authorName: "AbstractArch",
+        authorName: "GeoMinimalist",
         profilePictureUrl: "https://randomuser.me/api/portraits/men/22.jpg",
-        caption: "Angles that break the mind. 📐",
-        title: "Abstract Geometry",
+        caption: "Multiple angles of this beauty. 📐",
+        title: "Abstract Details",
         userId: 105,
-        // Image: Abstract building
-        contentUrls: ["https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&q=80&w=500"],
+        // MIX: Image -> Image -> Video
+        contentUrls: [
+            "https://images.unsplash.com/photo-1470075801209-17f9ec0cada6?auto=format&fit=crop&q=80&w=500",
+            "https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&q=80&w=500",
+            "https://vjs.zencdn.net/v/oceans.mp4"
+        ],
         likeCount: 1205,
         commentCount: 41,
         isLiked: true,
@@ -82,7 +92,7 @@ export const mockExplorePosts: Post[] = [
         caption: "Surfing conditions look perfect today.",
         title: "Surf Check",
         userId: 106,
-        // Video: Oceans
+        // Single Video
         contentUrls: ["https://vjs.zencdn.net/v/oceans.mp4"],
         likeCount: 890,
         commentCount: 14,
@@ -91,87 +101,35 @@ export const mockExplorePosts: Post[] = [
     },
     {
         id: 3007,
-        authorName: "GeoMinimalist",
-        profilePictureUrl: "https://randomuser.me/api/portraits/men/41.jpg",
-        caption: "Another view of the abstract center. Can't get enough of this building.",
-        title: "Abstract Details",
-        userId: 107,
-        // Image: Abstract building
-        contentUrls: ["https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&q=80&w=500"],
-        likeCount: 760,
-        commentCount: 9,
-        isLiked: false,
-        createdAt: new Date(2026, 1, 18).toISOString()
-    },
-    {
-        id: 3008,
         authorName: "SkylineChaser",
         profilePictureUrl: "https://randomuser.me/api/portraits/women/90.jpg",
         caption: "Reflections of the sky.",
         title: "Mirrored Skyscraper",
         userId: 108,
-        // Image: Tall building
-        contentUrls: ["https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&q=80&w=500"],
+        // Single Image
+        contentUrls: ["https://images.unsplash.com/photo-1497366216548-37526070297c?auto=format&fit=crop&q=80&w=500"],
         likeCount: 2100,
         commentCount: 66,
         isLiked: true,
         createdAt: new Date(2026, 1, 17).toISOString()
     },
     {
-        id: 3009,
-        authorName: "SeaLife",
-        profilePictureUrl: "https://randomuser.me/api/portraits/men/1.jpg",
-        caption: "A quick reel of the coastline from this morning.",
-        title: "Morning Coast",
-        userId: 109,
-        // Video: Oceans
-        contentUrls: ["https://vjs.zencdn.net/v/oceans.mp4"],
-        likeCount: 345,
-        commentCount: 5,
-        isLiked: false,
-        createdAt: new Date(2026, 1, 16).toISOString()
-    },
-    {
-        id: 3010,
+        id: 3008,
         authorName: "UrbanPlanner",
         profilePictureUrl: "https://randomuser.me/api/portraits/women/2.jpg",
         caption: "Finding a touch of green in a sea of gray.",
         title: "Hidden Park",
         userId: 110,
-        // Image: Forest/Urban
-        contentUrls: ["https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&q=80&w=500"],
+        // MIX: Video -> Image -> Video
+        contentUrls: [
+            "https://vjs.zencdn.net/v/oceans.mp4",
+            "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&q=80&w=500",
+            "https://vjs.zencdn.net/v/oceans.mp4"
+        ],
         likeCount: 980,
         commentCount: 33,
         isLiked: false,
         createdAt: new Date(2026, 1, 15).toISOString()
-    },
-    {
-        id: 3011,
-        authorName: "MarineBio",
-        profilePictureUrl: "https://randomuser.me/api/portraits/men/55.jpg",
-        caption: "Tracking the tide changes.",
-        title: "Tide Watch",
-        userId: 111,
-        // Video: Oceans
-        contentUrls: ["https://vjs.zencdn.net/v/oceans.mp4"],
-        likeCount: 4200,
-        commentCount: 112,
-        isLiked: true,
-        createdAt: new Date(2026, 1, 14).toISOString()
-    },
-    {
-        id: 3012,
-        authorName: "FutureCity",
-        profilePictureUrl: "https://randomuser.me/api/portraits/women/55.jpg",
-        caption: "Feels like a spaceship landed in the city.",
-        title: "Spaceship Architecture",
-        userId: 112,
-        // Image: Abstract building
-        contentUrls: ["https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&q=80&w=500"],
-        likeCount: 1890,
-        commentCount: 54,
-        isLiked: false,
-        createdAt: new Date(2026, 1, 13).toISOString()
     }
 ];
 
@@ -209,7 +167,7 @@ export default function SearchPage() {
 
             {
                 selectedPost && (
-                    <CommentModal
+                    <ExploreModal
                         post={selectedPost}
                         onClose={() => setSelectedPost(null)}
                     />
