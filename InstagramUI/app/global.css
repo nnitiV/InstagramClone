@@ -55,3 +55,12 @@
 .scrollbar-invisible::-webkit-scrollbar {
   visibility: hidden;
 }
+
+.btn-custom {
+  background-color: rgb(240, 242, 245);
+  border: rgba(43, 48, 54, .8);
+}
+
+.btn-custom:hover {
+  background-color: rgb(216, 217, 220);
+}
