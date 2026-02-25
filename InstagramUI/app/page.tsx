@@ -437,7 +437,7 @@ export default async function Home() {
     <>
       <div className="container-fluid mt-3">
         <div className="row justify-content-center">
-          <div className="col-12 col-md-9 col-lg-6">
+          <div className="col-12 col-md-10 col-lg-8">
             {MOCK_STORIES.length > 0 ? (
               <Stories stories={MOCK_STORIES} userPhoto={token?.picture} />
             ) : (
