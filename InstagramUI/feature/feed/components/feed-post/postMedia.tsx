@@ -12,10 +12,12 @@ const isVideo = (url: string): boolean => {
 export default function PostMedia({ contentUrls }: PostMediaProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
+  const [isPlaying, setIsPlaying] = useState(true);
   const carouselRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
-  const toggleMute = useCallback(() => {
+  const toggleMute = useCallback((e?: React.MouseEvent) => {
+    if (e) e.stopPropagation(); // Evita que o clique no mute pause o vídeo
     const newMutedState = !isMuted;
     setIsMuted(newMutedState);
     videoRefs.current.forEach(video => {
@@ -23,19 +25,24 @@ export default function PostMedia({ contentUrls }: PostMediaProps) {
     });
   }, [isMuted]);
 
-  const handleVideoControl = useCallback((index: number) => {
-    videoRefs.current.forEach((video, i) => {
-      if (video) {
-        if (i === index) {
-          video.currentTime = 0;
-          video.play().catch(e => {});
-        } else {
-          video.pause();
-        }
-      }
-    });
+  const togglePlay = useCallback((e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
+    setIsPlaying(prev => !prev);
   }, []);
 
+  // Controla o Play/Pause do vídeo ativo
+  useEffect(() => {
+    const currentVideo = videoRefs.current[contentUrls?.length === 1 ? 0 : activeIndex];
+    if (!currentVideo) return;
+
+    if (isPlaying) {
+      currentVideo.play().catch(() => {});
+    } else {
+      currentVideo.pause();
+    }
+  }, [isPlaying, activeIndex, contentUrls?.length]);
+
+  // Controla o evento de slide do carrossel
   useEffect(() => {
     const handleSlide = (e: Event) => {
       const carousel = (window as any).bootstrap?.Carousel?.getInstance(carouselRef.current!);
@@ -43,7 +50,15 @@ export default function PostMedia({ contentUrls }: PostMediaProps) {
         const newIndex = Array.from(carouselRef.current!.querySelectorAll('.carousel-item')).indexOf(carousel._activeElement);
         if (newIndex !== -1) {
           setActiveIndex(newIndex);
-          handleVideoControl(newIndex);
+          setIsPlaying(true); // Força o autoplay no novo slide
+          
+          // Pausa todos os outros vídeos e reseta o tempo
+          videoRefs.current.forEach((video, i) => {
+            if (video && i !== newIndex) {
+              video.pause();
+              video.currentTime = 0;
+            }
+          });
         }
       }
     };
@@ -51,11 +66,11 @@ export default function PostMedia({ contentUrls }: PostMediaProps) {
     const carousel = carouselRef.current;
     if (carousel) {
       carousel.addEventListener('slid.bs.carousel', handleSlide);
-      handleVideoControl(0);
       return () => carousel.removeEventListener('slid.bs.carousel', handleSlide);
     }
-  }, [handleVideoControl]);
+  }, []);
 
+  // Garante que o estado de mute persista
   useEffect(() => {
     videoRefs.current.forEach(video => {
       if (video) video.muted = isMuted;
@@ -82,6 +97,17 @@ export default function PostMedia({ contentUrls }: PostMediaProps) {
     </span>
   );
 
+  const PlayOverlay = () => {
+    if (isPlaying) return null;
+    return (
+      <div className="position-absolute top-50 start-50 translate-middle text-white shadow" style={{ opacity: 0.8, pointerEvents: 'none', zIndex: 10 }}>
+        <svg width="64" height="64" fill="currentColor" viewBox="0 0 16 16">
+          <path d="M10.804 8 5 4.633v6.734L10.804 8zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C4.713 12.69 4 12.345 4 11.692V4.308c0-.653.713-.998 1.233-.696l6.363 3.692z"/>
+        </svg>
+      </div>
+    );
+  };
+
   if (contentUrls.length === 1) {
     const url = contentUrls[0];
     return (
@@ -89,6 +115,7 @@ export default function PostMedia({ contentUrls }: PostMediaProps) {
         {isVideo(url) ? (
           <>
             <video
+              ref={el => { if (el) videoRefs.current[0] = el; }}
               className="w-100 h-100 object-fit-cover"
               src={url}
               autoPlay
@@ -96,9 +123,12 @@ export default function PostMedia({ contentUrls }: PostMediaProps) {
               loop
               playsInline
               preload="auto"
+              onClick={togglePlay}
+              style={{ cursor: 'pointer' }}
             />
+            <PlayOverlay />
             <button
-              className="position-absolute btn p-0 bg-black bg-opacity-80 text-white rounded-circle border-0 shadow-lg"
+              className="position-absolute btn p-0 bg-black bg-opacity-75 text-white rounded-circle border-0 shadow-lg"
               style={{ width: '48px', height: '48px', right: '20px', bottom: '20px', zIndex: 9999 }}
               onClick={toggleMute}
               title={isMuted ? "Ativar som" : "Silenciar"}
@@ -114,10 +144,9 @@ export default function PostMedia({ contentUrls }: PostMediaProps) {
   }
 
   return (
-    <div id="postMediaCarousel" className="carousel slide h-100 w-100" data-bs-interval="false" data-bs-wrap="true" ref={carouselRef}>
-      {/* Botão som - CANTO INFERIOR DIREITO */}
+    <div id="postMediaCarousel" className="carousel slide h-100 w-100 position-relative" data-bs-interval="false" data-bs-wrap="true" ref={carouselRef}>
       <button
-        className="position-absolute btn p-0 bg-black bg-opacity-80 text-white rounded-circle border-0 shadow-lg"
+        className="position-absolute btn p-0 bg-black bg-opacity-75 text-white rounded-circle border-0 shadow-lg"
         style={{ width: '48px', height: '48px', right: '20px', bottom: '20px', zIndex: 9999 }}
         onClick={toggleMute}
         title={isMuted ? "Ativar som" : "Silenciar"}
@@ -142,15 +171,20 @@ export default function PostMedia({ contentUrls }: PostMediaProps) {
         {contentUrls.map((url, index) => (
           <div key={index} className={`carousel-item h-100 ${index === 0 ? 'active' : ''}`}>
             {isVideo(url) ? (
-              <video
-                ref={el => { if (el) videoRefs.current[index] = el; }}
-                src={url}
-                className="w-100 h-100 object-fit-cover"
-                muted={isMuted}
-                playsInline
-                preload={index === 0 ? "auto" : "metadata"}
-                loop
-              />
+              <div className="w-100 h-100 position-relative">
+                <video
+                  ref={el => { if (el) videoRefs.current[index] = el; }}
+                  src={url}
+                  className="w-100 h-100 object-fit-cover"
+                  muted={isMuted}
+                  playsInline
+                  preload={index === 0 ? "auto" : "metadata"}
+                  loop
+                  onClick={togglePlay}
+                  style={{ cursor: 'pointer' }}
+                />
+                <PlayOverlay />
+              </div>
             ) : (
               <img
                 src={url}

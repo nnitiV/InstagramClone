@@ -14,7 +14,6 @@ type CommentModalProps = {
 
 export default function ExploreModal({ post, onClose }: CommentModalProps) {
     if (!post) return null;
-
     const [comments, setComments] = useState<PostComment[]>([]);
     const [tree, setTree] = useState<PostCommentTree[]>([]);
     const [replyTarget, setReplyTarget] = useState<number | null>(null);

@@ -57,8 +57,11 @@
 }
 
 .btn-custom {
-  background-color: rgb(240, 242, 245);
+  background-color: rgb(221, 222, 225);
   border: rgba(43, 48, 54, .8);
+  border: 2px;
+  border-radius: 8px;
+  padding: 8px 0;
 }
 
 .btn-custom:hover {

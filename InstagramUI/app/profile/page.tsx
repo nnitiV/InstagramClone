@@ -95,8 +95,8 @@ export default function SearchPage() {
                     </div>
                 </div>
                 <div className="user-buttons w-75 mx-auto">
-                    <button type="button" className="btn btn-primary w-25 me-3">Follow</button>
-                    <button type="button" className="btn btn-light border border-2 btn-custom w-25">Message</button>
+                    <button type="button" className="border border-2 btn-custom w-25 me-3">Edit profile</button>
+                    <button type="button" className="border border-2 btn-custom w-25 me-3">View archive</button>
                 </div>
                 <div className="profile-highlights mt-5 w-75 mx-auto d-flex">
                     {userProfile.highlights.map((highlight, _) => (
