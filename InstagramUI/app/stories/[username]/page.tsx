@@ -1,5 +1,5 @@
 import { use } from "react";
-import Story from "../../../feature/story/features/Story"
+import Story from "../../../feature/story/components/Story"
 import Link from "next/link";
 
 type StoriesPageProps = {

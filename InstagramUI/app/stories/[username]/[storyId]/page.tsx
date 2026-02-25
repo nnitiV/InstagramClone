@@ -2,8 +2,8 @@
 import { use, useEffect, useMemo } from "react";
 import Link from "next/link";
 import { useStoryStore } from "@/feature/story/store/useStoryStore";
-import ActiveStory from "@/feature/story/features/ActiveStory";
-import StoryPreview from "@/feature/story/features/StoryPreview";
+import ActiveStory from "@/feature/story/components/ActiveStory";
+import StoryPreview from "@/feature/story/components/StoryPreview";
 
 type StoriesPageProps = {
     params: Promise<{ username: string, storyId: number }>;

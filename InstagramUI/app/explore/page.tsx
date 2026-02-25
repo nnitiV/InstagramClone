@@ -2,7 +2,7 @@
 import { Post } from "@/types/feed";
 import { useState } from "react";
 import ReactPlayer from "react-player";
-import ExploreModal from "./ExploreModal";
+import ExploreModal from "../../feature/explore/components/ExploreModal";
 
 const mockExplorePosts: Post[] = [
     {

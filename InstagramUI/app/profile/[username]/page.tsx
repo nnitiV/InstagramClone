@@ -1,5 +1,5 @@
 "use client";
-import ExploreModal from "@/app/explore/ExploreModal";
+import ExploreModal from "@/feature/explore/components/ExploreModal";
 import { Post } from "@/types/feed";
 import { use, useState } from "react";
 

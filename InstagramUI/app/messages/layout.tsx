@@ -1,6 +1,6 @@
 "use client"
 import Link from "next/link";
-import SwitchAccountModal from "../../feature/message/content/SwitchAccountModal";
+import SwitchAccountModal from "../../feature/message/components/SwitchAccountModal";
 import { useState } from "react";
 
 export default function SearchPage({children}: {children: React.ReactNode}) {

@@ -1,7 +1,7 @@
 "use client";
 import { Post } from "@/types/feed";
 import { useState } from "react";
-import ExploreModal from "../explore/ExploreModal";
+import ExploreModal from "../../feature/explore/components/ExploreModal";
 
 export default function SearchPage() {
     const [selectedPost, setSelectedPost] = useState<Post | null>(null);

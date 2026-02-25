@@ -1,7 +1,7 @@
 import "./global.css";
-import Sidebar from "@/components/Sidebar";
+import Sidebar from "@/components/layout/Sidebar";
 import { getUserInfo } from "@/feature/auth/services/auth-service";
-import SidebarWrapper from "./SidebarWrapper";
+import SidebarWrapper from "../components/layout/SidebarWrapper";
 
 export default async function RootLayout({
   children,

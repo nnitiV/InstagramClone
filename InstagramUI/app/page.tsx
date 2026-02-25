@@ -1,10 +1,10 @@
 import { getUserInfo } from "@/feature/auth/services/auth-service";
-import EmptyPost from "@/feature/feed/components/feed-post/EmptyPost";
-import EmptyStory from "@/feature/feed/components/feed-story/EmptyStory";
-import Posts from "@/feature/feed/components/feed-post/posts";
-import { getPosts, getStories } from "@/feature/feed/services/feed-service";
+import EmptyPost from "@/feature/feed/components/post/EmptyPost";
+import EmptyStory from "@/feature/feed/components/story/EmptyStory";
+import Posts from "@/feature/feed/components/post/Posts";
+import { getPosts, getStories } from "@/feature/feed/services/feed.service";
 import { Post, Story } from "@/types/feed";
-import Stories from "@/feature/feed/components/feed-story/Stories";
+import Stories from "@/feature/feed/components/story/Stories";
 
 export default async function Home() {
   const [token, stories, posts] = await Promise.all([

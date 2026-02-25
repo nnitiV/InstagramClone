@@ -1,19 +1,20 @@
 "use client";
 
-import CommentsList from "@/feature/feed/components/feed-comment/CommentList";
-import PostActions from "@/feature/feed/components/feed-post/PostActions";
-import PostMedia from "@/feature/feed/components/feed-post/postMedia";
-import { getPostComments } from "@/feature/feed/services/feed-service";
+import PostMedia from "../post/PostMedia";
+import PostActions from "../post/PostActions";
 import { Post, PostComment, PostCommentTree } from "@/types/feed";
 import { useEffect, useState, useCallback } from "react";
+import { getPostComments } from "../../services/feed.service";
+import CommentsList from "./CommentList";
 
 type CommentModalProps = {
     post: Post;
     onClose: () => void;
 };
 
-export default function ExploreModal({ post, onClose }: CommentModalProps) {
+export default function CommentModal({ post, onClose }: CommentModalProps) {
     if (!post) return null;
+
     const [comments, setComments] = useState<PostComment[]>([]);
     const [tree, setTree] = useState<PostCommentTree[]>([]);
     const [replyTarget, setReplyTarget] = useState<number | null>(null);
@@ -95,7 +96,7 @@ export default function ExploreModal({ post, onClose }: CommentModalProps) {
         setComments(prev => [...prev, newComment]);
         setTree(buildCommentTree([...comments, newComment]));
         setNewCommentText('');
-    }, [post.id, post.profilePictureUrl, comments, buildCommentTree]);
+    }, [post.id, post.profilePictureUrl, comments.length, buildCommentTree]);
 
     useEffect(() => {
         const load = async () => {
