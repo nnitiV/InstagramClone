@@ -1,0 +1,107 @@
+export const STORIES_MOCK = [
+    {
+        id: 1,
+        username: "ArchLover",
+        mediaurl: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800",
+        profilePictureUrl: "https://randomuser.me/api/portraits/men/32.jpg",
+        createdAt: new Date(2026, 1, 18, 20, 30),
+    },
+    {
+        id: 2,
+        username: "ArchLover",
+        mediaurl: "https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=800",
+        profilePictureUrl: "https://randomuser.me/api/portraits/men/32.jpg",
+        createdAt: new Date(2026, 1, 18, 20, 30),
+    },
+    {
+        id: 3,
+        username: "Tech Guru",
+        mediaurl: "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=800",
+        profilePictureUrl: "https://randomuser.me/api/portraits/men/85.jpg",
+        createdAt: new Date(2026, 1, 18, 20, 30),
+    },
+    {
+        id: 4,
+        username: "UrbanPlanner",
+        mediaurl: "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800",
+        profilePictureUrl: "https://randomuser.me/api/portraits/women/68.jpg",
+        createdAt: new Date(2026, 1, 18, 20, 30),
+    },
+    {
+        id: 5,
+        username: "SkylineChaser",
+        mediaurl: "https://images.unsplash.com/photo-1506744038136-46273834b3fb?w=800",
+        profilePictureUrl: "https://randomuser.me/api/portraits/men/22.jpg",
+        createdAt: new Date(2026, 1, 18, 20, 30),
+    },
+    {
+        id: 6,
+        username: "PixelPioneer",
+        mediaurl: "https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=800",
+        profilePictureUrl: "https://randomuser.me/api/portraits/women/12.jpg",
+        createdAt: new Date(2026, 1, 18, 20, 30),
+    },
+    {
+        id: 7,
+        username: "BrutalismGuy",
+        mediaurl: "https://images.unsplash.com/photo-1518005020481-4b8817a212e9?w=800",
+        profilePictureUrl: "https://randomuser.me/api/portraits/men/41.jpg",
+        createdAt: new Date(2026, 1, 18, 20, 30),
+    },
+    {
+        id: 8,
+        username: "NeonNights",
+        mediaurl: "https://images.unsplash.com/photo-1514565131-fce0801e5785?w=800",
+        profilePictureUrl: "https://randomuser.me/api/portraits/women/90.jpg",
+        createdAt: new Date(2026, 1, 18, 20, 30),
+    },
+    {
+        id: 9,
+        username: "ConcreteJungle",
+        mediaurl: "https://images.unsplash.com/photo-1514924013411-cbf25faa35bb?w=800",
+        profilePictureUrl: "https://randomuser.me/api/portraits/men/1.jpg",
+        createdAt: new Date(2026, 1, 18, 20, 30),
+    },
+    {
+        id: 10,
+        username: "MinimalVibes",
+        mediaurl: "https://images.unsplash.com/photo-1494438639946-1ebd1d20bf85?w=800",
+        profilePictureUrl: "https://randomuser.me/api/portraits/women/2.jpg",
+        createdAt: new Date(2026, 1, 18, 20, 30),
+    },
+    {
+        id: 11,
+        username: "GlassAndSteel",
+        mediaurl: "https://images.unsplash.com/photo-1451976426598-a7593bd6d0b2?w=800",
+        profilePictureUrl: "https://randomuser.me/api/portraits/men/55.jpg",
+        createdAt: new Date(2026, 1, 18, 20, 30),
+    },
+    {
+        id: 12,
+        username: "Metropolis",
+        mediaurl: "https://images.unsplash.com/photo-1444723121867-7a241cacace9?w=800",
+        profilePictureUrl: "https://randomuser.me/api/portraits/women/55.jpg",
+        createdAt: new Date(2026, 1, 18, 20, 30),
+    },
+    {
+        id: 13,
+        username: "ThePenthouse",
+        mediaurl: "https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=800",
+        profilePictureUrl: "https://randomuser.me/api/portraits/men/10.jpg",
+        createdAt: new Date(2026, 1, 18, 20, 30),
+    },
+    {
+        id: 14,
+        username: "Modernist",
+        mediaurl: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800",
+        profilePictureUrl: "https://randomuser.me/api/portraits/men/33.jpg",
+        createdAt: new Date(2026, 1, 18, 20, 30)
+    },
+    {
+        id: 15,
+        username: "Modernist",
+        mediaurl: "https://images.unsplash.com/photo-1518780664697-55e3ad937233?w=800",
+        profilePictureUrl: "https://randomuser.me/api/portraits/men/33.jpg",
+        createdAt: new Date(2026, 1, 18, 20, 30)
+    }
+]

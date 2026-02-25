@@ -3,7 +3,7 @@ import { Post } from "@/types/feed";
 import { useState } from "react";
 import ExploreModal from "../../feature/explore/components/ExploreModal";
 import { USER_PROFILE_MOCK } from "@/feature/profile/constants/data";
-import Header from "@/feature/profile/components/header";
+import Header from "@/feature/profile/components/Header";
 import Highlights from "@/feature/profile/components/Highlights";
 import Posts from "@/feature/profile/components/Posts";
 
