@@ -209,91 +209,103 @@ export default function ExploreModal({ post, onClose }: CommentModalProps) {
 
     return (
         <div className="modal show d-block" style={{ backgroundColor: "rgba(0,0,0,0.7)" }} onClick={onClose}>
-            <div
-                className="modal-dialog modal-xl modal-dialog-centered"
-                onClick={(e) => e.stopPropagation()}
-            >
-                <div className="modal-content overflow-hidden" style={{ height: "90vh", borderRadius: "4px" }}>
-                    <div className="row g-0 h-100">
-                        <div className="col-md-7 bg-black d-flex align-items-center justify-content-center h-100">
-                            <div className="w-100">
-                                <PostMedia contentUrls={post.contentUrls} />
-                            </div>
+    <div
+        className="modal-dialog modal-xl modal-dialog-centered modal-fullscreen-md-down"
+        onClick={(e) => e.stopPropagation()}
+    >
+        {/* Travei a altura de volta em 90vh (no PC) e 100vh no celular pela classe fullscreen */}
+        <div className="modal-content overflow-hidden border-0" style={{ height: "90vh", borderRadius: "4px" }}>
+            <div className="row g-0 h-100 flex-column flex-md-row">
+                
+                {/* LADO ESQUERDO (MÍDIA) */}
+                <div className="col-12 col-md-7 bg-black d-flex align-items-center justify-content-center col-media">
+                    <div className="w-100 h-100 d-flex align-items-center justify-content-center overflow-hidden">
+                        <PostMedia contentUrls={post.contentUrls} />
+                    </div>
+                </div>
+
+                {/* LADO DIREITO (COMENTÁRIOS E AÇÕES) */}
+                <div className="col-12 col-md-5 d-flex flex-column bg-white col-comments">
+                    
+                    {/* Header (Fixo) */}
+                    <div className="p-3 border-bottom d-flex align-items-center justify-content-between flex-shrink-0">
+                        <div className="d-flex align-items-center">
+                            <img
+                                src={post.profilePictureUrl || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                                className="rounded-circle border me-2 object-fit-cover"
+                                style={{ width: "32px", height: "32px" }}
+                            />
+                            <span className="fw-bold small">{post.authorName}</span>
                         </div>
-                        <div className="col-md-5 d-flex flex-column bg-white h-100">
-                            <div className="p-3 border-bottom d-flex align-items-center justify-content-between">
-                                <div className="d-flex align-items-center">
-                                    <img
-                                        src={post.profilePictureUrl || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
-                                        className="rounded-circle border me-2"
-                                        style={{ width: "32px", height: "32px" }}
-                                    />
-                                    <span className="fw-bold small">{post.authorName}</span>
-                                </div>
-                                <button className="btn-close small" onClick={onClose}></button>
-                            </div>
-                            <div className="flex-grow-1 overflow-y-auto p-3 no-scrollbar">
-                                <div className="d-flex mb-3">
-                                    <img src={post.profilePictureUrl} className="rounded-circle me-2" style={{ width: "32px", height: "32px" }} />
-                                    <p className="small mb-0">
-                                        <span className="fw-bold me-2">{post.authorName}</span>
-                                        {post.caption}
-                                    </p>
-                                    <hr />
-                                </div>
-                                <div className="flex-grow-1 overflow-y-auto p-3 no-scrollbar">
-                                    {tree.length > 0 ? (
-                                        <CommentsList
-                                            comments={tree}
-                                            replyTarget={replyTarget}
-                                            replyText={replyText}
-                                            onReplyClick={setReplyTarget}
-                                            onReplyChange={setReplyText}
-                                            onPostReply={() => replyTarget && replyText && addReply(replyTarget, replyText)}
-                                            onCancelReply={() => {
-                                                setReplyTarget(null);
-                                                setReplyText('');
-                                            }}
-                                        />
-                                    ) : (
-                                        <p className="text-center text-muted small py-5">No comments yet.</p>
-                                    )}
-                                </div>
-                            </div>
-                            <div className="border-top p-3">
-                                <PostActions
-                                    postId={post.id}
-                                    initialIsLiked={post.isLiked}
-                                    initialLikeCount={post.likeCount}
-                                    onCommentClick={() => { }}
-                                />
-                                <div className="mt-3 position-relative border-top pt-2">
-                                    <input
-                                        type="text"
-                                        className="form-control border-0 shadow-none small pe-5"
-                                        placeholder="Add a comment..."
-                                        value={newCommentText}
-                                        onChange={(e) => setNewCommentText(e.target.value)}
-                                        onKeyPress={(e) => {
-                                            if (e.key === 'Enter' && newCommentText.trim()) {
-                                                addTopLevelComment(newCommentText);
-                                            }
-                                        }}
-                                    />
-                                    <button
-                                        className="btn text-primary fw-bold btn-sm position-absolute end-0 me-3"
-                                        style={{ top: '50%', transform: 'translateY(-50%)' }}
-                                        disabled={!newCommentText.trim()}
-                                        onClick={() => newCommentText.trim() && addTopLevelComment(newCommentText)}
-                                    >
-                                        Comment
-                                    </button>
-                                </div>
-                            </div>
+                        <button className="btn-close small" onClick={onClose}></button>
+                    </div>
+
+                    {/* Área de Comentários (Scrollável) */}
+                    {/* minHeight: 0 é a trava final do CSS para forçar o scroll interno */}
+                    <div className="flex-grow-1 overflow-auto p-3 no-scrollbar" style={{ minHeight: 0 }}>
+                        <div className="d-flex mb-3">
+                            <img src={post.profilePictureUrl} className="rounded-circle me-2 object-fit-cover" style={{ width: "32px", height: "32px" }} />
+                            <p className="small mb-0">
+                                <span className="fw-bold me-2">{post.authorName}</span>
+                                {post.caption}
+                            </p>
+                        </div>
+                        <hr className="my-2" />
+                        
+                        {tree.length > 0 ? (
+                            <CommentsList
+                                comments={tree}
+                                replyTarget={replyTarget}
+                                replyText={replyText}
+                                onReplyClick={setReplyTarget}
+                                onReplyChange={setReplyText}
+                                onPostReply={() => replyTarget && replyText && addReply(replyTarget, replyText)}
+                                onCancelReply={() => {
+                                    setReplyTarget(null);
+                                    setReplyText('');
+                                }}
+                            />
+                        ) : (
+                            <p className="text-center text-muted small py-5">No comments yet.</p>
+                        )}
+                    </div>
+
+                    {/* Footer / Ações (Fixo e intocável) */}
+                    <div className="border-top p-3 flex-shrink-0">
+                        <PostActions
+                            postId={post.id}
+                            initialIsLiked={post.isLiked}
+                            initialLikeCount={post.likeCount}
+                            onCommentClick={() => { }}
+                        />
+                        <div className="mt-3 position-relative border-top pt-2">
+                            <input
+                                type="text"
+                                className="form-control border-0 shadow-none small pe-5"
+                                placeholder="Add a comment..."
+                                value={newCommentText}
+                                onChange={(e) => setNewCommentText(e.target.value)}
+                                onKeyPress={(e) => {
+                                    if (e.key === 'Enter' && newCommentText.trim()) {
+                                        addTopLevelComment(newCommentText);
+                                    }
+                                }}
+                            />
+                            <button
+                                className="btn text-primary fw-bold btn-sm position-absolute end-0 me-3"
+                                style={{ top: '50%', transform: 'translateY(-50%)' }}
+                                disabled={!newCommentText.trim()}
+                                onClick={() => newCommentText.trim() && addTopLevelComment(newCommentText)}
+                            >
+                                Post
+                            </button>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
+    </div>
+</div>
     );
 }

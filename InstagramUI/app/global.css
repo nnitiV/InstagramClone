@@ -83,3 +83,11 @@
                 linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%) border-box;
     border: 3px solid transparent;
 }
+/* Alturas estritas para o Celular (impede que o rodapé suma) */
+.col-media { height: 40%; }
+.col-comments { height: 60%; }
+
+/* Alturas estritas para o Desktop (ambos ocupam a tela toda lado a lado) */
+@media (min-width: 768px) {
+    .col-media, .col-comments { height: 100%; }
+}

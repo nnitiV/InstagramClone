@@ -8,12 +8,18 @@ type ExploreGridItemsProps = {
 
 export default function ExploreGridItems({ setPostForModal }: ExploreGridItemsProps) {
     return (
-        <div className="mx-auto w-75 column-gap-1 p-3" style={{
-            columns: "3",
-        }}>
-            {MOCK_EXPLORE_POSTS.map((post, _) => 
-                <ExploreGridItem key={post.id} post={post} setPostForModal={setPostForModal} />
-            )}
+        <div className="container-fluid p-1 p-md-3">
+            <div className="row justify-content-center">
+                <div className="col-12 col-md-9 col-lg-8">
+                    <div className="row g-1">
+                        {MOCK_EXPLORE_POSTS.map((post) => (
+                            <div key={post.id} className="col-4">
+                                <ExploreGridItem post={post} setPostForModal={setPostForModal} />
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }
