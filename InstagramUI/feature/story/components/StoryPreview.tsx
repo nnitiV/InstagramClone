@@ -23,8 +23,8 @@ export default function StoryPreview({ story, storyPosition }: StoryPreviewProps
 
   const getOffset = () => {
 
-    const farOffset = width * 0.2;
-    const nearOffset = width * 0.05;
+    const farOffset = width * 0.05;
+    const nearOffset = width * 0.2;
     switch (storyPosition) {
       case 1:
         return { right: nearOffset };
