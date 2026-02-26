@@ -29,7 +29,7 @@ export default function ActiveStory({ activeStory, activeStoryPosition, amountOf
           <div className="d-flex flex-column justify-content-between">
             <div className="d-flex gap-1 px-2 pt-3 mb-2">
               {[...Array(amountOfActiveStory)].map((_, index) => (
-                <div className="rounded" style={{ background: `${index <= activeStoryPosition ? "rgba(255,255,255,1)" : "rgba(255,255,255,0.5)"}`, height: "2px", flex: 1 }}></div>
+                <div key={index} className="rounded" style={{ background: `${index <= activeStoryPosition ? "rgba(255,255,255,1)" : "rgba(255,255,255,0.5)"}`, height: "2px", flex: 1 }}></div>
               ))}
             </div>
             <div className="d-flex justify-content-between align-items-center px-2">

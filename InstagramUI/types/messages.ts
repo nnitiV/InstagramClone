@@ -6,4 +6,6 @@ export type MessageType = {
     timestamp: string;
     isUnread: boolean;
     isOnline: boolean;
+    senderId: number | string;
+    text: string;
 }

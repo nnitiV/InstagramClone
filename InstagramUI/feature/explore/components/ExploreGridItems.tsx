@@ -12,7 +12,7 @@ export default function ExploreGridItems({ setPostForModal }: ExploreGridItemsPr
             columns: "3",
         }}>
             {MOCK_EXPLORE_POSTS.map((post, _) => 
-                <ExploreGridItem post={post} setPostForModal={setPostForModal} />
+                <ExploreGridItem key={post.id} post={post} setPostForModal={setPostForModal} />
             )}
         </div>
     )

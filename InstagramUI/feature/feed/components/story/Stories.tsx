@@ -23,7 +23,7 @@ export default function Stories({ stories, userPhoto }: StoriesProps) {
     return (
         <div className="position-relative w-100 border-bottom">
             <button
-                className="btn btn-light rounded-circle shadow-sm position-absolute start-0 top-50 translate-middle-y ms-2 z-1 d-none d-md-flex align-items-center justify-content-center"
+                className="btn btn-light rounded-circle shadow-sm position-absolute start-0 top-50 translate-middle-y ms-2 z-1 d-flex align-items-center justify-content-center"
                 style={{ width: "30px", height: "30px", border: "1px solid #dbdbdb" }}
                 onClick={() => scroll("left")}
             >
@@ -54,11 +54,11 @@ export default function Stories({ stories, userPhoto }: StoriesProps) {
                     </Link>
 
                 {stories.map((story, index) => (
-                    <StoryItem story={story} />
+                    <StoryItem key={story.id} story={story} />
                 ))}
             </div>
             <button
-                className="btn btn-light rounded-circle shadow-sm position-absolute end-0 top-50 translate-middle-y me-2 z-1 d-none d-md-flex align-items-center justify-content-center"
+                className="btn btn-light rounded-circle shadow-sm position-absolute end-0 top-50 translate-middle-y me-2 z-1 d-flex align-items-center justify-content-center"
                 style={{ width: "30px", height: "30px", border: "1px solid #dbdbdb" }}
                 onClick={() => scroll("right")}
             >

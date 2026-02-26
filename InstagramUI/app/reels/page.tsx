@@ -8,7 +8,7 @@ export default function ReelsPage() {
         <div className="d-flex flex-column align-items-center overflow-y-auto h-100 mt-3 scrollbar-invisible"
             style={{ scrollSnapType: "y mandatory", }}>
             {REELS_MOCK.map((reel, _) => (
-                <SingleReel reel={reel} />
+                <SingleReel key={reel.id} reel={reel} />
             ))}
         </div>
     )

@@ -18,7 +18,7 @@ export default function MessageSidebar() {
             <div className="scrollbox w-100">
                 <div className="users scrollbox-content px-2">
                     {MOCK_MESSAGES.map((message, _) => (
-                        <MessageUserItem message={message} setSearchText={setSearchText} />
+                        <MessageUserItem key={message.id} message={message} setSearchText={setSearchText} />
                     ))}
                 </div>
             </div>

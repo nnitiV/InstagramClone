@@ -10,7 +10,7 @@ export default function SwitchAccountModal() {
                         <button type="button" className="btn-close position-absolute" style={{ right: 25 }} data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div className="modal-body py-2 px-2">
-                        <p className="d-flex justify-content-between align-items-center m-0">
+                        <div className="d-flex justify-content-between align-items-center m-0">
                             <div className="p-1 rounded-circle position-relative me-2 d-flex align-items-center">
                                 <img
                                     src={"https://cdn-icons-png.flaticon.com/512/6522/6522516.png"}
@@ -21,7 +21,7 @@ export default function SwitchAccountModal() {
                                 <p className="m-0 ms-2">username</p>
                             </div>
                             <i className="bi bi-patch-check fs-4"></i>
-                        </p>
+                        </div>
                     </div>
                     <div className="modal-footer">
                         <Link href={"#"} className="icon-link text-decoration-none w-100 d-flex justify-content-center">

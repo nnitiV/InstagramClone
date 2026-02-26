@@ -2,6 +2,7 @@ export type Story = {
     id: number;
     username: string;
     mediaurl: string;
+    createdAt: Date;
     profilePictureUrl: string;
 }
 

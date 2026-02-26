@@ -58,7 +58,7 @@ export default function SearchOffset() {
                     <>
                         <h1 className="mt-4 fw-bold fs-5 p-0 w-100">Today</h1>
                         {todayFollows.map(user => (
-                            <div className="transparent-background-hover cursor-pointer rounded w-100 d-flex justify-content-between align-items-center px-2">
+                            <div key={user.id} className="transparent-background-hover cursor-pointer rounded w-100 d-flex justify-content-between align-items-center px-2">
                                 <Link href={`#`} className="text-decoration-none text-body">
                                     <div className="d-flex mb-1 p-0 py-2" data-bs-dismiss="offcanvas"
                                         data-mdb-ripple-init
@@ -90,7 +90,7 @@ export default function SearchOffset() {
                     <>
                         <h1 className="mt-4 fw-bold fs-5 p-0 w-100">Earlier</h1>
                         {earlier.map(user => (
-                            <div className="transparent-background-hover cursor-pointer rounded w-100 d-flex justify-content-between align-items-center px-2">
+                            <div key={user.id} className="transparent-background-hover cursor-pointer rounded w-100 d-flex justify-content-between align-items-center px-2">
                                 <Link href={`#`} className="text-decoration-none text-body">
                                     <div className="d-flex mb-1 p-0 py-2" data-bs-dismiss="offcanvas"
                                         data-mdb-ripple-init
