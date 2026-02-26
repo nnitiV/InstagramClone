@@ -169,8 +169,10 @@ export default function SingleReel({ reel }: SingleReelProps) {
 
   return (
     <>
-      <div className="w-50 d-flex my-3" style={{ scrollSnapAlign: "start" }} ref={containerRef}>
-        <div className="d-flex justify-content-center align-items-center rounded rounded-3" onClick={() => setIsPlaying(prev => !prev)} style={{ background: "rgba(0,0,0,1)", width: "27vw", height: "95vh" }}>
+      <div className="w-100 d-flex justify-content-center ms-4 my-3" style={{ scrollSnapAlign: "start" }} ref={containerRef}>
+        <div className="d-flex justify-content-center align-items-center rounded rounded-3"
+         onClick={() => setIsPlaying(prev => !prev)} 
+         style={{ background: "rgba(0,0,0,1)", height: "95vh", width: 'min(85%, 400px)', aspectRatio: '9/16' }}>
           <ReactPlayer
             key={resetKey}
             src={reel.videoUrl}
@@ -182,7 +184,7 @@ export default function SingleReel({ reel }: SingleReelProps) {
             height='100%'
           />
         </div>
-        <ul className="d-flex flex-column justify-content-end align-items-center px-4 list-unstyled">
+        <ul className="d-flex flex-column justify-content-end list-unstyled align-items-center ms-2" style={{ gap: '1rem' }} >
           <li className="d-flex flex-column align-items-center cursor-pointer" onClick={() => setIsLiked(!isLiked)}>
             <i className={`bi ${isLiked ? 'bi-heart-fill text-danger' : 'bi-heart'} fs-5 m-0 p-0`}></i>
             <span className="p-0 m-0">{reel.likes}</span>
@@ -209,7 +211,7 @@ export default function SingleReel({ reel }: SingleReelProps) {
       {/* Comments Modal */}
       {showComments && (
         <div className="modal fade show d-block" tabIndex={-1} style={{ backgroundColor: 'rgba(0,0,0,0.5)' }}>
-          <div className="modal-dialog modal-xl">
+<div className="modal-dialog modal-dialog-scrollable modal-fullscreen-md-down">
             <div className="modal-content">
               <div className="modal-header">
                 <h5 className="modal-title">{parseInt(reel.comments) + commentsList.length} Comments</h5>
