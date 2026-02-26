@@ -2,8 +2,8 @@ import { handleLogout } from "@/feature/auth/services/auth-service";
 import Link from "next/link";
 import { ReactNode } from "react";
 import SearchOffset from "./SearchOffset";
-import NotificationsOffset from "./NotificationsOffset";
 import SidebarItem from "./SidebarItem";
+import NotificationsOffset from "./NotificationsOffset";
 
 export default function Sidebar({ children, picture }: { children: ReactNode, picture: string }) {
   const SIDEBAR_LINKS = [
@@ -12,7 +12,7 @@ export default function Sidebar({ children, picture }: { children: ReactNode, pi
   { url: "/messages", icon: "chat-right", text: "Messages",target: ""  },
   { url: "#", icon: "search", text: "Search", target: "searchOffcanvas" },
   { url: "/explore", icon: "compass", text: "Explore",target: "" },
-  { url: "/notifications", icon: "heart", text: "Notifications", target: "notificationsOffset" },
+  { url: "#", icon: "heart", text: "Notifications", target: "notificationsOffset" },
   { url: "#", icon: "plus-square", text: "Create",target: ""  },
   { url: "/profile", icon: "person-circle", text: "Profile",target: ""  },
 ];

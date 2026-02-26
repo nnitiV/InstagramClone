@@ -14,7 +14,8 @@ export default function SidebarItem({ url, iconName, text, targetModal }: Sideba
         align-items-center my-1 px-2 rounded rounded-2 cursor-pointer fs-5 w-100"
             style={{ width: "fit-content" }}
             data-bs-toggle={targetModal.length > 0 && "offcanvas"}
-            data-bs-target={`#${targetModal}`} aria-controls={targetModal}>
+            data-bs-target={`#${targetModal}`} aria-controls={targetModal}
+        >
             <li className="nav-link align-middle px-0 text-dark">
                 <i className={`bi-${iconName}`}></i>
                 <span className="ms-3 d-none d-xl-inline">{text}</span>
