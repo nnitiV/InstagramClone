@@ -16,8 +16,8 @@ export default function Posts({ posts }: PostsProps) {
         <>
             <div className="container-fluid p-0" >
                 <div className="row justify-content-center">
-                    <div className="col-12 col-md-8 col-lg-7">
-                        {posts.length > 0 && posts.map((post) => (
+                    <div className="col-12 col-md-10 col-lg-9">
+                        {posts.length > 0 && posts.map((post, index) => (
                             <div key={post.id} className="border-bottom pb-4 my-3">
                                 <div className="d-flex align-items-center justify-content-between py-2">
                                     <div className="d-flex align-items-center cursor-pointer">
@@ -34,7 +34,7 @@ export default function Posts({ posts }: PostsProps) {
                                     </div>
                                     <i className="bi bi-three-dots cursor-pointer" data-bs-toggle="modal" data-bs-target="#exampleModal"></i>
                                 </div>
-                                <PostMedia contentUrls={post.contentUrls} />
+                                <PostMedia contentUrls={post.contentUrls} postIndex={index} />
                                 <PostActions
                                     postId={post.id}
                                     initialIsLiked={post.isLiked}

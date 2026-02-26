@@ -3,21 +3,25 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 
 interface PostMediaProps {
   contentUrls: string[];
+  postIndex?: number; // ← Novo prop pra ID único
 }
 
 const isVideo = (url: string): boolean => {
   return /\.(mp4|webm|ogg|mov|avi)$/i.test(url);
 };
 
-export default function PostMedia({ contentUrls }: PostMediaProps) {
+export default function PostMedia({ contentUrls, postIndex = 0 }: PostMediaProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(true);
   const carouselRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
 
+  // ✅ ID ÚNICO por post
+  const carouselId = `postMediaCarousel-${postIndex}`;
+
   const toggleMute = useCallback((e?: React.MouseEvent) => {
-    if (e) e.stopPropagation(); // Evita que o clique no mute pause o vídeo
+    if (e) e.stopPropagation();
     const newMutedState = !isMuted;
     setIsMuted(newMutedState);
     videoRefs.current.forEach(video => {
@@ -26,11 +30,14 @@ export default function PostMedia({ contentUrls }: PostMediaProps) {
   }, [isMuted]);
 
   const togglePlay = useCallback((e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
+    if (e) {
+      e.stopPropagation();
+      e.preventDefault();
+    }
     setIsPlaying(prev => !prev);
   }, []);
 
-  // Controla o Play/Pause do vídeo ativo
+  // Resto dos useEffects permanece igual...
   useEffect(() => {
     const currentVideo = videoRefs.current[contentUrls?.length === 1 ? 0 : activeIndex];
     if (!currentVideo) return;
@@ -42,7 +49,6 @@ export default function PostMedia({ contentUrls }: PostMediaProps) {
     }
   }, [isPlaying, activeIndex, contentUrls?.length]);
 
-  // Controla o evento de slide do carrossel
   useEffect(() => {
     const handleSlide = (e: Event) => {
       const carousel = (window as any).bootstrap?.Carousel?.getInstance(carouselRef.current!);
@@ -50,9 +56,7 @@ export default function PostMedia({ contentUrls }: PostMediaProps) {
         const newIndex = Array.from(carouselRef.current!.querySelectorAll('.carousel-item')).indexOf(carousel._activeElement);
         if (newIndex !== -1) {
           setActiveIndex(newIndex);
-          setIsPlaying(true); // Força o autoplay no novo slide
-          
-          // Pausa todos os outros vídeos e reseta o tempo
+          setIsPlaying(true);
           videoRefs.current.forEach((video, i) => {
             if (video && i !== newIndex) {
               video.pause();
@@ -70,7 +74,6 @@ export default function PostMedia({ contentUrls }: PostMediaProps) {
     }
   }, []);
 
-  // Garante que o estado de mute persista
   useEffect(() => {
     videoRefs.current.forEach(video => {
       if (video) video.muted = isMuted;
@@ -90,7 +93,7 @@ export default function PostMedia({ contentUrls }: PostMediaProps) {
         </svg>
       ) : (
         <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
-          <path d="M11.445 4.515a2.06 2.06 0 0 1 2.11 0 2.457 2.457 0 0 1 0 3.97l-.248.155a2.06 2.06 0 0 1 0 3.283l.248.155a2.457 2.457 0 0 1-2.11 3.97l-1.302-.76a1.457 1.457 0 0 1-1.617-.417V5.935a1.457 1.457 0 0 1 1.617-.416l1.302.76z"/>
+          <path d="M11.445 4.515a2.06 2.06 0 0 1 2.11 0 2.457 2.457 0 0 1 0 3.97l-.248.155a2.06 2.06 0 0 1 0 3.283l-.248.155a2.457 2.457 0 0 1-2.11 3.97l-1.302-.76a1.457 1.457 0 0 1-1.617-.417V5.935a1.457 1.457 0 0 1 1.617-.416l1.302.76z"/>
           <path d="M3.717 3.55A.5.5 0 0 1 4 4v8a.5.5 0 0 1-.283.495l-4.714 2.912A.5.5 0 0 1 0 14.028V1.972a.5.5 0 0 1 .717-.495L3.717 3.55z"/>
         </svg>
       )}
@@ -108,6 +111,7 @@ export default function PostMedia({ contentUrls }: PostMediaProps) {
     );
   };
 
+  // Single media (igual ao original)
   if (contentUrls.length === 1) {
     const url = contentUrls[0];
     return (
@@ -143,15 +147,16 @@ export default function PostMedia({ contentUrls }: PostMediaProps) {
     );
   }
 
+  // Carousel com ID DINÂMICO ✅
   return (
-    <div id="postMediaCarousel" className="carousel slide h-100 w-100 position-relative" data-bs-interval="false" data-bs-wrap="true" ref={carouselRef}>
+    <div id={carouselId} className="carousel slide h-100 w-100 position-relative" data-bs-interval="false" data-bs-wrap="true" ref={carouselRef}>
       <button
         className="position-absolute btn p-0 bg-black bg-opacity-75 text-white rounded-circle border-0 shadow-lg"
         style={{ width: '48px', height: '48px', right: '20px', bottom: '20px', zIndex: 9999 }}
         onClick={toggleMute}
         title={isMuted ? "Ativar som" : "Silenciar"}
       >
-        <i className={`bi ${isMuted ? 'bi-volume-mute' : 'bi-volume-up-fill'}`} style={{ fontSize: '20px' }}></i>
+        <VolumeIcon />
       </button>
 
       <div className="carousel-indicators position-absolute bottom-0 start-0 mb-5 ms-3">
@@ -159,7 +164,7 @@ export default function PostMedia({ contentUrls }: PostMediaProps) {
           <button
             key={index}
             type="button"
-            data-bs-target="#postMediaCarousel"
+            data-bs-target={`#${carouselId}`}  // ← Usa ID dinâmico
             data-bs-slide-to={index.toString()}
             className={`rounded-circle ${index === activeIndex ? 'active bg-white' : 'bg-white bg-opacity-50'}`}
             style={{ width: '10px', height: '10px' }}
@@ -197,10 +202,10 @@ export default function PostMedia({ contentUrls }: PostMediaProps) {
         ))}
       </div>
 
-      <button className="carousel-control-prev" type="button" data-bs-target="#postMediaCarousel" data-bs-slide="prev">
+      <button className="carousel-control-prev" type="button" data-bs-target={`#${carouselId}`} data-bs-slide="prev">
         <span className="carousel-control-prev-icon bg-black bg-opacity-50 rounded-circle" aria-hidden="true"></span>
       </button>
-      <button className="carousel-control-next" type="button" data-bs-target="#postMediaCarousel" data-bs-slide="next">
+      <button className="carousel-control-next" type="button" data-bs-target={`#${carouselId}`} data-bs-slide="next">
         <span className="carousel-control-next-icon bg-black bg-opacity-50 rounded-circle" aria-hidden="true"></span>
       </button>
     </div>
