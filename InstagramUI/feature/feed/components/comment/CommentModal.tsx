@@ -218,7 +218,7 @@ export default function CommentModal({ post, onClose }: CommentModalProps) {
                     <div className="row g-0 h-100">
                         <div className="col-md-7 bg-black d-flex align-items-center justify-content-center h-100">
                             <div className="w-100">
-                                <PostMedia contentUrls={post.contentUrls} />
+                                <PostMedia contentUrls={post.contentUrls} isModal={true} hasSelectedPost />
                             </div>
                         </div>
                         <div className="col-md-5 d-flex flex-column bg-white h-100">

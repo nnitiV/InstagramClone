@@ -37,7 +37,7 @@ export default function Posts({ posts }: PostsProps) {
                                 <PostMedia
                                     contentUrls={post.contentUrls}
                                     postIndex={index}
-                                    hasSelectedPost={!!selectedPost}
+                                    hasSelectedPost={!!selectedPost} isModal={false}
                                 />
                                 <PostActions
                                     postId={post.id}
