@@ -4,18 +4,19 @@ import { useState, useRef, useEffect, useCallback } from 'react';
 interface PostMediaProps {
   contentUrls: string[];
   postIndex?: number;
+  hasSelectedPost: boolean;
 }
 
 const isVideo = (url: string): boolean => {
   return /\.(mp4|webm|ogg|mov|avi)$/i.test(url);
 };
 
-export default function PostMedia({ contentUrls, postIndex = 0 }: PostMediaProps) {
+export default function PostMedia({ contentUrls, postIndex = 0, hasSelectedPost }: PostMediaProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isMuted, setIsMuted] = useState(() => {
     return localStorage.getItem('globalVideoMute') !== 'false';
   });
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(hasSelectedPost);
   const [isInViewport, setIsInViewport] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
@@ -80,12 +81,14 @@ export default function PostMedia({ contentUrls, postIndex = 0 }: PostMediaProps
       return;
     }
 
-    if (isPlaying) {
-      currentVideo.play().catch(() => {});
+    if (hasSelectedPost) {
+      currentVideo.pause();
+    } else if (isPlaying) {
+      currentVideo.play().catch(() => { });
     } else {
       currentVideo.pause();
     }
-  }, [isPlaying, activeIndex, contentUrls?.length, isInViewport, isMuted]);
+  }, [isPlaying, hasSelectedPost, activeIndex, contentUrls?.length, isInViewport, isMuted]);
 
   // Mute persiste
   useEffect(() => {
@@ -157,21 +160,21 @@ export default function PostMedia({ contentUrls, postIndex = 0 }: PostMediaProps
   }
 
   const VolumeIcon = () => (
-  <span className="d-flex align-items-center justify-content-center w-100 h-100">
-    {isMuted ? (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
-        {/* Speaker */}
-        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z"/>
-        {/* X sobre o speaker */}
-        <path d="M4.5 5.5L17.5 18.5M19.5 5.5L6.5 18.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
-      </svg>
-    ) : (
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
-        <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
-      </svg>
-    )}
-  </span>
-);
+    <span className="d-flex align-items-center justify-content-center w-100 h-100">
+      {isMuted ? (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+          {/* Speaker */}
+          <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" />
+          {/* X sobre o speaker */}
+          <path d="M4.5 5.5L17.5 18.5M19.5 5.5L6.5 18.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
+        </svg>
+      ) : (
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+          <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
+        </svg>
+      )}
+    </span>
+  );
 
 
   const PlayOverlay = () => {

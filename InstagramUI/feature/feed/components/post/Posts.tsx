@@ -34,7 +34,11 @@ export default function Posts({ posts }: PostsProps) {
                                     </div>
                                     <i className="bi bi-three-dots cursor-pointer" data-bs-toggle="modal" data-bs-target="#exampleModal"></i>
                                 </div>
-                                <PostMedia contentUrls={post.contentUrls} postIndex={index} />
+                                <PostMedia
+                                    contentUrls={post.contentUrls}
+                                    postIndex={index}
+                                    hasSelectedPost={!!selectedPost}
+                                />
                                 <PostActions
                                     postId={post.id}
                                     initialIsLiked={post.isLiked}
