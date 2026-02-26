@@ -19,7 +19,7 @@ export default function PostMedia({
   isModal = false
 }: PostMediaProps) {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isMuted, setIsMuted] = useState(true); // Default seguro SSR
+  const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(hasSelectedPost);
   const [isInViewport, setIsInViewport] = useState(false);
   const carouselRef = useRef<HTMLDivElement>(null);
@@ -30,6 +30,7 @@ export default function PostMedia({
     ? 'postMediaCarousel-modal'
     : `postMediaCarousel-${postIndex}`;
 
+  // Load mute setting from localStorage
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const stored = localStorage.getItem('globalVideoMute');
@@ -40,31 +41,25 @@ export default function PostMedia({
   }, []);
 
   const toggleMute = useCallback((e?: React.MouseEvent) => {
-    if (e) {
-      e.stopPropagation();
-      e.preventDefault();
-    }
+    e?.stopPropagation();
+    e?.preventDefault();
     const newMutedState = !isMuted;
     setIsMuted(newMutedState);
-
     if (typeof window !== 'undefined') {
       localStorage.setItem('globalVideoMute', newMutedState.toString());
     }
-
     videoRefs.current.forEach(video => {
       if (video) video.muted = newMutedState;
     });
   }, [isMuted]);
 
   const togglePlay = useCallback((e?: React.MouseEvent) => {
-    if (e) {
-      e.stopPropagation();
-      e.preventDefault();
-    }
+    e?.stopPropagation();
+    e?.preventDefault();
     setIsPlaying(prev => !prev);
   }, []);
 
-  // Intersection Observer
+  // Intersection Observer for auto-play/pause
   useEffect(() => {
     const currentElement = carouselRef.current;
     if (!currentElement) return;
@@ -74,7 +69,7 @@ export default function PostMedia({
         const fullyVisible = entry.intersectionRatio >= 1.0;
         setIsInViewport(fullyVisible);
 
-        if (fullyVisible && !isModal) { // Modal ignora viewport
+        if (fullyVisible && !isModal) {
           setIsPlaying(true);
         } else if (!isModal) {
           videoRefs.current.forEach(video => {
@@ -87,12 +82,10 @@ export default function PostMedia({
     );
 
     observerRef.current.observe(currentElement);
-    return () => {
-      if (observerRef.current) observerRef.current.disconnect();
-    };
+    return () => observerRef.current?.disconnect();
   }, [isModal]);
 
-  // Controla vídeo ativo
+  // Control active video playback
   useEffect(() => {
     const currentVideo = videoRefs.current[contentUrls?.length === 1 ? 0 : activeIndex];
     if (!currentVideo) return;
@@ -102,23 +95,23 @@ export default function PostMedia({
       return;
     }
 
-    if(hasSelectedPost && !isModal){
+    if (hasSelectedPost && !isModal) {
       currentVideo.pause();
-    }else if (isPlaying) {
-      currentVideo.play().catch(() => { });
+    } else if (isPlaying) {
+      currentVideo.play().catch(() => {});
     } else {
       currentVideo.pause();
     }
   }, [isPlaying, hasSelectedPost, activeIndex, contentUrls?.length, isInViewport, isModal]);
 
-  // Mute persiste
+  // Sync mute state to all videos
   useEffect(() => {
     videoRefs.current.forEach(video => {
       if (video) video.muted = isMuted;
     });
   }, [isMuted]);
 
-  // GLOBAL MUTE SYNC
+  // Global mute sync across tabs
   useEffect(() => {
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === 'globalVideoMute' && typeof window !== 'undefined') {
@@ -145,14 +138,13 @@ export default function PostMedia({
 
     window.addEventListener('storage', handleStorageChange);
     const interval = setInterval(checkStorage, 100);
-
     return () => {
       window.removeEventListener('storage', handleStorageChange);
       clearInterval(interval);
     };
   }, [isMuted]);
 
-  // Carrossel slide
+  // Track carousel slide changes
   useEffect(() => {
     const handleSlide = (e: Event) => {
       const carousel = (window as any).bootstrap?.Carousel?.getInstance(carouselRef.current!);
@@ -256,7 +248,7 @@ export default function PostMedia({
         className="carousel-indicators position-absolute start-50 translate-middle-x mx-auto"
         style={{
           display: contentUrls.length > 1 ? 'flex' : 'none',
-          bottom: '30px',  // raised to avoid mute button
+          bottom: '30px',
           zIndex: 5
         }}
       >
@@ -272,7 +264,8 @@ export default function PostMedia({
         ))}
       </div>
 
-      <div className={`carousel-inner h-100 ${isModal ? "mx-auto w-50" : "w-100"}`}>
+      {/* Carousel inner - always w-100 */}
+      <div className="carousel-inner h-100 w-100">
         {contentUrls.map((url, index) => (
           <div key={index} className={`carousel-item h-100 ${index === 0 ? 'active' : ''}`}>
             {isVideo(url) ? (
