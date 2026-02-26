@@ -11,7 +11,7 @@ export default function SidebarItem({ url, iconName, text, targetModal }: Sideba
     return (
         <Link href={url}
             className="nav-item text-decoration-none transparent-background-hover d-flex 
-        align-items-center my-1 px-2 rounded rounded-2 cursor-pointer fs-5"
+        align-items-center my-1 px-2 rounded rounded-2 cursor-pointer fs-5 w-100"
             style={{ width: "fit-content" }}
             data-bs-toggle={targetModal.length > 0 && "offcanvas"}
             data-bs-target={`#${targetModal}`} aria-controls={targetModal}>
