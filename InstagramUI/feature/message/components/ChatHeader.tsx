@@ -1,8 +1,17 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
 export default function ChatHeader() {
+    const [isMobile, setIsMobile] = useState<boolean>(false);
+    useEffect(() => {
+        const checkWidth = () => {
+            setIsMobile(window.innerWidth <= 368);
+        }
+        checkWidth();
+        window.addEventListener("resize", checkWidth);
+        return window.removeEventListener("resize", checkWidth);
+    }, [])
     return (
-        <div className="border-bottom p-3 d-flex justify-content-between align-items-center">
+        <div className={`border-bottom p-3 d-flex justify-content-between align-items-center ${isMobile && "flex-column"}`}>
             <div className="d-flex cursor-pointer transparent-background-hover rounded px-2" data-bs-dismiss="offcanvas"
                 data-mdb-ripple-init
                 data-mdb-ripple-color="light">

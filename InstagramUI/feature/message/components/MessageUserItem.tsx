@@ -8,7 +8,8 @@ type MesssageUserItemProps = {
 
 export default function MessageUserItem({ message, setSearchText }: MesssageUserItemProps) {
     return (
-        <Link href={`/messages/${message.id}`} key={message.id} className="text-decoration-none text-body w-100" onClick={() => setSearchText("")}>
+        <Link href={`/messages/${message.id}`} key={message.id} className="text-decoration-none text-body w-75" 
+        onClick={() => setSearchText("")}>
             <div className="d-flex mb-1 cursor-pointer transparent-background-hover w-100 rounded px-2 py-2" data-bs-dismiss="offcanvas"
                 data-mdb-ripple-init
                 data-mdb-ripple-color="light">
