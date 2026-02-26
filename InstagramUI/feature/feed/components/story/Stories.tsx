@@ -39,7 +39,7 @@ export default function Stories({ stories, userPhoto }: StoriesProps) {
                             className="d-flex flex-column align-items-center px-2 cursor-pointer"
                             style={{ minWidth: "85px" }}
                         >
-                            <div className="p-1 rounded-circle border border-2 border-danger position-relative">
+                            <div className="p-1 rounded-circle border border-2 position-relative">
                                 <img
                                     src={userPhoto == null || userPhoto.length <= 0 ? "https://cdn-icons-png.flaticon.com/512/6522/6522516.png" : userPhoto}
                                     alt="Story"

@@ -67,3 +67,19 @@
 .btn-custom:hover {
   background-color: rgb(216, 217, 220);
 }
+
+.circle-element {
+    width: 70px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%; /* Garante que o container seja circular */
+}
+
+.rainbow-border {
+    /* Criamos a borda usando background */
+    background: linear-gradient(white, white) padding-box,
+                linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%) border-box;
+    border: 3px solid transparent;
+}

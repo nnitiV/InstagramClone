@@ -12,7 +12,7 @@ export default function StoryItem({story}: StoryItemProps) {
                 className="d-flex flex-column align-items-center px-2 cursor-pointer"
                 style={{ minWidth: "85px" }}
             >
-                <div className="p-1 rounded-circle border border-2 border-danger position-relative">
+                <div className="p-1 circle-element rounded-circle rainbow-border position-relative">
                     <img
                         src={story.profilePictureUrl == null ? "https://cdn-icons-png.flaticon.com/512/6522/6522516.png" : story.profilePictureUrl}
                         alt="Story"
