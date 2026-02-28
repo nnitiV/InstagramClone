@@ -2,32 +2,53 @@
 import { Post } from "@/types/feed";
 import { useEffect, useState } from "react";
 import ExploreModal from "../../feature/explore/components/ExploreModal";
-import { USER_PROFILE_MOCK } from "@/feature/profile/constants/data";
 import Header from "@/feature/profile/components/Header";
 import Highlights from "@/feature/profile/components/Highlights";
 import Posts from "@/feature/profile/components/Posts";
+import { getLoggedUserInfo } from "@/feature/auth/services/auth-service";
+import { UserProfile } from "@/types/user";
+import EmptyUserPosts from "@/feature/profile/components/EmptyUserPosts";
+import EditProfileModal from "@/feature/profile/components/EditProfileModal";
 
 export default function SearchPage() {
+    const [user, setUser] = useState<UserProfile | null>(null);
+    const [userHighlights, setUserHighlights] = useState<[]>([]);
     const [selectedPost, setSelectedPost] = useState<Post | null>(null);
     const [isMobile, setIsMobile] = useState<boolean>(false);
     useEffect(() => {
         const checkWidth = () => setIsMobile(window.innerWidth <= 768);
         checkWidth();
+
+        const getUser = async () => {
+            setUser(await getLoggedUserInfo());
+        }
+        getUser();
+
     }, [])
     return (
         <>
             <div className="vh-100 py-5">
-                <Header isMobile />
+                <Header isMobile={isMobile} userProfile={user} />
                 <div className={`user-buttons w-75 mx-auto ${isMobile && "d-flex justify-content-between"}`}>
-                    <button type="button" className={`border border-2 btn-custom w-25 me-3 ${isMobile && "w-50"}`}>Edit profile</button>
-                    <button type="button" className={`border border-2 btn-custom w-25 me-3 ${isMobile && "w-50"}`}>View archive</button>
+                    <button type="button" className="btn btn-light border fw-bold flex-grow-1 flex-sm-grow-0 me-sm-2 mb-2 mb-sm-0 px-4"
+                        data-bs-toggle="modal" data-bs-target="#editProfile">
+                        Edit profile
+                    </button>
+                    <button type="button" className="btn btn-light border fw-bold flex-grow-1 flex-sm-grow-0 me-sm-2 mb-2 mb-sm-0 px-4">
+                        View archive
+                    </button>
                 </div>
-                <Highlights />
-                <Posts setSelectedPost={setSelectedPost} />
+                <Highlights userId={user?.id} />
+                {user?.postsCount != undefined && user?.postsCount > 0 ?
+                    <Posts setSelectedPost={setSelectedPost} />
+                    :
+                    <EmptyUserPosts />
+                }
             </div>
-            {selectedPost && 
+            {selectedPost &&
                 <ExploreModal post={selectedPost} onClose={() => setSelectedPost(null)} />
             }
+            <EditProfileModal user={user} />
         </>
     )
 };
