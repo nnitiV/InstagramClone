@@ -15,17 +15,17 @@ export default function SearchPage({children}: {children: React.ReactNode}) {
         checkWidth();
         window.addEventListener("resize", checkWidth);
         return window.removeEventListener("resize", checkWidth);
-    }, [])
+    }, []);
     return (
         <>
             <div className="vh-100 d-flex justify-content-center align-items-center">
-                <MessageSidebar shouldHideSidebar={isInsideChat && isMobile} width={isMobile ? "100vw" : "clamp(300px, 40%, 400px)"} />
-                <div className={`d-flex justify-content-center align-items-center h-100 w-100  ${!isInsideChat ? "d-none" : "d-flex"}`}>
+                <MessageSidebar shouldHideSidebar={!isInsideChat && isMobile} width={isMobile ? "100vw" : "clamp(300px, 40%, 400px)"} />
+                <div className={`d-flex justify-content-center align-items-center h-100 w-100  ${!isInsideChat && isMobile ? "d-none" : "d-flex"}`}>
                     {children}
                 </div>
             </div>
             <SwitchAccountModal />
         </>
-    )
+    );
 };
 
