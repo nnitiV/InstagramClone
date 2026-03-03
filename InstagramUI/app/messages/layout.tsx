@@ -3,12 +3,20 @@ import { useEffect, useState } from "react";
 import SwitchAccountModal from "../../feature/message/components/SwitchAccountModal";
 import MessageSidebar from "@/feature/message/components/MessageSidebar";
 import { useParams } from "next/navigation";
+import { LastMessageDto } from "@/types/messages";
+import { fetchUserLastMessages } from "@/feature/message/services/profile.service";
 
 export default function SearchPage({children}: {children: React.ReactNode}) {
     const params = useParams();
     const isInsideChat = !!params.id;
     const [isMobile, setIsMobile] = useState<boolean>(false);
+    const [lastMessages, setLastMessages] = useState<LastMessageDto[] | []>([]);
     useEffect(() => {
+        const getAllUserLastMessages = async () => {
+            const messages = await fetchUserLastMessages();
+            setLastMessages(messages);
+        }
+        getAllUserLastMessages();
         const checkWidth = () => {
             setIsMobile(window.innerWidth <= 768);
         }
@@ -19,7 +27,7 @@ export default function SearchPage({children}: {children: React.ReactNode}) {
     return (
         <>
             <div className="vh-100 d-flex justify-content-center align-items-center">
-                <MessageSidebar shouldHideSidebar={!isInsideChat && isMobile} width={isMobile ? "100vw" : "clamp(300px, 40%, 400px)"} />
+                <MessageSidebar lastMessages={lastMessages} shouldHideSidebar={!isInsideChat && isMobile} width={isMobile ? "100vw" : "clamp(300px, 40%, 400px)"} />
                 <div className={`d-flex justify-content-center align-items-center h-100 w-100  ${!isInsideChat && isMobile ? "d-none" : "d-flex"}`}>
                     {children}
                 </div>
