@@ -38,7 +38,7 @@ export default function Sidebar({ children, picture }: { children: ReactNode, pi
           </Link>
           <ul className="dropdown-menu text-small shadow">
             <li><Link className="dropdown-item" href="#">Settings</Link></li>
-            <li><Link className="dropdown-item" href="#">Profile</Link></li>
+            <li><Link className="dropdown-item" href="/profile">Profile</Link></li>
             <li><hr className="dropdown-divider" /></li>
             <li><Link onClick={handleLogout} className="dropdown-item" href="#">Sign out</Link></li>
           </ul>
