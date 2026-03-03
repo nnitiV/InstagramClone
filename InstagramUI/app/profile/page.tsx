@@ -11,11 +11,13 @@ import EmptyUserPosts from "@/feature/profile/components/EmptyUserPosts";
 import EditProfileModal from "@/feature/profile/components/EditProfileModal";
 
 export default function SearchPage() {
+    const [isLoading, setIsLoading] = useState<boolean>(true);
     const [user, setUser] = useState<UserProfile | null>(null);
     const [userHighlights, setUserHighlights] = useState<[]>([]);
     const [selectedPost, setSelectedPost] = useState<Post | null>(null);
     const [isMobile, setIsMobile] = useState<boolean>(false);
     useEffect(() => {
+        setIsLoading(true);
         const checkWidth = () => setIsMobile(window.innerWidth <= 768);
         checkWidth();
 
@@ -23,33 +25,43 @@ export default function SearchPage() {
             setUser(await getLoggedUserInfo());
         }
         getUser();
-
-    }, [])
+        setIsLoading(false);
+    }, []);
     return (
         <>
-            <div className="vh-100 py-5">
-                <Header isMobile={isMobile} userProfile={user} />
-                <div className={`user-buttons w-75 mx-auto ${isMobile && "d-flex justify-content-between"}`}>
-                    <button type="button" className="btn btn-light border fw-bold flex-grow-1 flex-sm-grow-0 me-sm-2 mb-2 mb-sm-0 px-4"
-                        data-bs-toggle="modal" data-bs-target="#editProfile">
-                        Edit profile
-                    </button>
-                    <button type="button" className="btn btn-light border fw-bold flex-grow-1 flex-sm-grow-0 me-sm-2 mb-2 mb-sm-0 px-4">
-                        View archive
-                    </button>
+            {isLoading ?
+                <div className="d-flex justify-content-center align-items-center h-100 w-100">
+                    <div className="spinner-border">
+                        <span className="visually-hidden"> Loading...</span >
+                    </div >
                 </div>
-                <Highlights userId={user?.id} />
-                {user?.postsCount != undefined && user?.postsCount > 0 ?
-                    <Posts setSelectedPost={setSelectedPost} />
-                    :
-                    <EmptyUserPosts />
-                }
-            </div>
-            {selectedPost &&
-                <ExploreModal post={selectedPost} onClose={() => setSelectedPost(null)} />
+                :
+                <>
+                    <div className="vh-100 py-5">
+                        <Header isMobile={isMobile} userProfile={user} />
+                        <div className={`user-buttons w-75 mx-auto ${isMobile && "d-flex justify-content-between"}`}>
+                            <button type="button" className="btn btn-light border fw-bold flex-grow-1 flex-sm-grow-0 me-sm-2 mb-2 mb-sm-0 px-4"
+                                data-bs-toggle="modal" data-bs-target="#editProfile">
+                                Edit profile
+                            </button>
+                            <button type="button" className="btn btn-light border fw-bold flex-grow-1 flex-sm-grow-0 me-sm-2 mb-2 mb-sm-0 px-4">
+                                View archive
+                            </button>
+                        </div>
+                        <Highlights userId={user?.id} />
+                        {user?.postsCount != undefined && user?.postsCount > 0 ?
+                            <Posts setSelectedPost={setSelectedPost} />
+                            :
+                            <EmptyUserPosts />
+                        }
+                    </div>
+                    {selectedPost &&
+                        <ExploreModal post={selectedPost} onClose={() => setSelectedPost(null)} />
+                    }
+                    <EditProfileModal user={user} />
+                </>
             }
-            <EditProfileModal user={user} />
         </>
-    )
+    );
 };
 
