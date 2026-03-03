@@ -50,7 +50,9 @@ namespace API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateUserAsync(UpdateUserDto updateUserDto)
         {
+            Console.WriteLine(updateUserDto);
             int userId = User.GetUserId();
+            Console.WriteLine(userId);
             bool wasUpdated = await _userService.UpdateUser(updateUserDto, userId);
             if(!wasUpdated)
             {

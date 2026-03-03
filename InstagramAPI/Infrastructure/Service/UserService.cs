@@ -30,9 +30,11 @@ namespace Infrastructure.Service
             {
                 Id = user.Id,
                 Username = user.Username,
+                Name = user.Name,
                 Email = user.Email,
                 Bio = user.Bio,
                 DateOfBirth = user.DateOfBirth,
+                ProfilePictureUrl = user.ProfilePictureUrl,
                 Age = user.Age,
                 FollowersCount = user.FollowersCount,
                 FollowingCount = user.FollowingCount,
@@ -56,14 +58,16 @@ namespace Infrastructure.Service
             ResponseUserDto? userDto = new ResponseUserDto
             {
                 Id = userDB.Id,
-                Username= userDB.Username,
+                Username = userDB.Username,
+                Name = userDB.Name,
                 Email = userDB.Email,
                 Bio = userDB.Bio,
                 DateOfBirth = userDB.DateOfBirth,
                 Age = userDB.Age,
-                FollowersCount= userDB.FollowersCount,
-                FollowingCount= userDB.FollowingCount,
-                PostsCount= userDB.PostsCount
+                ProfilePictureUrl = userDB.ProfilePictureUrl,
+                FollowersCount = userDB.FollowersCount,
+                FollowingCount = userDB.FollowingCount,
+                PostsCount = userDB.PostsCount
             };
             return userDto;
         }
@@ -83,10 +87,12 @@ namespace Infrastructure.Service
             {
                 Id = userDB.Id,
                 Username = userDB.Username,
+                Name = userDB.Name,
                 Email = userDB.Email,
                 Bio = userDB.Bio,
                 DateOfBirth = userDB.DateOfBirth,
                 Age = userDB.Age,
+                ProfilePictureUrl = userDB.ProfilePictureUrl,
                 FollowersCount = userDB.FollowersCount,
                 FollowingCount = userDB.FollowingCount,
                 PostsCount = userDB.PostsCount
@@ -185,6 +191,7 @@ namespace Infrastructure.Service
             }
 
             user.Username = userDto.Username;
+            user.Name = userDto.Name;
             user.Email = userDto.Email;
             if(!string.IsNullOrEmpty(userDto.Password))
             {
@@ -194,6 +201,11 @@ namespace Infrastructure.Service
             user.ProfilePictureUrl = userDto.ProfilePictureUrl;
 
             return await _userRepository.UpdateUser(user);
+        }
+
+        public async Task<Group> GetGroupById(int groupId)
+        {
+            return await _userRepository.GetGroupById(groupId);
         }
     }
 }

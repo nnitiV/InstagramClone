@@ -9,5 +9,7 @@ namespace Application.Services
         Task<List<MessageDto>> GetChatHistoryAsync(int currentUserId, int otherUserid);
         Task<Group> CreateGroupAsync(int creatorId, CreateGroupDto groupDto);
         Task<List<MessageDto>> GetGroupChatHistoryAsync(int groupId);
+
+        Task<List<LastMessageDto>> GetLastMessagesSentToUser(int userId);
     }
 }

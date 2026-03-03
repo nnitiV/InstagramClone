@@ -31,7 +31,9 @@ namespace Infrastructure.Service
 
             var fileName = $"{Guid.NewGuid()}{extension}";
 
-            var uploadFolder = Path.Combine(_environment.WebRootPath, "uploads");
+            var webRootPath = _environment.WebRootPath ?? Path.Combine(_environment.ContentRootPath, "wwwroot");
+
+            var uploadFolder = Path.Combine(webRootPath, "uploads");
 
             if (!Directory.Exists(uploadFolder))
             {

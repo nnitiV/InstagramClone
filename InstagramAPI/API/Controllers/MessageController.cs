@@ -22,27 +22,35 @@ namespace API.Controllers
         {
             var currentUserId = User.GetUserId();
             var messages = await _messageService.GetChatHistoryAsync(currentUserId, otherUserId);
-            return Ok(new { messages = messages });
+            return Ok(new { messages });
         }
         [HttpPost]
         public async Task<IActionResult> SendMessage(SendMessageDto sendMessageDto)
         {
             var currentUserId = User.GetUserId();
             var message = await _messageService.SendMessageAsync(currentUserId, sendMessageDto);
-            return Ok(new { message = message });
+            return Ok(new { message });
         }
         [HttpGet("groups/{groupId}")]
         public async Task<IActionResult> GetGroupHistory(int groupId)
         {
             List<MessageDto> messages = await _messageService.GetGroupChatHistoryAsync(groupId);
-            return Ok(new { messages = messages });
+            return Ok(new { messages });
         }
         [HttpPost("groups")]
         public async Task<IActionResult> CreateGroup(CreateGroupDto createGroupDto)
         {
             var currentUserId = User.GetUserId();
             Group group = await _messageService.CreateGroupAsync(currentUserId, createGroupDto);
-            return Ok(new { group = group });
+            return Ok(new { group });
+        }
+
+        [HttpGet("lastMessages")]
+        public async Task<IActionResult> GetLastMessagesSentToUser()
+        {
+            var currentUserId = User.GetUserId();
+            List<LastMessageDto> messages = await _messageService.GetLastMessagesSentToUser(currentUserId);
+            return Ok(new { messages });
         }
     }
 }

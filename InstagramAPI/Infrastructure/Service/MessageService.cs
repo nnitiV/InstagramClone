@@ -125,5 +125,60 @@ namespace Infrastructure.Service
                 IsRead = m.IsRead
             }).ToList();
         }
+
+        public async Task<List<LastMessageDto>> GetLastMessagesSentToUser(int userId)
+        {
+            if(userId <= 0)
+            {
+                throw new ArgumentException("Please, provide a valid user id.");
+            }
+            List<Message> messages = await _messageRepository.GetLastMessagesSentToUser(userId);
+            List<Message> groupMessages = await _messageRepository.GetGroupLastMessagesSentToUser(userId);
+
+            List<LastMessageDto> result = new ();
+            foreach (var m in messages)
+            {
+                if (m.SenderId != userId)
+                {
+                    result.Add(new LastMessageDto
+                    {
+                        Id = m.Id,
+                        IsGroup = false,
+                        LastMessage = m.Content,
+                        LastMessageAt = m.SentAt,
+                        Name = m.Sender.Username,
+                        PictureUrl = m.Sender.ProfilePictureUrl,
+                    });
+                }
+                else
+                {
+                    result.Add(new LastMessageDto
+                    {
+                        Id = m.Id,
+                        IsGroup = false,
+                        LastMessage = m.Content,
+                        LastMessageAt = m.SentAt,
+                        Name = m.Receiver.Username,
+                        PictureUrl = m.Receiver.ProfilePictureUrl,
+                    });
+                }
+            }
+            foreach(var m in groupMessages)
+            {
+                if (m.Group != null)
+                {
+                    result.Add(new LastMessageDto
+                    {
+                        Id = m.Id,
+                        IsGroup = true,
+                        LastMessage = m.Content,
+                        LastMessageAt = m.SentAt,
+                        Name = m.Group.Name,
+                        PictureUrl = m.Group.GroupImage,
+                    });
+                }
+            }
+            return result.OrderByDescending(m => m.LastMessageAt).ToList();
+        }
     }
 }

@@ -12,5 +12,6 @@ namespace Application.Services
         Task<int> AddUser(CreateUserDto user);
         Task<bool> UpdateUser(UpdateUserDto user, int userId);
         Task<bool> DeleteUserById(int userId);
+        Task<Group> GetGroupById(int groupId);
     }
 }

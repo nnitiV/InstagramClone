@@ -14,12 +14,12 @@ namespace API.Controllers
         {
             _fileService = fileService;
         }
-
+        [Authorize]
         [HttpPost("upload")]
         public async Task<IActionResult> UploadFile(IFormFile file)
         {
             var fileUrl = await _fileService.SaveFileAsync(file);
-
+            Console.WriteLine("File url: " + fileUrl);
             return Ok(new { url = fileUrl });
         }
     }

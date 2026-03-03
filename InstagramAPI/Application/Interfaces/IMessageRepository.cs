@@ -10,5 +10,8 @@ namespace Application.Interfaces
         Task CreateGroupAsync(Group group);
         Task AddMemberToGroupAsync(GroupMember groupMember);
         Task<Group?> GetGroupWithMembersAsync(int groupid);
+
+        Task<List<Message>> GetLastMessagesSentToUser(int userId);
+        Task<List<Message>> GetGroupLastMessagesSentToUser(int userId);
     }
 }

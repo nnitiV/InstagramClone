@@ -12,5 +12,6 @@ namespace Application.Interfaces
         Task AddUser(User user);
         Task<bool> UpdateUser(User user);
         Task<bool> DeleteUserById(int userId);
+        Task<Group> GetGroupById(int groupId);
     }
 }

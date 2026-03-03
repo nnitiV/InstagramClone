@@ -50,5 +50,10 @@ namespace Infrastructure.Repositories
             var rowsAffected = await _context.SaveChangesAsync();
             return rowsAffected > 0;
         }
+
+        public async Task<Group> GetGroupById(int groupId)
+        {
+            return await _context.Groups.Where(g => g.Id == groupId).FirstOrDefaultAsync();
+        }
     }
 }
