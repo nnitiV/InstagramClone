@@ -1,50 +1,36 @@
+import { searchUsers } from "@/services/search.search";
+import { UserProfile } from "@/types/user";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+function useDebounce<T>(value: T, delay: number) {
+    const [debounceValue, setDebounceValue] = useState<T>(value);
+
+    useEffect(() => {
+        const handler = setTimeout(() => {
+            setDebounceValue(value);
+        }, delay);
+        return () => clearTimeout(handler);
+    }, [value, delay]);
+
+    return debounceValue;
+}
 
 export default function SearchOffset() {
     const [searchText, setSearchText] = useState<string>("");
-    const mockSearchUser = [
-        {
-            "id": 101,
-            "username": "urban_explorer",
-            "fullName": "Lucas Silva",
-            "profilePictureUrl": "https://randomuser.me/api/portraits/men/32.jpg",
-            "followersCount": 12500,
-            "isFollowing": true
-        },
-        {
-            "id": 102,
-            "username": "art_by_clara",
-            "fullName": "Clara Mendes",
-            "profilePictureUrl": "https://randomuser.me/api/portraits/women/44.jpg",
-            "followersCount": 8900,
-            "isFollowing": false
-        },
-        {
-            "id": 103,
-            "username": "tech_minimalist",
-            "fullName": "Gabriel Santos",
-            "profilePictureUrl": "https://randomuser.me/api/portraits/men/85.jpg",
-            "followersCount": 45600,
-            "isFollowing": false
-        },
-        {
-            "id": 104,
-            "username": "nature.photography",
-            "fullName": "Beatriz Oliveira",
-            "profilePictureUrl": "https://randomuser.me/api/portraits/women/68.jpg",
-            "followersCount": 102000,
-            "isFollowing": true
-        },
-        {
-            "id": 105,
-            "username": "chef_vitor",
-            "fullName": "Vitor Souza",
-            "profilePictureUrl": "https://randomuser.me/api/portraits/men/22.jpg",
-            "followersCount": 3200,
-            "isFollowing": false
+    const [users, setUsers] = useState<UserProfile[]>([]);
+    const debounceSearch = useDebounce(searchText, 500);
+
+    useEffect(() => {
+        const fetchUserList = async () => {
+            if (debounceSearch) {
+                const usersRes = await searchUsers(debounceSearch);
+                console.log("Res:", usersRes);
+                setUsers(usersRes.users);
+            }
         }
-    ];
+        fetchUserList();
+    }, [debounceSearch])
     return (
         <div className="offcanvas offcanvas-start" tabIndex={-1} id="searchOffcanvas" aria-labelledby="searchOffcanvasLabel">
             <div className="offcanvas-header d-flex flex-column">
@@ -67,26 +53,29 @@ export default function SearchOffset() {
                         </div>
                     </>
                     :
-                    mockSearchUser.map(user => (
-                        <Link href={`/profile/${user.username}`} key={user.id} className="text-decoration-none text-body" onClick={() => setSearchText("")}>
-                            <div className="d-flex mb-1 cursor-pointer transparent-background-hover rounded px-2 py-2" data-bs-dismiss="offcanvas" 
-                                data-mdb-ripple-init
-                                data-mdb-ripple-color="light">
-                                <div className="p-1 rounded-circle position-relative me-2">
-                                    <img
-                                        src={user.profilePictureUrl}
-                                        alt="Story"
-                                        className="rounded-circle"
-                                        style={{ width: "46px", height: "46px", objectFit: "cover", }}
-                                    />
+                    users.length > 0 ?
+                        users.map(user => (
+                            <Link href={`/profile/${user.username}`} key={user.id} className="text-decoration-none text-body" onClick={() => setSearchText("")}>
+                                <div className="d-flex mb-1 cursor-pointer transparent-background-hover rounded px-2 py-2" data-bs-dismiss="offcanvas"
+                                    data-mdb-ripple-init
+                                    data-mdb-ripple-color="light">
+                                    <div className="p-1 rounded-circle position-relative me-2">
+                                        <img
+                                            src={!user.profilePictureUrl ? "https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg" : "http://localhost:5000/" + user.profilePictureUrl}
+                                            alt="Story"
+                                            className="rounded-circle"
+                                            style={{ width: "46px", height: "46px", objectFit: "cover", }}
+                                        />
+                                    </div>
+                                    <div className="d-flex flex-column justify-content-center" style={{ fontSize: "14px" }}>
+                                        <p className="m-0 p-0">{user.username}</p>
+                                        <p className="m-0 p-0" style={{ color: "rgba(75,75,75,0.75)" }}>{user.name} - {user.followersCount}</p>
+                                    </div>
                                 </div>
-                                <div className="d-flex flex-column justify-content-center" style={{ fontSize: "14px" }}>
-                                    <p className="m-0 p-0">{user.username}</p>
-                                    <p className="m-0 p-0" style={{ color: "rgba(75,75,75,0.75)" }}>{user.fullName} - {user.followersCount}</p>
-                                </div>
-                            </div>
-                        </Link>
-                    ))
+                            </Link>
+                        ))
+                        :
+                        <p>No user yet</p>
                 }
             </div >
         </div >

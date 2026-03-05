@@ -41,7 +41,7 @@ namespace API.Hubs
             await Groups.AddToGroupAsync(Context.ConnectionId, groupId.ToString());
         }
         public async Task LeaveGroup(int groupId)
-        {
+        {   
             await Groups.RemoveFromGroupAsync(Context.ConnectionId, groupId.ToString());
         }
     }
