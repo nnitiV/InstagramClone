@@ -36,7 +36,6 @@ builder.Services.AddScoped<IFollowerRepository, FollowerRepository>();
 builder.Services.AddScoped<IPostLikeRepository, PostlikeRepository>();
 builder.Services.AddScoped<IMessageRepository, MessageRepository>();
 builder.Services.AddScoped<IStoryRepository, StoryRepository>();
-builder.Services.AddScoped<ISearchRepository, SearchRepository>();
 
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IPostService, PostService>();
@@ -48,7 +47,6 @@ builder.Services.AddScoped<ICommentService, CommentService>();
 builder.Services.AddScoped<IFollowerService, FollowerService>();
 builder.Services.AddScoped<IMessageService, MessageService>();
 builder.Services.AddScoped<IStoryService, StoryService>();
-builder.Services.AddScoped<ISearchService, SearchService>();
 
 builder.Services.AddControllers();
 

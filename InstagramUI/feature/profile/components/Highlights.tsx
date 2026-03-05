@@ -2,22 +2,25 @@ import { useState } from "react"
 import { USER_PROFILE_MOCK } from "../constants/data"
 
 type HighlightsProps = {
+    isLoggedUser: boolean;
     userId: number | undefined
 }
 
-export default function Highlights({ userId }: HighlightsProps) {
+export default function Highlights({ userId, isLoggedUser }: HighlightsProps) {
     const [userHighlights, setUserHighlights] = useState<[]>([]);
     return (
         <div className="profile-highlights mt-4 mt-md-5 w-75 mx-auto d-flex overflow-x-auto no-scrollbar pb-2">
-            <div className="d-flex flex-column align-items-center me-4 ms-2 ms-md-0">
-                <div
-                    className="rounded-circle d-flex align-items-center justify-content-center bg-transparent border text-muted"
-                    style={{ width: "84px", height: "84px", fontSize: "1.5rem", borderStyle: "dashed" }}
-                >
-                    <i className="bi bi-plus-lg"></i>
+            {isLoggedUser &&
+                <div className="d-flex flex-column align-items-center me-4 ms-2 ms-md-0">
+                    <div
+                        className="rounded-circle d-flex align-items-center justify-content-center bg-transparent border text-muted"
+                        style={{ width: "84px", height: "84px", fontSize: "1.5rem", borderStyle: "dashed" }}
+                    >
+                        <i className="bi bi-plus-lg"></i>
+                    </div>
+                    <span className="small mt-1 fw-medium text-secondary">New</span>
                 </div>
-                <span className="small mt-1 fw-medium text-secondary">New</span>
-            </div>
+            }
 
             {userHighlights.length > 0 && userHighlights.map((highlight) => (
                 <div
@@ -36,7 +39,8 @@ export default function Highlights({ userId }: HighlightsProps) {
                         {highlight.name}
                     </p>
                 </div>
-            ))}
+            ))
+            }
         </div>
     )
 }

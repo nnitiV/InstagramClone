@@ -1,4 +1,4 @@
-import { searchUsers } from "@/services/search.search";
+import { searchUsers } from "@/services/search.service";
 import { UserProfile } from "@/types/user";
 import Link from "next/link";
 import { useEffect, useState } from "react";
@@ -26,7 +26,7 @@ export default function SearchOffset() {
             if (debounceSearch) {
                 const usersRes = await searchUsers(debounceSearch);
                 console.log("Res:", usersRes);
-                setUsers(usersRes.users);
+                setUsers(usersRes.result);
             }
         }
         fetchUserList();

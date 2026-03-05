@@ -48,11 +48,11 @@ export default function SearchPage() {
                                 View archive
                             </button>
                         </div>
-                        <Highlights userId={user?.id} />
+                        <Highlights userId={user?.id} isLoggedUser={true} />
                         {user?.postsCount != undefined && user?.postsCount > 0 ?
                             <Posts setSelectedPost={setSelectedPost} />
                             :
-                            <EmptyUserPosts />
+                            <EmptyUserPosts isLoggedUser={true}/>
                         }
                     </div>
                     {selectedPost &&

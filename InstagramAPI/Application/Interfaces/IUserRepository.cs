@@ -8,7 +8,7 @@ namespace Application.Interfaces
         Task<User?> GetById(int id);
         Task<User?> GetUserByEmail(string email);
         Task<User?> GetUserByUsername(string username);
-        Task<List<User>> SearchUsersAsync(string search);
+        Task<List<User>> SearchUsersAsync(string search, int userId);
         Task AddUser(User user);
         Task<bool> UpdateUser(User user);
         Task<bool> DeleteUserById(int userId);

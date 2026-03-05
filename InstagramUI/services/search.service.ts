@@ -1,9 +1,9 @@
 import { BASE_ROUTE_URL } from "@/constants";
-import { getLoggedUserToken } from "@/feature/auth/services/auth-service"
+import { getLoggedUserToken } from "@/feature/auth/services/auth-service";
 
 export const searchUsers = async (searchTerm: string) => {
     const token = await getLoggedUserToken();
-    const response = await fetch(`${BASE_ROUTE_URL}/search?searchTerm=${searchTerm}`, {
+    const response = await fetch(`${BASE_ROUTE_URL}/user/search?search=${searchTerm}`, {
         headers: {
             "Authorization": `Bearer ${token}`,
             "Content-Type" : "application/json",

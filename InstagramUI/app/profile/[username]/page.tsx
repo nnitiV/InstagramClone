@@ -1,37 +1,96 @@
 "use client";
 import ExploreModal from "@/feature/explore/components/ExploreModal";
+import EmptyUserPosts from "@/feature/profile/components/EmptyUserPosts";
 import Header from "@/feature/profile/components/Header";
 import Highlights from "@/feature/profile/components/Highlights";
 import Posts from "@/feature/profile/components/Posts";
+import { checkFollowStatus, followUser, getUserByUsername, unfollowUser } from "@/feature/profile/services/profile.service";
 import { Post } from "@/types/feed";
+import { UserProfile } from "@/types/user";
 import { use, useEffect, useState } from "react";
 
 type UserProfileProps = {
     params: Promise<{ username: string }>;
 }
 
-export default function UserProfile({ params }: UserProfileProps) {
-    const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+export default function SearchPage({ params }: UserProfileProps) {
     const { username } = use(params);
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [user, setUser] = useState<UserProfile | null>(null);
+    const [isFollowing, setIsFollowing] = useState<boolean>(false);
+    const [userHighlights, setUserHighlights] = useState<[]>([]);
+    const [selectedPost, setSelectedPost] = useState<Post | null>(null);
     const [isMobile, setIsMobile] = useState<boolean>(false);
-        useEffect(() => {
-            const checkWidth = () => setIsMobile(window.innerWidth <= 768);
-            checkWidth();
-        }, [])
+    useEffect(() => {
+        setIsLoading(true);
+        const checkWidth = () => setIsMobile(window.innerWidth <= 768);
+        checkWidth();
+
+        const getUser = async () => {
+            let userFetched = await getUserByUsername(username);
+            if (userFetched.user) setUser(userFetched.user);
+        }
+        getUser();
+        setIsLoading(false);
+    }, []);
+
+    useEffect(() => {
+        if (user?.id) { // Só dispara quando o ID do perfil alvo chegar
+            const checkFollowing = async () => {
+                const res = await checkFollowStatus(user.id);
+                setIsFollowing(res.isFollowing);
+            }
+            checkFollowing();
+        }
+    }, [user?.id]);
+
+    const followButtonAction = async () => {
+        if(user != null) {
+            if(isFollowing) {
+                await unfollowUser(user.id);
+            } else {
+                await followUser(user.id);
+            }
+            setIsFollowing(prev => !prev);
+        }
+    }
+
     return (
         <>
-            <div className="vh-100 py-5">
-                <Header isMobile />
-                <div className={`user-buttons w-75 mx-auto ${isMobile && "d-flex justify-content-between"}`}>
-                    <button type="button" className={`border border-2 btn-custom w-25 me-3 ${isMobile && "w-50"}`}>Edit profile</button>
-                    <button type="button" className={`border border-2 btn-custom w-25 me-3 ${isMobile && "w-50"}`}>View archive</button>
+            {isLoading ?
+                <div className="d-flex justify-content-center align-items-center h-100 w-100">
+                    <div className="spinner-border">
+                        <span className="visually-hidden"> Loading...</span >
+                    </div >
                 </div>
-                <Highlights />
-                <Posts setSelectedPost={setSelectedPost} />
-            </div>
-            {selectedPost &&
-                <ExploreModal post={selectedPost} onClose={() => setSelectedPost(null)} />
+                :
+                <>
+                    <div className="vh-100 py-5">
+                        <Header isMobile={isMobile} userProfile={user} />
+                        <div className={`user-buttons w-75 mx-auto ${isMobile && "d-flex justify-content-between"}`}>
+                            {isFollowing ? 
+                            <button type="button" onClick={followButtonAction} className="btn btn-secondary border fw-bold flex-grow-1 flex-sm-grow-0 me-sm-2 mb-2 mb-sm-0 px-4">
+                                Unfollow
+                            </button>
+                            :
+                            <button type="button" onClick={followButtonAction} className="btn btn-primary border fw-bold flex-grow-1 flex-sm-grow-0 me-sm-2 mb-2 mb-sm-0 px-4">
+                                Follow
+                            </button>
+                            }
+                        </div>
+                        <Highlights userId={user?.id} isLoggedUser={false} />
+                        {user?.postsCount != undefined && user?.postsCount > 0 ?
+                            <Posts setSelectedPost={setSelectedPost} />
+                            :
+                            <EmptyUserPosts isLoggedUser={false} />
+                        }
+                    </div>
+                    {selectedPost &&
+                        <ExploreModal post={selectedPost} onClose={() => setSelectedPost(null)} />
+                    }
+                </>
             }
         </>
-    )
-}
+    );
+};
+

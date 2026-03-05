@@ -29,9 +29,9 @@ namespace Infrastructure.Repositories
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
         }
-        public async Task<List<User>> SearchUsersAsync(string search)
+        public async Task<List<User>> SearchUsersAsync(string search, int userId)
         {
-            return await _context.Users.Where(u => u.Username.ToLower().Contains(search.ToLower())).ToListAsync();
+            return await _context.Users.Where(u => u.Id != userId && u.Username.ToLower().Contains(search.ToLower())).ToListAsync();
         }
         public async Task AddUser(User user)
         {

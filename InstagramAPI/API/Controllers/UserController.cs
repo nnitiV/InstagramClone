@@ -16,7 +16,7 @@ namespace API.Controllers
             _userService = userService;
         }
 
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<IActionResult> GetUserById(int id)
         {
             ResponseUserDto? responseUserDto = null;
@@ -27,6 +27,16 @@ namespace API.Controllers
             }
 
             return Ok(responseUserDto);
+        }
+        [HttpGet("{username}")]
+        public async Task<IActionResult> GetUserByUsername(string username)
+        {
+            if (string.IsNullOrWhiteSpace(username))
+                return BadRequest(new { message = "Username cannot be empty." });
+            Console.WriteLine("Username: " + username);
+            ResponseUserDto user = await _userService.GetUserByUsername(username);
+            if (user == null) return NotFound(new { message = "User not found." });
+            return Ok(new { user });
         }
         [HttpPost]
         public async Task<IActionResult> AddUser(CreateUserDto createUserDto)
@@ -63,7 +73,8 @@ namespace API.Controllers
         [HttpGet("search")]
         public async Task<IActionResult> Search([FromQuery] string search)
         {
-            var users = await _userService.SearchUsersAsync(search);
+            int userId = User.GetUserId();
+            var users = await _userService.SearchUsersAsync(search, userId);
             return Ok(new { result = users });
         }
     }
