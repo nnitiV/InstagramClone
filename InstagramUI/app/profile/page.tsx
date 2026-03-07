@@ -46,9 +46,9 @@ export default function SearchPage() {
                                 data-bs-toggle="modal" data-bs-target="#editProfile">
                                 Edit profile
                             </button>
-                            <button type="button" className="btn btn-light border fw-bold flex-grow-1 flex-sm-grow-0 me-sm-2 mb-2 mb-sm-0 px-4">
+                            {/* <button type="button" className="btn btn-light border fw-bold flex-grow-1 flex-sm-grow-0 me-sm-2 mb-2 mb-sm-0 px-4">
                                 View archive
-                            </button>
+                            </button> */}
                         </div>
                         <Highlights userId={user?.id} isLoggedUser={true} />
                         {user?.postsCount != undefined && user?.postsCount > 0 ?
