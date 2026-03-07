@@ -80,7 +80,7 @@ export default function ListFollowModal({ users, userId }: ListFollowModalProps)
                                     </div>
                                     <div className="d-flex flex-column justify-content-center" style={{ fontSize: "14px" }}>
                                         <p className="m-0 p-0">{user.username}</p>
-                                        <p className="m-0 p-0" style={{ color: "rgba(75,75,75,0.75)" }}>{user.name} - {user.followersCount}</p>
+                                        <p className="m-0 p-0" style={{ color: "rgba(75,75,75,0.75)" }}>{user.name}</p>
                                     </div>
                                 </div>
                             </Link>
