@@ -172,7 +172,6 @@ namespace Infrastructure.Service
             return await _userRepository.DeleteUserById(userId);
         }
 
-
         public async Task<bool> UpdateUser(UpdateUserDto userDto, int userId)
         {
             if(userDto == null)
@@ -185,20 +184,40 @@ namespace Infrastructure.Service
             {
                 throw new ArgumentException("Provided user doesn't exist.");
             }
+
             if(user.Id != userId)
             {
-                throw new UnauthorizedAccessException("You can only delete yourself.");
+                throw new UnauthorizedAccessException("You can only update yourself.");
             }
 
-            user.Username = userDto.Username;
-            user.Name = userDto.Name;
-            user.Email = userDto.Email;
-            if(!string.IsNullOrEmpty(userDto.Password))
-            {
+            if(!string.IsNullOrEmpty(userDto.Username) && 
+                !user.Username.ToLower().Equals(userDto.Username.ToLower()))
+                user.Username = userDto.Username;
+
+            if (!string.IsNullOrEmpty(userDto.Name) && 
+                !user.Name.ToLower().Equals(userDto.Name.ToLower()))
+                user.Name = userDto.Name;
+
+            if (!string.IsNullOrEmpty(userDto.Email) && 
+                !user.Email.ToLower().Equals(userDto.Email.ToLower()))
+                user.Email = userDto.Email; 
+
+            if (!string.IsNullOrEmpty(userDto.Password))
                 user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password);
-            }
-            user.Bio = userDto.Bio;
-            user.ProfilePictureUrl = userDto.ProfilePictureUrl;
+
+            if(!string.IsNullOrEmpty(userDto.Bio) && 
+                !user.Bio.ToLower().Equals(userDto.Bio.ToLower()))
+                user.Bio = userDto.Bio;
+
+            if (!string.IsNullOrEmpty(userDto.ProfilePictureUrl) && 
+                !user.ProfilePictureUrl.ToLower().Equals(userDto.ProfilePictureUrl.ToLower()))
+                user.ProfilePictureUrl = userDto.ProfilePictureUrl;
+
+            if (user.FollowersCount != userDto.FollowersCount)
+                user.FollowersCount = userDto.FollowersCount;
+
+            if (user.FollowingCount != userDto.FollowingCount)
+                user.FollowingCount = userDto.FollowingCount;
 
             return await _userRepository.UpdateUser(user);
         }

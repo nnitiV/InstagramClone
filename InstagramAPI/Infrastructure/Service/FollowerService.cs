@@ -31,6 +31,23 @@ namespace Infrastructure.Service
             await _followerRepository.FollowUserAsync(follower);
         }
 
+        public async Task<bool> UnfollowUserAsync(int followingUserId, int followedUserId)
+        {
+            if (followingUserId <= 0)
+            {
+                throw new ArgumentException("Please, provide a valid following user id.");
+            }
+            if (followedUserId <= 0)
+            {
+                throw new ArgumentException("Please, provide a valid follower user id.");
+            }
+            if (!await IsFollowingAsync(followingUserId, followedUserId))
+            {
+                throw new ArgumentException("You are already not following this user.");
+            }
+            return await _followerRepository.UnfollowUserAsync(followingUserId, followedUserId);
+        }
+
         public async Task<List<FollowerDto>> GetListOfFollowersAsync(int userId)
         {
             if(userId <= 0)
@@ -92,19 +109,6 @@ namespace Infrastructure.Service
                 throw new ArgumentException("Please, provide a valid follower user id.");
             }
             return await _followerRepository.IsFollowingAsync(followingUserId, followedUserId);
-        }
-
-        public async Task<bool> UnfollowUserAsync(int followingUserId, int followedUserId)
-        {
-            if (followingUserId <= 0)
-            {
-                throw new ArgumentException("Please, provide a valid following user id.");
-            }
-            if (followedUserId <= 0)
-            {
-                throw new ArgumentException("Please, provide a valid follower user id.");
-            }
-            return await _followerRepository.UnfollowUserAsync(followingUserId, followedUserId);
         }
     }
 }
