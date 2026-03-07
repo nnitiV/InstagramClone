@@ -18,7 +18,7 @@ export default function EditProfileModal({ user }: EditProfileModalProps) {
         age: user?.age || 0,
     });
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [previewUrl, setPreviewUrl] = useState<string>(editUser.profilePictureUrl ? editUser.profilePictureUrl : "");
+    const [previewUrl, setPreviewUrl] = useState<string>(editUser.profilePictureUrl || "");
     useEffect(() => {
         if (user) {
             setEditUser({
@@ -29,21 +29,21 @@ export default function EditProfileModal({ user }: EditProfileModalProps) {
                 bio: user.bio || "",
                 profilePictureUrl: user.profilePictureUrl || "",
                 dateOfBirth: user.dateOfBirth,
-                age: user.age
+                age: user.age,
             });
             setPreviewUrl("http://localhost:5000/" + user.profilePictureUrl);
         }
     }, [user]);
 
     const updateUser = async () => {
-        let userToSave = {...editUser};
+        let userToSave = { ...editUser };
         let photoUrl = "";
         console.log("Selected file: ", selectedFile);
-        if(selectedFile) {
+        if (selectedFile) {
             photoUrl = await udpateUserPhoto(selectedFile);
         }
         console.log("Photo url: ", photoUrl);
-        if(photoUrl.length > 0) userToSave.profilePictureUrl = photoUrl;
+        if (photoUrl.length > 0) userToSave.profilePictureUrl = photoUrl;
         console.log("User with profile picture: ", userToSave.profilePictureUrl);
         const res = await updateUserProfile(userToSave);
         console.log(res);

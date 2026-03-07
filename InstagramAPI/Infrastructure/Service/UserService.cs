@@ -213,12 +213,6 @@ namespace Infrastructure.Service
                 !user.ProfilePictureUrl.ToLower().Equals(userDto.ProfilePictureUrl.ToLower()))
                 user.ProfilePictureUrl = userDto.ProfilePictureUrl;
 
-            if (user.FollowersCount != userDto.FollowersCount)
-                user.FollowersCount = userDto.FollowersCount;
-
-            if (user.FollowingCount != userDto.FollowingCount)
-                user.FollowingCount = userDto.FollowingCount;
-
             return await _userRepository.UpdateUser(user);
         }
         public async Task<bool> UpdateUserInternally(UpdateUserDto userDto)

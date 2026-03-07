@@ -13,7 +13,6 @@ namespace API.Controllers
     public class FollowerController : ControllerBase
     {
         private readonly IFollowerService _followerService;
-
         public FollowerController(IFollowerService followerService)
         {
             _followerService = followerService;

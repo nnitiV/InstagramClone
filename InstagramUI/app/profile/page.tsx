@@ -22,7 +22,9 @@ export default function SearchPage() {
         checkWidth();
 
         const getUser = async () => {
-            setUser(await getLoggedUserInfo());
+            let userInfo = await getLoggedUserInfo();
+            console.log(userInfo);
+            setUser(userInfo);
         }
         getUser();
         setIsLoading(false);
