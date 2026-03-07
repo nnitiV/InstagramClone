@@ -3,7 +3,7 @@ import { UserProfile } from "@/types/user";
 import Link from "next/link";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
-function useDebounce<T>(value: T, delay: number) {
+export function useDebounce<T>(value: T, delay: number) {
     const [debounceValue, setDebounceValue] = useState<T>(value);
 
     useEffect(() => {

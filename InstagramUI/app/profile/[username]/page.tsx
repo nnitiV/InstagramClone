@@ -1,4 +1,5 @@
 "use client";
+import { getLoggedUserInfo } from "@/feature/auth/services/auth-service";
 import ExploreModal from "@/feature/explore/components/ExploreModal";
 import EmptyUserPosts from "@/feature/profile/components/EmptyUserPosts";
 import Header from "@/feature/profile/components/Header";
@@ -15,6 +16,7 @@ type UserProfileProps = {
 
 export default function SearchPage({ params }: UserProfileProps) {
     const { username } = use(params);
+    const [isSelf, setIsSelf] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [user, setUser] = useState<UserProfile | null>(null);
     const [isFollowing, setIsFollowing] = useState<boolean>(false);
@@ -29,6 +31,8 @@ export default function SearchPage({ params }: UserProfileProps) {
         const getUser = async () => {
             let userFetched = await getUserByUsername(username);
             if (userFetched.user) setUser(userFetched.user);
+            const userInfo = await getLoggedUserInfo();
+            setIsSelf(userInfo.id == userFetched.user.id);
         }
         getUser();
         setIsLoading(false);
@@ -37,8 +41,11 @@ export default function SearchPage({ params }: UserProfileProps) {
     useEffect(() => {
         if (user?.id) { // Só dispara quando o ID do perfil alvo chegar
             const checkFollowing = async () => {
-                const res = await checkFollowStatus(user.id);
-                setIsFollowing(res ? res.isFollowing : false);
+                const userInfo = await getLoggedUserInfo();
+                if (userInfo.id != user.id) {
+                    const res = await checkFollowStatus(user.id);
+                    setIsFollowing(res ? res.isFollowing : false);
+                }
             }
             checkFollowing();
         }
@@ -46,13 +53,13 @@ export default function SearchPage({ params }: UserProfileProps) {
 
     const followButtonAction = async () => {
         let didChange = false;
-        if(user != null) {
-            if(isFollowing) {
+        if (user != null) {
+            if (isFollowing) {
                 didChange = await unfollowUser(user.id);
             } else {
                 didChange = await followUser(user.id);
             }
-            if(didChange) setIsFollowing(prev => !prev);
+            if (didChange) setIsFollowing(prev => !prev);
         }
     }
 
@@ -69,14 +76,14 @@ export default function SearchPage({ params }: UserProfileProps) {
                     <div className="vh-100 py-5">
                         <Header isMobile={isMobile} userProfile={user} />
                         <div className={`user-buttons w-75 mx-auto ${isMobile && "d-flex justify-content-between"}`}>
-                            {isFollowing ? 
-                            <button type="button" onClick={followButtonAction} className="btn btn-secondary border fw-bold flex-grow-1 flex-sm-grow-0 me-sm-2 mb-2 mb-sm-0 px-4">
-                                Unfollow
-                            </button>
-                            :
-                            <button type="button" onClick={followButtonAction} className="btn btn-primary border fw-bold flex-grow-1 flex-sm-grow-0 me-sm-2 mb-2 mb-sm-0 px-4">
-                                Follow
-                            </button>
+                            {!isSelf && (isFollowing ?
+                                <button type="button" onClick={followButtonAction} className="btn btn-secondary border fw-bold flex-grow-1 flex-sm-grow-0 me-sm-2 mb-2 mb-sm-0 px-4">
+                                    Unfollow
+                                </button>
+                                :
+                                <button type="button" onClick={followButtonAction} className="btn btn-primary border fw-bold flex-grow-1 flex-sm-grow-0 me-sm-2 mb-2 mb-sm-0 px-4">
+                                    Follow
+                                </button>)
                             }
                         </div>
                         <Highlights userId={user?.id} isLoggedUser={false} />

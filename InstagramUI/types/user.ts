@@ -24,3 +24,9 @@ export interface EditUserProfile {
   followingCount?: number;
   postsCount?: number;
 }
+export interface Follower {
+  userId: number;
+  username: string;
+  name: string; // Ou string | null se o backend puder retornar nulo
+  profilePictureUrl: string;
+}
