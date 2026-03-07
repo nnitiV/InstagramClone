@@ -141,17 +141,21 @@ namespace Infrastructure.Service
             return await _followerRepository.GetTotalFollowingAsync(userId);
         }
 
-        public async Task<bool> IsFollowingAsync(int followingUserId, int followedUserId)
+        public async Task<bool> IsFollowingAsync(int currentUserId, int targetUserId)
         {
-            if (followingUserId <= 0)
+            if(currentUserId == targetUserId)
+            {
+                throw new ArgumentException("You can't check yourself.");
+            }
+            if (currentUserId <= 0)
             {
                 throw new ArgumentException("Please, provide a valid following user id.");
             }
-            if (followedUserId <= 0)
+            if (targetUserId <= 0)
             {
                 throw new ArgumentException("Please, provide a valid follower user id.");
             }
-            return await _followerRepository.IsFollowingAsync(followingUserId, followedUserId);
+            return await _followerRepository.IsFollowingAsync(currentUserId, targetUserId);
         }
     }
 }

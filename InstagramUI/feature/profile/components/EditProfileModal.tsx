@@ -18,8 +18,7 @@ export default function EditProfileModal({ user }: EditProfileModalProps) {
         age: user?.age || 0,
     });
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    // Crie um estado temporário para a foto não sumir caso ele cancele
-    const [previewUrl, setPreviewUrl] = useState<string>(editUser.profilePictureUrl);
+    const [previewUrl, setPreviewUrl] = useState<string>(editUser.profilePictureUrl ? editUser.profilePictureUrl : "");
     useEffect(() => {
         if (user) {
             setEditUser({

@@ -38,7 +38,7 @@ export default function SearchPage({ params }: UserProfileProps) {
         if (user?.id) { // Só dispara quando o ID do perfil alvo chegar
             const checkFollowing = async () => {
                 const res = await checkFollowStatus(user.id);
-                setIsFollowing(res.isFollowing);
+                setIsFollowing(res ? res.isFollowing : false);
             }
             checkFollowing();
         }

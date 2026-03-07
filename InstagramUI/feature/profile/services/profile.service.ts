@@ -1,5 +1,5 @@
 import { BASE_ROUTE_URL } from "@/constants"
-import { getLoggedUserInfo, getLoggedUserToken, updateUserProfile } from "@/feature/auth/services/auth-service";
+import { getLoggedUserInfo, getLoggedUserToken, getLoggedUserTokenInfo, updateUserProfile } from "@/feature/auth/services/auth-service";
 import { EditUserProfile } from "@/types/user";
 
 export const getUserByUsername = async (username: string) => {
@@ -48,11 +48,12 @@ export const unfollowUser = async (id: number) => {
         }
     });
     if (!res.ok) return false;
-    return true;
+        return true;
 }
 
 export const checkFollowStatus = async (id: number) => {
     const userToken = await getLoggedUserToken();
+    console.log(`Is user with id ${(await getLoggedUserTokenInfo())?.sub} following user with id ${id}?`);
     const res = await fetch(`${BASE_ROUTE_URL}/followers/${id}/status`, {
         headers: {
             "Authorization": `Bearer ${userToken}`,

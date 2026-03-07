@@ -39,14 +39,14 @@ namespace Infrastructure.Repositories
             return await _context.Followers.CountAsync(f => f.UserIdFollowing == userId);
         }
 
-        public async Task<bool> IsFollowingAsync(int observerId, int targetId)
+        public async Task<bool> IsFollowingAsync(int currentUserId, int targetId)
         {
-            return await _context.Followers.AnyAsync(f => f.UserIdFollowing == observerId && f.UserIdFollowed == targetId);
+            return await _context.Followers.AnyAsync(f => f.UserIdFollowing == currentUserId && f.UserIdFollowed == targetId);
         }
 
-        public async Task<bool> UnfollowUserAsync(int followingUserId, int followedUserId)
+        public async Task<bool> UnfollowUserAsync(int currentUserId, int targetUserId)
         {
-            return await _context.Followers.Where(f => f.UserIdFollowing == followingUserId && f.UserIdFollowed == followedUserId).ExecuteDeleteAsync() > 0;
+            return await _context.Followers.Where(f => f.UserIdFollowing == currentUserId && f.UserIdFollowed == targetUserId).ExecuteDeleteAsync() > 0;
         }
     }
 }
