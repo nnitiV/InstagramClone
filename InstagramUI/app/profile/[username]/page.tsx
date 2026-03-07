@@ -45,13 +45,14 @@ export default function SearchPage({ params }: UserProfileProps) {
     }, [user?.id]);
 
     const followButtonAction = async () => {
+        let didChange = false;
         if(user != null) {
             if(isFollowing) {
-                await unfollowUser(user.id);
+                didChange = await unfollowUser(user.id);
             } else {
-                await followUser(user.id);
+                didChange = await followUser(user.id);
             }
-            setIsFollowing(prev => !prev);
+            if(didChange) setIsFollowing(prev => !prev);
         }
     }
 

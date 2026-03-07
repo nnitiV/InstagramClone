@@ -11,6 +11,7 @@ namespace Application.Services
         Task<List<SearchUserDto>> SearchUsersAsync(string search, int userId);
         Task<int> AddUser(CreateUserDto user);
         Task<bool> UpdateUser(UpdateUserDto user, int userId);
+        Task<bool> UpdateUserInternally(UpdateUserDto userDto);
         Task<bool> DeleteUserById(int userId);
         Task<Group> GetGroupById(int groupId);
     }

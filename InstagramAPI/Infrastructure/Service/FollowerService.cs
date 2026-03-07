@@ -8,10 +8,12 @@ namespace Infrastructure.Service
 {
     public class FollowerService : IFollowerService
     {
+        private readonly IUserService _userService;
         private readonly IFollowerRepository _followerRepository;
-        public FollowerService(IFollowerRepository followerRepository)
+        public FollowerService(IFollowerRepository followerRepository, IUserService userService)
         {
             _followerRepository = followerRepository;
+            _userService = userService;
         }
 
         public async Task FollowUserAsync(Follower follower)
@@ -27,6 +29,27 @@ namespace Infrastructure.Service
             if (await IsFollowingAsync(follower.UserIdFollowing, follower.UserIdFollowed))
             {
                 throw new ArgumentException("You are already following this user.");
+            }
+
+            ResponseUserDto userDto = await _userService.GetById(follower.UserIdFollowed);
+            if (userDto != null)
+            {
+                await _userService.UpdateUserInternally(new UpdateUserDto
+                {
+                    Id = userDto.Id,
+                    FollowingCount = userDto.FollowingCount,
+                    FollowersCount = userDto.FollowersCount + 1
+                });
+            }
+            userDto = await _userService.GetById(follower.UserIdFollowing);
+            if (userDto != null)
+            {
+                await _userService.UpdateUserInternally(new UpdateUserDto
+                {
+                    Id = userDto.Id,
+                    FollowingCount = userDto.FollowingCount + 1,
+                    FollowersCount = userDto.FollowersCount
+                });
             }
             await _followerRepository.FollowUserAsync(follower);
         }
@@ -44,6 +67,26 @@ namespace Infrastructure.Service
             if (!await IsFollowingAsync(followingUserId, followedUserId))
             {
                 throw new ArgumentException("You are already not following this user.");
+            }
+            ResponseUserDto userDto = await _userService.GetById(followedUserId);
+            if (userDto != null)
+            {
+                await _userService.UpdateUserInternally(new UpdateUserDto
+                {
+                    Id = userDto.Id,
+                    FollowingCount = userDto.FollowingCount,
+                    FollowersCount = userDto.FollowersCount - 1
+                });
+            }
+            userDto = await _userService.GetById(followingUserId);
+            if (userDto != null)
+            {
+                await _userService.UpdateUserInternally(new UpdateUserDto
+                {
+                    Id = userDto.Id,
+                    FollowingCount = userDto.FollowingCount - 1,
+                    FollowersCount = userDto.FollowersCount
+                });
             }
             return await _followerRepository.UnfollowUserAsync(followingUserId, followedUserId);
         }

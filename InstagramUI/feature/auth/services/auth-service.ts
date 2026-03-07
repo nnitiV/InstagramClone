@@ -80,7 +80,7 @@ export const getLoggedUserToken = async () => {
     return token || null;
 }
 
-export const getUserInfo = async () => {
+export const getLoggedUserTokenInfo = async () => {
     const cookieStore = await cookies();
     const cookie = cookieStore.get(tokenName);
     const token = cookie?.value;
@@ -93,7 +93,7 @@ export const getUserInfo = async () => {
 }
 
 export const getLoggedUserInfo = async () => {
-    const userId = (await getUserInfo())?.sub;
+    const userId = (await getLoggedUserTokenInfo())?.sub;
 
     const res = await fetch(`${BASE_ROUTE_URL}/user/${userId}`, {
         method: "GET",

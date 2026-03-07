@@ -1,4 +1,4 @@
-import { getUserInfo } from "@/feature/auth/services/auth-service";
+import { getLoggedUserTokenInfo } from "@/feature/auth/services/auth-service";
 import EmptyPost from "@/feature/feed/components/post/EmptyPost";
 import EmptyStory from "@/feature/feed/components/story/EmptyStory";
 import Posts from "@/feature/feed/components/post/Posts";
@@ -8,7 +8,7 @@ import Stories from "@/feature/feed/components/story/Stories";
 
 export default async function Home() {
   const [token, stories, posts] = await Promise.all([
-    getUserInfo(),
+    getLoggedUserTokenInfo(),
     getStories(),
     getPosts()
   ]);

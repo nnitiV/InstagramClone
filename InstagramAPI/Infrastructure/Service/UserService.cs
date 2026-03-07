@@ -221,7 +221,45 @@ namespace Infrastructure.Service
 
             return await _userRepository.UpdateUser(user);
         }
+        public async Task<bool> UpdateUserInternally(UpdateUserDto userDto)
+        {
+            User? user = await _userRepository.GetById(userDto.Id);
+            if (user == null)
+            {
+                throw new ArgumentException("Provided user doesn't exist.");
+            }
 
+            if (!string.IsNullOrEmpty(userDto.Username) &&
+                !user.Username.ToLower().Equals(userDto.Username.ToLower()))
+                user.Username = userDto.Username;
+
+            if (!string.IsNullOrEmpty(userDto.Name) &&
+                !user.Name.ToLower().Equals(userDto.Name.ToLower()))
+                user.Name = userDto.Name;
+
+            if (!string.IsNullOrEmpty(userDto.Email) &&
+                !user.Email.ToLower().Equals(userDto.Email.ToLower()))
+                user.Email = userDto.Email;
+
+            if (!string.IsNullOrEmpty(userDto.Password))
+                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password);
+
+            if (!string.IsNullOrEmpty(userDto.Bio) &&
+                !user.Bio.ToLower().Equals(userDto.Bio.ToLower()))
+                user.Bio = userDto.Bio;
+
+            if (!string.IsNullOrEmpty(userDto.ProfilePictureUrl) &&
+                !user.ProfilePictureUrl.ToLower().Equals(userDto.ProfilePictureUrl.ToLower()))
+                user.ProfilePictureUrl = userDto.ProfilePictureUrl;
+
+            if (user.FollowersCount != userDto.FollowersCount)
+                user.FollowersCount = userDto.FollowersCount;
+
+            if (user.FollowingCount != userDto.FollowingCount)
+                user.FollowingCount = userDto.FollowingCount;
+
+            return await _userRepository.UpdateUser(user);
+        }
         public async Task<Group> GetGroupById(int groupId)
         {
             return await _userRepository.GetGroupById(groupId);

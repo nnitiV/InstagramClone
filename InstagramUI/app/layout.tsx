@@ -1,6 +1,6 @@
 import "./global.css";
 import Sidebar from "@/components/layout/Sidebar";
-import { getUserInfo } from "@/feature/auth/services/auth-service";
+import { getLoggedUserTokenInfo } from "@/feature/auth/services/auth-service";
 import SidebarWrapper from "../components/layout/SidebarWrapper";
 
 export default async function RootLayout({
@@ -9,7 +9,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const [token] = await Promise.all([
-    getUserInfo(),
+    getLoggedUserTokenInfo(),
   ]);
   return (
     <html lang="en" data-bs-theme="light">
