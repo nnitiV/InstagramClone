@@ -21,6 +21,7 @@ export default function PostActions({
 }: PostActionsProps) {
     const [isLiked, setIsLiked] = useState(initialIsLiked);
     const [likeCount, setLikeCount] = useState(initialLikeCount);
+    const [commentCount, setCommentCount] = useState(0);
     const [isSaved, setIsSaved] = useState(initialIsSaved);
     const [isAnimating, setIsAnimating] = useState(false);
 
@@ -62,7 +63,7 @@ export default function PostActions({
                     )}
                 </div>
                 <div className="d-flex align-items-center me-3 cursor-pointer" onClick={onCommentClick}>
-                    <i className="bi bi-chat fs-4"></i>
+                    <i className="bi bi-chat fs-4"></i>{commentCount > 0 && commentCount}
                 </div>
                 <div className="cursor-pointer">
                     <i className="bi bi-send fs-4"></i>

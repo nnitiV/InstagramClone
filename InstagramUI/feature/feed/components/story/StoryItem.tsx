@@ -22,7 +22,6 @@ export default function StoryItem({story}: StoryItemProps) {
                 </div>
                 <p className="text-truncate small mt-1 mb-0 text-center" style={{ maxWidth: "70px", fontSize: "11px" }}>
                     {story.username}
-                    {/* {storyIndex} */}
                 </p>
             </div>
         </Link>

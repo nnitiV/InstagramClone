@@ -5,6 +5,7 @@ import MessageSidebar from "@/feature/message/components/MessageSidebar";
 import { useParams } from "next/navigation";
 import { LastMessageDto } from "@/types/messages";
 import { fetchUserLastMessages } from "@/feature/message/services/profile.service";
+import SendMessageModal from "@/feature/message/components/SendMessageModal";
 
 export default function SearchPage({children}: {children: React.ReactNode}) {
     const params = useParams();
@@ -13,8 +14,8 @@ export default function SearchPage({children}: {children: React.ReactNode}) {
     const [lastMessages, setLastMessages] = useState<LastMessageDto[] | []>([]);
     useEffect(() => {
         const getAllUserLastMessages = async () => {
-            const messages = await fetchUserLastMessages();
-            setLastMessages(messages);
+            const res = await fetchUserLastMessages();
+            setLastMessages(res.messages);
         }
         getAllUserLastMessages();
         const checkWidth = () => {
@@ -33,6 +34,7 @@ export default function SearchPage({children}: {children: React.ReactNode}) {
                 </div>
             </div>
             <SwitchAccountModal />
+            <SendMessageModal />
         </>
     );
 };

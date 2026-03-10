@@ -1,5 +1,9 @@
-import { LastMessageDto, MessageType } from "@/types/messages";
+import { getLoggedUserInfo } from "@/feature/auth/services/auth-service";
+import { LastMessageDto } from "@/types/messages";
+import { formatDistanceToNow } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 type MesssageUserItemProps = {
     message: LastMessageDto;
@@ -7,15 +11,37 @@ type MesssageUserItemProps = {
 }
 
 export default function MessageUserItem({ message, setSearchText }: MesssageUserItemProps) {
+    const [id, setId] = useState<number>(0);
+    useEffect(() => {
+        const getUserId = async () => {
+            const userId = (await getLoggedUserInfo()).id;
+            console.log(userId);
+            setId(userId);
+        }
+        getUserId();
+    }, [])
+    const formatShortDate = (date: string) => {
+        return formatDistanceToNow(new Date(date), { locale: ptBR })
+            .replace('aproximadamente ', '')
+            .replace('há ', '')
+            .replace('menos de um minuto', 'agora')
+            .replace(' minutos', 'min')
+            .replace(' minuto', 'min')
+            .replace(' horas', 'h')
+            .replace(' hora', 'h')
+            .replace(' dias', 'd')
+            .replace(' dia', 'd');
+    };
+
     return (
-        <Link href={`/messages/${message.id}`} key={message.id} className="text-decoration-none text-body w-75"
+        <Link href={`/messages/${message.senderId ? message.senderId : message.receiverId}`} key={message.id} className="text-decoration-none text-body w-75"
             onClick={() => setSearchText("")}>
             <div className="d-flex mb-1 cursor-pointer transparent-background-hover w-100 rounded px-2 py-2" data-bs-dismiss="offcanvas"
                 data-mdb-ripple-init
                 data-mdb-ripple-color="light">
                 <div className="p-1 rounded-circle position-relative me-2">
                     <img
-                        src={message.pictureUrl ? message.pictureUrl : "https://cdn-icons-png.flaticon.com/512/6522/6522516.png"}
+                        src={message.pictureUrl ? "http://localhost:5000/" + message.pictureUrl : "https://cdn-icons-png.flaticon.com/512/6522/6522516.png"}
                         alt="Story"
                         className="rounded-circle"
                         style={{ width: "46px", height: "46px", objectFit: "cover", }}
@@ -23,7 +49,7 @@ export default function MessageUserItem({ message, setSearchText }: MesssageUser
                 </div>
                 <div className="d-flex flex-column justify-content-center" style={{ fontSize: "14px" }}>
                     <p className="m-0 p-0">{message.name}</p>
-                    <p className="m-0 p-0" style={{ color: "rgba(75,75,75,0.75)" }}>{message.lastMessage} - {message.lastMessageAt}</p>
+                    <p className="m-0 p-0" style={{ color: "rgba(75,75,75,0.75)" }}>{message.senderId == 0 && "You: "}{message.lastMessage} - {formatShortDate(message.lastMessageAt)}</p>
                 </div>
             </div>
         </Link>

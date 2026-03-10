@@ -8,7 +8,7 @@ export default function MessagesDefaultPage() {
             </svg>
             <p className="my-3 fs-4 fw-medium">Your messages</p>
             <p className="mb-3 text-secondary">Send a message to start a chat</p>
-            <button type="button" className="btn btn-primary rounded-3">Send Message</button>
+            <button type="button" className="btn btn-primary rounded-3" data-bs-toggle="modal" data-bs-target="#sendMessageModal">Send Message</button>
         </div>
     )
 }
