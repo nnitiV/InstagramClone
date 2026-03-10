@@ -3,6 +3,7 @@ using Application.Interfaces;
 using Application.Services;
 using Domain.Entities;
 using Domain.Exceptions;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Infrastructure.Service
 {
@@ -212,7 +213,7 @@ namespace Infrastructure.Service
             if (!string.IsNullOrEmpty(userDto.ProfilePictureUrl) && 
                 !user.ProfilePictureUrl.ToLower().Equals(userDto.ProfilePictureUrl.ToLower()))
                 user.ProfilePictureUrl = userDto.ProfilePictureUrl;
-
+            
             return await _userRepository.UpdateUser(user);
         }
         public async Task<bool> UpdateUserInternally(UpdateUserDto userDto)
@@ -246,11 +247,14 @@ namespace Infrastructure.Service
                 !user.ProfilePictureUrl.ToLower().Equals(userDto.ProfilePictureUrl.ToLower()))
                 user.ProfilePictureUrl = userDto.ProfilePictureUrl;
 
-            if (user.FollowersCount != userDto.FollowersCount)
+            if (userDto.FollowersCount != null && user.FollowersCount != userDto.FollowersCount)
                 user.FollowersCount = userDto.FollowersCount;
 
-            if (user.FollowingCount != userDto.FollowingCount)
+            if (userDto.FollowingCount != null && user.FollowingCount != userDto.FollowingCount)
                 user.FollowingCount = userDto.FollowingCount;
+            
+            if (userDto.PostsCount != null && user.PostsCount != userDto.PostsCount)
+                user.PostsCount = userDto.PostsCount;
 
             return await _userRepository.UpdateUser(user);
         }

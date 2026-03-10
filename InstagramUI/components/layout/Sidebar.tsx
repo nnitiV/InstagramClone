@@ -4,7 +4,7 @@ import { ReactNode } from "react";
 import SearchOffset from "./SearchOffset";
 import SidebarItem from "./SidebarItem";
 import NotificationsOffset from "./NotificationsOffset";
-import CreateModal from "./CreateModal";
+import CreatePostModal from "./CreatePostModal";
 
 export default function Sidebar({ children, picture }: { children: ReactNode, picture: string }) {
   const SIDEBAR_LINKS = [
@@ -52,7 +52,7 @@ export default function Sidebar({ children, picture }: { children: ReactNode, pi
       </div>
 
       {/* Modals */}
-      <CreateModal />
+      <CreatePostModal />
       <SearchOffset />
       <NotificationsOffset />
     </div>

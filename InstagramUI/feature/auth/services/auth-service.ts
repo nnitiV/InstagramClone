@@ -103,6 +103,7 @@ export const getLoggedUserInfo = async () => {
     })
     if (!res.ok) {
         console.log("Not ok.");
+        return;
     }
 
     const data = await res.json();

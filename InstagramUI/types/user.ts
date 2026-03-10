@@ -1,3 +1,5 @@
+import { Post } from "./feed";
+
 export interface UserProfile {
   id: number;
   username: string;

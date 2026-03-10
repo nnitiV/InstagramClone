@@ -3,7 +3,7 @@ import { Post } from "@/types/feed";
 import { PostToSave } from "@/types/post";
 import { useState } from "react";
 
-export default function CreateModal() {
+export default function CreatePostModal() {
     const [caption, setCaption] = useState<string>("");
     const [selectedFile, setSelectedFile] = useState<File | null>();
     const [previewUrl, setPreviewUrl] = useState<string>("");

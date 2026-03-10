@@ -9,6 +9,7 @@ import { getLoggedUserInfo } from "@/feature/auth/services/auth-service";
 import { UserProfile } from "@/types/user";
 import EmptyUserPosts from "@/feature/profile/components/EmptyUserPosts";
 import EditProfileModal from "@/feature/profile/components/EditProfileModal";
+import { getUserProfileInformation } from "@/feature/profile/services/profile.service";
 
 export default function SearchPage() {
     const [isLoading, setIsLoading] = useState<boolean>(true);

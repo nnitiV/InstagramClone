@@ -85,3 +85,7 @@ export const getFollowingList = async (userId: number) => {
     if(!res.ok) return [];
     return await res.json();
 };
+
+export const getUserProfileInformation = async () => {
+    
+}

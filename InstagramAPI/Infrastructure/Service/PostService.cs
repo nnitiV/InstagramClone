@@ -2,16 +2,20 @@
 using Application.Interfaces;
 using Application.Services;
 using Domain.Entities;
+using Domain.Exceptions;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Infrastructure.Service
 {
-    public class PostService: IPostService
+    public class PostService : IPostService
     {
         private readonly IPostRepository _postRepository;
-        public PostService(IPostRepository postRepository)
+        private readonly IUserService _userService;
+        public PostService(IPostRepository postRepository, IUserService userService)
         {
             _postRepository = postRepository;
+            _userService = userService;
         }
 
         public async Task<ResponsePostDto?> GetPostByIdAsync(int currentUserId, int postId)
@@ -31,7 +35,7 @@ namespace Infrastructure.Service
                 Title = post.Title,
                 Caption = post.Caption,
                 UserId = post.UserId,
-                AuthorName = post.User?.Name ?? "Unknown", 
+                AuthorName = post.User?.Name ?? "Unknown",
                 AuthorProfilePicture = post.User?.ProfilePictureUrl ?? string.Empty,
                 LikeCount = post.PostLikes?.Count ?? 0,
                 CommentCount = post.Comments?.Count ?? 0,
@@ -63,7 +67,7 @@ namespace Infrastructure.Service
                 Id = post.Id,
                 Title = post.Title,
                 Caption = post.Caption,
-                AuthorName = post.User?.Name ?? "Unknown", 
+                AuthorName = post.User?.Name ?? "Unknown",
                 AuthorProfilePicture = post.User?.ProfilePictureUrl ?? string.Empty,
                 LikeCount = post.PostLikes?.Count ?? 0,
                 CommentCount = post.Comments?.Count ?? 0,
@@ -87,7 +91,7 @@ namespace Infrastructure.Service
             return posts.Select(p => new ResponsePostDto
             {
                 Id = p.Id,
-                CreatedAt = p.CreatedAt, 
+                CreatedAt = p.CreatedAt,
                 Title = p.Title,
                 Caption = p.Caption,
                 UserId = p.UserId,
@@ -101,7 +105,7 @@ namespace Infrastructure.Service
         }
         public async Task<int> GetUserPostCount(int userId)
         {
-            if(userId <= 0)
+            if (userId <= 0)
             {
                 throw new ArgumentException("Invalid user id. Please, send a valid one.");
             }
@@ -109,14 +113,28 @@ namespace Infrastructure.Service
         }
         public async Task<int> AddPostAsync(CreatePostDto createPostDto, int userId)
         {
-            if(createPostDto == null)
+            if (createPostDto == null)
             {
                 throw new ArgumentException("Post can't be empty.");
             }
-            if(userId <= 0)
+            if (userId <= 0)
             {
                 throw new ArgumentException("Please, provide a valid user id!");
             }
+            ResponseUserDto responseUserDto = await _userService.GetById(userId);
+            if (responseUserDto == null)
+            {
+                throw new NotFoundException("Couldn't find user by id " + userId);
+            }
+
+            responseUserDto.PostsCount += 1;
+            await _userService.UpdateUserInternally(new UpdateUserDto
+            {
+                Id = responseUserDto.Id,
+                FollowersCount = responseUserDto.FollowersCount,
+                FollowingCount = responseUserDto.FollowingCount,
+                PostsCount = responseUserDto.PostsCount,
+            });
 
             Post post = new Post
             {
@@ -135,7 +153,7 @@ namespace Infrastructure.Service
                     post.Contents.Add(new PostContent
                     {
                         ContentUrl = url,
-                        OrderIndex = index++ 
+                        OrderIndex = index++
                     });
                 }
             }
@@ -174,9 +192,9 @@ namespace Infrastructure.Service
             {
                 return false;
             }
-            if (post == null || post.UserId != userId) 
+            if (post == null || post.UserId != userId)
             {
-                return false; 
+                return false;
             }
 
             post.Title = updatePostDto.Title;
@@ -198,7 +216,7 @@ namespace Infrastructure.Service
         }
         public async Task<bool> DeletePostByIdAsync(int postId, int userId)
         {
-            if(postId <= 0)
+            if (postId <= 0)
             {
                 throw new ArgumentException("Please, provide a valid post id.");
             }
@@ -206,8 +224,26 @@ namespace Infrastructure.Service
             {
                 throw new ArgumentException("Please, provide a valid user id.");
             }
-            return await _postRepository.DeletePostByIdAsync(postId, userId);
+            ResponseUserDto responseUserDto = await _userService.GetById(userId);
+            if (responseUserDto == null)
+            {
+                throw new NotFoundException("Couldn't find user by id " + userId);
+            }
+            bool wasDeleted = await _postRepository.DeletePostByIdAsync(postId, userId);
+            if (wasDeleted)
+            {
+
+                responseUserDto.PostsCount -= 1;
+                await _userService.UpdateUserInternally(new UpdateUserDto
+                {
+                    Id = responseUserDto.Id,
+                    FollowersCount = responseUserDto.FollowersCount,
+                    FollowingCount = responseUserDto.FollowingCount,
+                    PostsCount = responseUserDto.PostsCount,
+                });
+            }
+            return wasDeleted;
         }
-      
+
     }
 }
