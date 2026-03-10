@@ -34,7 +34,6 @@ export default function EditProfileModal({ user }: EditProfileModalProps) {
             setPreviewUrl("http://localhost:5000/" + user.profilePictureUrl);
         }
     }, [user]);
-
     const updateUser = async () => {
         let userToSave = { ...editUser };
         let photoUrl = "";

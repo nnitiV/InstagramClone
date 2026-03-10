@@ -1,9 +1,12 @@
+import { createPost } from "@/services/post.service";
+import { Post } from "@/types/feed";
+import { PostToSave } from "@/types/post";
 import { useState } from "react";
 
 export default function CreateModal() {
     const [caption, setCaption] = useState<string>("");
     const [selectedFile, setSelectedFile] = useState<File | null>();
-    const [previewUrl, setPreviewUrl] = useState<string | null>();
+    const [previewUrl, setPreviewUrl] = useState<string>("");
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
@@ -11,9 +14,20 @@ export default function CreateModal() {
             setPreviewUrl(URL.createObjectURL(file));
         }
     }
+    const handlePostCreation = async () => {
+        if(caption.length <= 0 || previewUrl.length <= 0) return;
+        let post: PostToSave = {
+            title: "",
+            caption,
+            contentUrls: [previewUrl],
+        }
+        await createPost(post);
+        document.getElementById("discardChanges")?.click();
+    }
+
     const discardPost = () => {
         setCaption("");
-        setPreviewUrl(null);
+        setPreviewUrl("");
         setSelectedFile(null);
     }
     return (
@@ -27,7 +41,8 @@ export default function CreateModal() {
                     <div className="modal-body">
                         <div className="mb-3">
                             <label htmlFor="caption" className="form-label">Caption</label>
-                            <input type="text" className="form-control" id="caption" value={caption} onChange={e => setCaption(e.target.value)} />
+                            <input type="text" className="form-control" id="caption" 
+                            value={caption} onChange={e => setCaption(e.target.value)} />
                         </div>
                         <div className="d-flex flex-column align-items-center mb-4">
                             <div className="mb-3" style={{ height: "250px" }}>
@@ -50,7 +65,7 @@ export default function CreateModal() {
                                     accept="image/*"
                                     onChange={handleImageChange}
                                 />
-                                {previewUrl && (
+                                {previewUrl.length > 0 && (
                                     <button
                                         type="button"
                                         className="btn btn-outline-danger btn-sm fw-bold"
@@ -66,8 +81,8 @@ export default function CreateModal() {
                         </div>
                     </div>
                     <div className="modal-footer">
-                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={discardPost}>Discard</button>
-                        <button type="button" className="btn btn-primary">Create post</button>
+                        <button type="button" className="btn btn-secondary" id="discardChanges" data-bs-dismiss="modal" onClick={discardPost}>Discard</button>
+                        <button type="button" className="btn btn-primary" onClick={handlePostCreation}>Create post</button>
                     </div>
                 </div>
             </div>
