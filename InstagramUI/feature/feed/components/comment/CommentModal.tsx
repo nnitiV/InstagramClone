@@ -4,8 +4,9 @@ import PostMedia from "../post/PostMedia";
 import PostActions from "../post/PostActions";
 import { Post, PostComment, PostCommentTree } from "@/types/feed";
 import { useEffect, useState, useCallback, useRef } from "react";
-import { getPostComments } from "../../services/feed.service";
 import CommentsList from "./CommentList";
+import { addPostComments, getPostComments } from "../../services/feed.service";
+import { getLoggedUserInfo } from "@/feature/auth/services/auth-service";
 
 type CommentModalProps = {
     post: Post;
@@ -55,75 +56,65 @@ export default function CommentModal({ post, onClose }: CommentModalProps) {
         }
     }, []);
 
-    const addReply = useCallback((parentId: number, text: string) => {
+    const addReply = useCallback(async (parentId: number, text: string) => {
+        const userInfo = await getLoggedUserInfo();
         const newComment: PostComment = {
             id: Date.now(),
             text,
             postId: post.id,
-            userId: 999,
-            username: 'You',
-            profilePictureUrl: post.profilePictureUrl || '',
-            parentCommentId: parentId,
-            createdAt: new Date().toISOString()
-        };
-
-        const newCommentTree: PostCommentTree = {
-            comment: newComment,
-            replies: []
-        };
-
-        setTree(prevTree => {
-            const newTree = JSON.parse(JSON.stringify(prevTree));
-            insertComment(newTree, parentId, newCommentTree);
-            setComments(prevComments => [...prevComments, newComment]);
-            return newTree;
-        });
-
-        setReplyTarget(null);
-        setReplyText('');
-    }, [post.id, post.profilePictureUrl, insertComment]);
-
-    const addTopLevelComment = useCallback((text: string) => {
-        const newComment: PostComment = {
-            id: Date.now(),
-            text,
-            postId: post.id,
-            userId: 999,
-            username: 'You',
-            profilePictureUrl: post.profilePictureUrl || '',
+            userId: userInfo.id,
+            username: userInfo.username,
+            profilePictureUrl: userInfo.profilePictureUrl,
             parentCommentId: null,
             createdAt: new Date().toISOString()
         };
+        if (await addPostComments(newComment)) {
 
-        setComments(prev => [...prev, newComment]);
-        setTree(buildCommentTree([...comments, newComment]));
-        setNewCommentText('');
-    }, [post.id, post.profilePictureUrl, comments, buildCommentTree]);
 
-    // Load comments (mock data)
+            const newCommentTree: PostCommentTree = {
+                comment: newComment,
+                replies: []
+            };
+
+            setTree(prevTree => {
+                const newTree = JSON.parse(JSON.stringify(prevTree));
+                insertComment(newTree, parentId, newCommentTree);
+                setComments(prevComments => [...prevComments, newComment]);
+                return newTree;
+            });
+
+            setReplyTarget(null);
+            setReplyText('');
+        }
+    }, [post.id, post.authorProfilePicture, insertComment]);
+
+    const addTopLevelComment = useCallback(async (text: string) => {
+        const userInfo = await getLoggedUserInfo();
+        const newComment: PostComment = {
+            id: Date.now(),
+            text,
+            postId: post.id,
+            userId: userInfo.id,
+            username: userInfo.username,
+            profilePictureUrl: userInfo.profilePictureUrl,
+            parentCommentId: null,
+            createdAt: new Date().toISOString()
+        };
+        if (await addPostComments(newComment)) {
+
+            setComments(prev => [...prev, newComment]);
+            setTree(buildCommentTree([...comments, newComment]));
+            setNewCommentText('');
+        }
+    }, [post.id, post.authorProfilePicture, comments, buildCommentTree]);
+
     useEffect(() => {
         const load = async () => {
             try {
                 const apiComments = await getPostComments(post.id);
-                let finalComments: PostComment[] = apiComments;
 
-                if (finalComments.length === 0) {
-                    finalComments = [
-                        {
-                            id: 1,
-                            text: "This building is absolutely massive! Great shot. 🔥",
-                            postId: 999,
-                            userId: 101,
-                            username: "ArchitectureLover",
-                            profilePictureUrl: "https://i.pravatar.cc/150?u=101",
-                            parentCommentId: null,
-                            createdAt: "2026-02-04T10:00:00Z"
-                        },
-                        // Add other mock comments as needed
-                    ];
-                }
-                setComments(finalComments);
-                setTree(buildCommentTree(finalComments));
+                setComments(apiComments);
+                setTree(buildCommentTree(apiComments));
             } catch (error) {
                 console.error('Failed to load comments:', error);
             }
@@ -131,7 +122,6 @@ export default function CommentModal({ post, onClose }: CommentModalProps) {
         load();
     }, [post.id, buildCommentTree]);
 
-    // Manually initialize Bootstrap carousel after modal opens
     useEffect(() => {
         if (typeof window !== 'undefined' && mediaContainerRef.current) {
             const carouselElement = mediaContainerRef.current.querySelector('.carousel');
@@ -149,7 +139,6 @@ export default function CommentModal({ post, onClose }: CommentModalProps) {
 
     return (
         <>
-            {/* Responsive style for media column - adjust 40vh to your liking */}
             <style jsx>{`
                 .modal-media-col {
                     height: 40vh;  /* Change this value for mobile height */
@@ -189,7 +178,7 @@ export default function CommentModal({ post, onClose }: CommentModalProps) {
                                 <div className="p-3 border-bottom d-flex align-items-center justify-content-between">
                                     <div className="d-flex align-items-center">
                                         <img
-                                            src={post.profilePictureUrl || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                                            src={"http://localhost:5000/" + post.authorProfilePicture || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                                             className="rounded-circle border me-2"
                                             style={{ width: "32px", height: "32px", objectFit: "cover" }}
                                         />
@@ -203,7 +192,7 @@ export default function CommentModal({ post, onClose }: CommentModalProps) {
                                     {/* Post caption */}
                                     <div className="d-flex mb-3">
                                         <img
-                                            src={post.profilePictureUrl || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                                            src={"http://localhost:5000/" + post.authorProfilePicture || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                                             className="rounded-circle me-2"
                                             style={{ width: "32px", height: "32px", objectFit: "cover" }}
                                         />
@@ -238,7 +227,7 @@ export default function CommentModal({ post, onClose }: CommentModalProps) {
                                         postId={post.id}
                                         initialIsLiked={post.isLiked}
                                         initialLikeCount={post.likeCount}
-                                        onCommentClick={() => {}}
+                                        onCommentClick={() => { }}
                                     />
                                     <div className="mt-3 position-relative border-top pt-2">
                                         <input

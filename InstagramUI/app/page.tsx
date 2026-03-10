@@ -2,9 +2,8 @@ import { getLoggedUserTokenInfo } from "@/feature/auth/services/auth-service";
 import EmptyPost from "@/feature/feed/components/post/EmptyPost";
 import EmptyStory from "@/feature/feed/components/story/EmptyStory";
 import Posts from "@/feature/feed/components/post/Posts";
-import { getPosts, getStories } from "@/feature/feed/services/feed.service";
-import { Post, Story } from "@/types/feed";
 import Stories from "@/feature/feed/components/story/Stories";
+import { getPosts, getStories } from "@/feature/feed/services/feed.service";
 
 export default async function Home() {
   const [token, stories, posts] = await Promise.all([
@@ -12,7 +11,6 @@ export default async function Home() {
     getStories(),
     getPosts()
   ]);
-
   return (
     <>
       <div className="container-fluid mt-3">
