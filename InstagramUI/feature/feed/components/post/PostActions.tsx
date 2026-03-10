@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getPostLikeCount, likePost } from "../../services/feed.service";
 // import { toggleLikePost, toggleSavePost } from "@/feature/feed/services/interaction-service"; // We'll make this later
 
 type PostActionsProps = {
@@ -24,20 +25,23 @@ export default function PostActions({
     const [isAnimating, setIsAnimating] = useState(false);
 
     const handleLike = async () => {
-        const previousLiked = isLiked;
-        const newLiked = !isLiked;
-        setIsLiked(newLiked);
-        setLikeCount(prev => newLiked ? prev + 1 : prev - 1);
-        if (newLiked) {
-            setIsAnimating(true);
-            setTimeout(() => setIsAnimating(false), 300);
-        }
-        try {
-            console.log(`Toggled like for post ${postId}`);
-        } catch (error) {
-            setIsLiked(previousLiked);
-            setLikeCount(prev => previousLiked ? prev + 1 : prev - 1);
-            console.error("Failed to like post");
+        const res = await likePost(postId);
+        if (res) {
+            const previousLiked = isLiked;
+            const newLiked = !isLiked;
+            setIsLiked(newLiked);
+            setLikeCount(prev => newLiked ? prev + 1 : prev - 1);
+            if (newLiked) {
+                setIsAnimating(true);
+                setTimeout(() => setIsAnimating(false), 300);
+            }
+            try {
+                console.log(`Toggled like for post ${postId}`);
+            } catch (error) {
+                setIsLiked(previousLiked);
+                setLikeCount(prev => previousLiked ? prev + 1 : prev - 1);
+                console.error("Failed to like post");
+            }
         }
     };
 

@@ -74,3 +74,28 @@ export const addPostComments = async (newComment: PostComment) => {
     }
     return await res.json();
 }
+
+export const getPostLikeCount = async (postId: number) => {
+    const res = await fetch(`${BASE_ROUTE_URL}/postLike/${postId}/count`);
+    if(!res.ok) {
+        console.error(res.status);
+        return 0;
+    }
+    return await res.json();
+}
+
+export const likePost = async (postId: number) => {
+    const token = await getLoggedUserToken();
+    const res = await fetch(`${BASE_ROUTE_URL}/postLike/${postId}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "Application/Json",
+            "Authorization": `Bearer ${token}`
+        }
+    });
+    if(!res.ok) {
+        console.error(res.status);
+        return;
+    }
+    return await res.json();
+}

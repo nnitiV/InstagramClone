@@ -5,7 +5,6 @@ import PostActions from "./PostActions";
 import { useState } from "react";
 import CommentModal from "../comment/CommentModal";
 import PostPopUp from "./PostPopUp";
-import Link from "next/link";
 import { getUserById } from "@/feature/profile/services/profile.service";
 import { redirect } from "next/navigation";
 import { ptBR } from "date-fns/locale";
