@@ -18,6 +18,7 @@ export default function SearchPage({ params }: UserProfileProps) {
     const { username } = use(params);
     const [isSelf, setIsSelf] = useState<boolean>(false);
     const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [posts, setPosts] = useState<Post[]>([]);
     const [user, setUser] = useState<UserProfile | null>(null);
     const [isFollowing, setIsFollowing] = useState<boolean>(false);
     const [userHighlights, setUserHighlights] = useState<[]>([]);
@@ -87,8 +88,8 @@ export default function SearchPage({ params }: UserProfileProps) {
                             }
                         </div>
                         <Highlights userId={user?.id} isLoggedUser={false} />
-                        {user?.postsCount != undefined && user?.postsCount > 0 ?
-                            <Posts setSelectedPost={setSelectedPost} />
+                        {posts && posts && .length > 0 ?
+                            <Posts posts={posts} setSelectedPost={setSelectedPost} />
                             :
                             <EmptyUserPosts isLoggedUser={false} />
                         }

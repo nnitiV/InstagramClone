@@ -1,3 +1,4 @@
+import { uploadFile } from "@/feature/auth/services/auth-service";
 import { createPost } from "@/services/post.service";
 import { Post } from "@/types/feed";
 import { PostToSave } from "@/types/post";
@@ -20,6 +21,9 @@ export default function CreatePostModal() {
             title: "",
             caption,
             contentUrls: [previewUrl],
+        }
+        if(selectedFile) {
+            await uploadFile(selectedFile);
         }
         await createPost(post);
         document.getElementById("discardChanges")?.click();
@@ -55,7 +59,7 @@ export default function CreatePostModal() {
                             </div>
                             <div className="d-flex gap-2">
                                 <label htmlFor="post-upload" className="btn btn-primary btn-sm fw-bold m-0 cursor-pointer">
-                                    Change Photo
+                                    Select Image
                                 </label>
 
                                 <input

@@ -1,5 +1,5 @@
 import { BASE_ROUTE_URL } from "@/constants"
-import { getLoggedUserToken } from "@/feature/auth/services/auth-service";
+import { getLoggedUserInfo, getLoggedUserToken } from "@/feature/auth/services/auth-service";
 
 export const getUserByUsername = async (username: string) => {
     const userToken = await getLoggedUserToken();
@@ -86,6 +86,15 @@ export const getFollowingList = async (userId: number) => {
     return await res.json();
 };
 
-export const getUserProfileInformation = async () => {
-    
+export const getUserPosts = async () => {
+    const token = await getLoggedUserToken();
+    const id = (await getLoggedUserInfo())?.id;
+    const res = await fetch(`${BASE_ROUTE_URL}/post/user/${id}`, {
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+        }
+    })
+    if(!res.ok) return [];
+    return await res.json();
 }

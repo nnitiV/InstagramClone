@@ -128,7 +128,7 @@ export const updateUserProfile = async (editUser: EditUserProfile) => {
     return true;
 }
 
-export const udpateUserPhoto = async (selectedFile: File) => {
+export const uploadFile = async (selectedFile: File) => {
     const formData = new FormData();
     formData.append('file', selectedFile);
 

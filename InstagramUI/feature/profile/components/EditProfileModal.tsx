@@ -1,4 +1,4 @@
-import { udpateUserPhoto, updateUserProfile } from "@/feature/auth/services/auth-service";
+import { uploadFile, updateUserProfile } from "@/feature/auth/services/auth-service";
 import { EditUserProfile, UserProfile } from "@/types/user";
 import { useEffect, useState } from "react";
 
@@ -39,7 +39,7 @@ export default function EditProfileModal({ user }: EditProfileModalProps) {
         let photoUrl = "";
         console.log("Selected file: ", selectedFile);
         if (selectedFile) {
-            photoUrl = await udpateUserPhoto(selectedFile);
+            photoUrl = await uploadFile(selectedFile);
         }
         console.log("Photo url: ", photoUrl);
         if (photoUrl.length > 0) userToSave.profilePictureUrl = photoUrl;

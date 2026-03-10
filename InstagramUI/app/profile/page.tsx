@@ -9,11 +9,12 @@ import { getLoggedUserInfo } from "@/feature/auth/services/auth-service";
 import { UserProfile } from "@/types/user";
 import EmptyUserPosts from "@/feature/profile/components/EmptyUserPosts";
 import EditProfileModal from "@/feature/profile/components/EditProfileModal";
-import { getUserProfileInformation } from "@/feature/profile/services/profile.service";
+import { getUserPosts } from "@/feature/profile/services/profile.service";
 
 export default function SearchPage() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [user, setUser] = useState<UserProfile | null>(null);
+    const [posts, setPosts] = useState<Post[]>([]);
     const [userHighlights, setUserHighlights] = useState<[]>([]);
     const [selectedPost, setSelectedPost] = useState<Post | null>(null);
     const [isMobile, setIsMobile] = useState<boolean>(false);
@@ -22,12 +23,14 @@ export default function SearchPage() {
         const checkWidth = () => setIsMobile(window.innerWidth <= 768);
         checkWidth();
 
-        const getUser = async () => {
+        const getProfileInformation = async () => {
             let userInfo = await getLoggedUserInfo();
-            console.log(userInfo);
             setUser(userInfo);
+            let userPosts = await getUserPosts();
+            console.log(userPosts.items);
+            setPosts(userPosts.items);
         }
-        getUser();
+        getProfileInformation();
         setIsLoading(false);
     }, []);
     return (
@@ -52,8 +55,8 @@ export default function SearchPage() {
                             </button> */}
                         </div>
                         <Highlights userId={user?.id} isLoggedUser={true} />
-                        {user?.postsCount != undefined && user?.postsCount > 0 ?
-                            <Posts setSelectedPost={setSelectedPost} />
+                        {posts && posts.length > 0 ?
+                            <Posts posts={posts} setSelectedPost={setSelectedPost} />
                             :
                             <EmptyUserPosts isLoggedUser={true}/>
                         }

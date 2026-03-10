@@ -9,7 +9,7 @@ export type Story = {
 export type Post = {
     id: number;
     authorName: string;
-    profilePictureUrl: string;
+    authorProfilePicture: string;
     caption: string;
     title: string;
     userId: number;
