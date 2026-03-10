@@ -66,7 +66,6 @@ export default function EditProfileModal({ user }: EditProfileModalProps) {
                     <div className="modal-body">
                         <form>
                             <div className="d-flex flex-column align-items-center mb-4">
-                                {/* 1. O Preview da Imagem (Usa a URL local temporária ou a original do banco) */}
                                 <img
                                     src={previewUrl || "https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png"}
                                     alt="Profile Preview"
@@ -74,14 +73,11 @@ export default function EditProfileModal({ user }: EditProfileModalProps) {
                                     style={{ width: "150px", height: "150px" }}
                                 />
 
-                                {/* 2. Botões de Ação */}
                                 <div className="d-flex gap-2">
-                                    {/* O 'label' funciona como um botão que "clica" no input escondido */}
                                     <label htmlFor="profile-upload" className="btn btn-primary btn-sm fw-bold m-0 cursor-pointer">
                                         Change Photo
                                     </label>
 
-                                    {/* O Input real fica invisível (d-none) para não estragar o design */}
                                     <input
                                         type="file"
                                         id="profile-upload"
@@ -90,17 +86,13 @@ export default function EditProfileModal({ user }: EditProfileModalProps) {
                                         onChange={handleImageChange}
                                     />
 
-                                    {/* Botão de Remover */}
                                     {previewUrl && (
                                         <button
                                             type="button"
                                             className="btn btn-outline-danger btn-sm fw-bold"
                                             onClick={() => {
-                                                // Limpa o arquivo selecionado e o preview local
                                                 setSelectedFile(null);
-                                                setPreviewUrl("");
-                                                // Obs: Se quiser que o "Remover" volte para a foto antiga em vez de ficar sem foto,
-                                                // mude para: setPreviewUrl(user?.profilePictureUrl || "");
+                                                setPreviewUrl(user?.profilePictureUrl || "");
                                             }}
                                         >
                                             Remove

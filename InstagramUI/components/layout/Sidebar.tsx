@@ -12,7 +12,7 @@ export default function Sidebar({ children, picture }: { children: ReactNode, pi
   { url: "/reels", icon: "camera-reels", text: "Reels",target: "", isModal: false  },
   { url: "/messages", icon: "chat-right", text: "Messages",target: "", isModal: false  },
   { url: "#", icon: "search", text: "Search", target: "searchOffcanvas", isModal: false, },
-  { url: "/explore", icon: "compass", text: "Explore",target: "", isModal: false },
+  { url: "/explore", icon: "compass", text: "Explore", target: "", isModal: false },
   { url: "#", icon: "heart", text: "Notifications", target: "notificationsOffset", isModal: false },
   { url: "#", icon: "plus-square", text: "Create", target: "createModal", isModal: true  },
   { url: "/profile", icon: "person-circle", text: "Profile",target: "", isModal: false  },
