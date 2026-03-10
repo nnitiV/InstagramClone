@@ -3,7 +3,6 @@ using Application.Interfaces;
 using Application.Services;
 using Domain.Entities;
 using Domain.Exceptions;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Infrastructure.Service
 {
@@ -61,14 +60,14 @@ namespace Infrastructure.Service
             {
                 message.GroupId = messageDto.GroupId;
             }
-            else if(messageDto.ReceiverId.HasValue)
+            else if (messageDto.ReceiverId.HasValue)
             {
                 var receiver = await _userService.GetById(messageDto.ReceiverId.Value);
                 if (receiver == null)
                 {
                     throw new NotFoundException($"User with ID {messageDto.ReceiverId} not found.");
                 }
-                message.ReceiverId = messageDto.ReceiverId;
+                message.ReceiverId = messageDto.ReceiverId.Value;
             }
 
             await _messageRepository.AddMessageAsync(message);
@@ -128,42 +127,29 @@ namespace Infrastructure.Service
 
         public async Task<List<LastMessageDto>> GetLastMessagesSentToUser(int userId)
         {
-            if(userId <= 0)
+            if (userId <= 0)
             {
                 throw new ArgumentException("Please, provide a valid user id.");
             }
             List<Message> messages = await _messageRepository.GetLastMessagesSentToUser(userId);
             List<Message> groupMessages = await _messageRepository.GetGroupLastMessagesSentToUser(userId);
 
-            List<LastMessageDto> result = new ();
+            List<LastMessageDto> result = new();
             foreach (var m in messages)
             {
-                if (m.SenderId != userId)
+                result.Add(new LastMessageDto
                 {
-                    result.Add(new LastMessageDto
-                    {
-                        Id = m.Id,
-                        IsGroup = false,
-                        LastMessage = m.Content,
-                        LastMessageAt = m.SentAt,
-                        Name = m.Sender.Username,
-                        PictureUrl = m.Sender.ProfilePictureUrl,
-                    });
-                }
-                else
-                {
-                    result.Add(new LastMessageDto
-                    {
-                        Id = m.Id,
-                        IsGroup = false,
-                        LastMessage = m.Content,
-                        LastMessageAt = m.SentAt,
-                        Name = m.Receiver.Username,
-                        PictureUrl = m.Receiver.ProfilePictureUrl,
-                    });
-                }
+                    Id = m.Id,
+                    IsGroup = false,
+                    ReceiverId = m.ReceiverId.Value,
+                    SenderId = m.SenderId,
+                    LastMessage = m.Content,
+                    LastMessageAt = m.SentAt,
+                    Name = m.Receiver.Username,
+                    PictureUrl = m.Receiver.ProfilePictureUrl,
+                });
             }
-            foreach(var m in groupMessages)
+            foreach (var m in groupMessages)
             {
                 if (m.Group != null)
                 {
@@ -173,11 +159,13 @@ namespace Infrastructure.Service
                         IsGroup = true,
                         LastMessage = m.Content,
                         LastMessageAt = m.SentAt,
+                        SenderId = m.SenderId,
                         Name = m.Group.Name,
                         PictureUrl = m.Group.GroupImage,
                     });
                 }
             }
+
             return result.OrderByDescending(m => m.LastMessageAt).ToList();
         }
     }
