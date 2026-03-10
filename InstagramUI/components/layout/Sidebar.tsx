@@ -4,17 +4,18 @@ import { ReactNode } from "react";
 import SearchOffset from "./SearchOffset";
 import SidebarItem from "./SidebarItem";
 import NotificationsOffset from "./NotificationsOffset";
+import CreateModal from "./CreateModal";
 
 export default function Sidebar({ children, picture }: { children: ReactNode, picture: string }) {
   const SIDEBAR_LINKS = [
-  { url: "/", icon: "house", text: "Home",target: ""  },
-  { url: "/reels", icon: "camera-reels", text: "Reels",target: ""  },
-  { url: "/messages", icon: "chat-right", text: "Messages",target: ""  },
-  { url: "#", icon: "search", text: "Search", target: "searchOffcanvas" },
-  { url: "/explore", icon: "compass", text: "Explore",target: "" },
-  { url: "#", icon: "heart", text: "Notifications", target: "notificationsOffset" },
-  { url: "#", icon: "plus-square", text: "Create",target: ""  },
-  { url: "/profile", icon: "person-circle", text: "Profile",target: ""  },
+  { url: "/", icon: "house", text: "Home",target: "", isModal: false  },
+  { url: "/reels", icon: "camera-reels", text: "Reels",target: "", isModal: false  },
+  { url: "/messages", icon: "chat-right", text: "Messages",target: "", isModal: false  },
+  { url: "#", icon: "search", text: "Search", target: "searchOffcanvas", isModal: false, },
+  { url: "/explore", icon: "compass", text: "Explore",target: "", isModal: false },
+  { url: "#", icon: "heart", text: "Notifications", target: "notificationsOffset", isModal: false },
+  { url: "#", icon: "plus-square", text: "Create", target: "createModal", isModal: true  },
+  { url: "/profile", icon: "person-circle", text: "Profile",target: "", isModal: false  },
 ];
   return (
     <div className="d-flex vh-100 overflow-hidden">
@@ -28,7 +29,7 @@ export default function Sidebar({ children, picture }: { children: ReactNode, pi
 
         <ul className="nav nav-pills flex-column align-items-center align-items-sm-start w-100" id="menu">
           {SIDEBAR_LINKS.map((item, index) => (
-            <SidebarItem key={index} url={item.url} iconName={item.icon} text={item.text} targetModal={item.target}/>
+            <SidebarItem key={index} url={item.url} iconName={item.icon} text={item.text} targetModal={item.target} isModal={item.isModal}/>
           ))}
         </ul>
 
@@ -51,6 +52,7 @@ export default function Sidebar({ children, picture }: { children: ReactNode, pi
       </div>
 
       {/* Modals */}
+      <CreateModal />
       <SearchOffset />
       <NotificationsOffset />
     </div>
