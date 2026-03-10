@@ -1,9 +1,10 @@
 "use client";
 
+import { getLoggedUserInfo } from "@/feature/auth/services/auth-service";
 import CommentsList from "@/feature/feed/components/comment/CommentList";
 import PostActions from "@/feature/feed/components/post/PostActions";
 import PostMedia from "@/feature/feed/components/post/PostMedia";
-import { getPostComments } from "@/feature/feed/services/feed.service";
+import { addPostComments, getPostComments } from "@/feature/feed/services/feed.service";
 import { Post, PostComment, PostCommentTree } from "@/types/feed";
 import { useEffect, useState, useCallback } from "react";
 
@@ -14,7 +15,6 @@ type CommentModalProps = {
 
 export default function ExploreModal({ post, onClose }: CommentModalProps) {
     if (!post) return null;
-    console.log(post);
     const [comments, setComments] = useState<PostComment[]>([]);
     const [tree, setTree] = useState<PostCommentTree[]>([]);
     const [replyTarget, setReplyTarget] = useState<number | null>(null);
@@ -40,7 +40,6 @@ export default function ExploreModal({ post, onClose }: CommentModalProps) {
 
         return roots;
     }, []);
-
     const insertComment = useCallback((tree: PostCommentTree[], parentId: number, newComment: PostCommentTree): void => {
         for (const commentTree of tree) {
             if (commentTree.comment.id === parentId) {
@@ -52,18 +51,19 @@ export default function ExploreModal({ post, onClose }: CommentModalProps) {
             }
         }
     }, []);
-
-    const addReply = useCallback((parentId: number, text: string) => {
+    const addReply = useCallback(async (parentId: number, text: string) => {
+        const userInfo = await getLoggedUserInfo();
         const newComment: PostComment = {
             id: Date.now(),
             text,
             postId: post.id,
-            userId: 999,
-            username: 'You',
-            profilePictureUrl: post.authorProfilePicture || '',
+            userId: userInfo.id,
+            username: userInfo.username,
+            profilePictureUrl: userInfo.profilePictureUrl,
             parentCommentId: parentId,
             createdAt: new Date().toISOString()
         };
+        await addPostComments(newComment);
 
         const newCommentTree: PostCommentTree = {
             comment: newComment,
@@ -80,124 +80,31 @@ export default function ExploreModal({ post, onClose }: CommentModalProps) {
         setReplyTarget(null);
         setReplyText('');
     }, [post.id, post.authorProfilePicture, insertComment]);
-
-    const addTopLevelComment = useCallback((text: string) => {
+    const addTopLevelComment = useCallback(async (text: string) => {
+        const userInfo = await getLoggedUserInfo();
         const newComment: PostComment = {
             id: Date.now(),
             text,
             postId: post.id,
-            userId: 999,
-            username: 'You',
-            profilePictureUrl: post.authorProfilePicture || '',
+            userId: userInfo.id,
+            username: userInfo.username,
+            profilePictureUrl: userInfo.profilePictureUrl,
             parentCommentId: null,
             createdAt: new Date().toISOString()
         };
-
-        setComments(prev => [...prev, newComment]);
-        setTree(buildCommentTree([...comments, newComment]));
-        setNewCommentText('');
+        const res = await addPostComments(newComment);
+        if(res){
+            setComments(prev => [...prev, newComment]);
+            setTree(buildCommentTree([...comments, newComment]));
+            setNewCommentText('');
+        }
     }, [post.id, post.authorProfilePicture, comments, buildCommentTree]);
-
     useEffect(() => {
         const load = async () => {
             try {
                 const apiComments = await getPostComments(post.id);
                 let finalComments: PostComment[] = apiComments;
 
-                if (finalComments.length === 0) {
-                    finalComments = [
-                        {
-                            id: 1,
-                            text: "This building is absolutely massive! Great shot. 🔥",
-                            postId: 999,
-                            userId: 101,
-                            username: "ArchitectureLover",
-                            profilePictureUrl: "https://i.pravatar.cc/150?u=101",
-                            parentCommentId: null,
-                            createdAt: "2026-02-04T10:00:00Z"
-                        },
-                        {
-                            id: 2,
-                            text: "I used to work near there, the view from the top floor is even better!",
-                            postId: 999,
-                            userId: 102,
-                            username: "CityExplorer",
-                            profilePictureUrl: "https://i.pravatar.cc/150?u=102",
-                            parentCommentId: null,
-                            createdAt: "2026-02-04T11:30:00Z"
-                        },
-                        {
-                            id: 3,
-                            text: "Agreed! Especially during sunset. 🌇",
-                            postId: 999,
-                            userId: 103,
-                            username: "SunsetChaser",
-                            profilePictureUrl: "https://i.pravatar.cc/150?u=103",
-                            parentCommentId: 2,
-                            createdAt: "2026-02-04T12:00:00Z"
-                        },
-                        {
-                            id: 4,
-                            text: "Wait, isn't this the new tech hub downtown?",
-                            postId: 999,
-                            userId: 104,
-                            username: "TechGuru",
-                            profilePictureUrl: "https://i.pravatar.cc/150?u=104",
-                            parentCommentId: null,
-                            createdAt: "2026-02-04T13:00:00Z"
-                        },
-                        {
-                            id: 5,
-                            text: "Yes! They just finished the glass facade last week.",
-                            postId: 999,
-                            userId: 105,
-                            username: "UrbanPlanner",
-                            profilePictureUrl: "https://i.pravatar.cc/150?u=105",
-                            parentCommentId: 4,
-                            createdAt: "2026-02-04T13:15:00Z"
-                        },
-                        {
-                            id: 6,
-                            text: "It looks way better in person than in the renders.",
-                            postId: 999,
-                            userId: 104,
-                            username: "TechGuru",
-                            profilePictureUrl: "https://i.pravatar.cc/150?u=104",
-                            parentCommentId: 5,
-                            createdAt: "2026-02-04T13:30:00Z"
-                        },
-                        {
-                            id: 7,
-                            text: "Totally! The reflection on the glass at noon is blinding though lol.",
-                            postId: 999,
-                            userId: 106,
-                            username: "LocalResident",
-                            profilePictureUrl: "https://i.pravatar.cc/150?u=106",
-                            parentCommentId: 6,
-                            createdAt: "2026-02-04T13:45:00Z"
-                        },
-                        {
-                            id: 8,
-                            text: "I need to visit this place ASAP!",
-                            postId: 999,
-                            userId: 107,
-                            username: "TravelAddict",
-                            profilePictureUrl: "https://i.pravatar.cc/150?u=107",
-                            parentCommentId: null,
-                            createdAt: "2026-02-04T14:00:00Z"
-                        },
-                        {
-                            id: 9,
-                            text: "What camera did you use for this? The clarity is insane.",
-                            postId: 999,
-                            userId: 108,
-                            username: "PhotoSniper",
-                            profilePictureUrl: "https://i.pravatar.cc/150?u=108",
-                            parentCommentId: null,
-                            createdAt: "2026-02-04T15:00:00Z"
-                        }
-                    ];
-                }
                 setComments(finalComments);
                 setTree(buildCommentTree(finalComments));
             } catch (error) {
@@ -228,7 +135,7 @@ export default function ExploreModal({ post, onClose }: CommentModalProps) {
                             <div className="p-3 border-bottom d-flex align-items-center justify-content-between flex-shrink-0">
                                 <div className="d-flex align-items-center">
                                     <img
-                                        src={"http://localhost:5000/"+post.authorProfilePicture || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                                        src={"http://localhost:5000/" + post.authorProfilePicture || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                                         className="rounded-circle border me-2 object-fit-cover"
                                         style={{ width: "32px", height: "32px" }}
                                     />
@@ -239,7 +146,7 @@ export default function ExploreModal({ post, onClose }: CommentModalProps) {
 
                             <div className="flex-grow-1 overflow-auto p-3 no-scrollbar" style={{ minHeight: 0 }}>
                                 <div className="d-flex mb-3">
-                                    <img src={"http://localhost:5000/"+post.authorProfilePicture} className="rounded-circle me-2 object-fit-cover" style={{ width: "32px", height: "32px" }} />
+                                    <img src={"http://localhost:5000/" + post.authorProfilePicture} className="rounded-circle me-2 object-fit-cover" style={{ width: "32px", height: "32px" }} />
                                     <p className="small mb-0">
                                         <span className="fw-bold me-2">{post.authorName}</span>
                                         {post.caption}

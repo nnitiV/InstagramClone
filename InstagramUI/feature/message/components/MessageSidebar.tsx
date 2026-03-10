@@ -12,7 +12,6 @@ type MessageSidebarProps = {
 
 export default function MessageSidebar({ width, shouldHideSidebar, lastMessages }: MessageSidebarProps) {
     const [searchText, setSearchText] = useState<string>("");
-    console.log(lastMessages.length > 0);
     return (
         <div className={`pt-5 pb-1 d-flex flex-column align-items-center h-100 ${shouldHideSidebar ? "d-none" : "d-flex"}`} style={{ width }}>
             <MessageSidebarHeader shouldHideSidebar={shouldHideSidebar} searchText={searchText} setSearchText={setSearchText} />

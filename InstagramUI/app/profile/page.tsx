@@ -26,9 +26,10 @@ export default function SearchPage() {
         const getProfileInformation = async () => {
             let userInfo = await getLoggedUserInfo();
             setUser(userInfo);
-            let userPosts = await getUserPosts();
-            console.log(userPosts.items);
-            setPosts(userPosts.items);
+            if(userInfo != null) {
+                let userPosts = await getUserPosts(userInfo.id);
+                setPosts(userPosts.items);
+            }
         }
         getProfileInformation();
         setIsLoading(false);

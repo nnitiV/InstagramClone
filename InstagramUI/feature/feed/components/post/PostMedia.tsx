@@ -206,7 +206,7 @@ export default function PostMedia({
             <video
               ref={el => { if (el) videoRefs.current[0] = el; }}
               className="w-100 h-100 object-fit-contain"
-              src={url}
+              src={"http://localhost:5000/" + url}
               muted={isMuted}
               loop
               playsInline
@@ -225,7 +225,7 @@ export default function PostMedia({
             </button>
           </>
         ) : (
-          <img src={url} className="w-100 h-100 object-fit-contain" alt="Post media" />
+          <img src={"http://localhost:5000/" + url} className="w-100 h-100 object-fit-contain" alt="Post media" />
         )}
       </div>
     );
@@ -272,7 +272,7 @@ export default function PostMedia({
               <div className="position-relative w-100 h-100">
                 <video
                   ref={el => { if (el) videoRefs.current[index] = el; }}
-                  src={url}
+                  src={"http://localhost:5000/" + url}
                   className="object-fit-contain w-100 h-100"
                   muted={isMuted}
                   playsInline
@@ -285,7 +285,7 @@ export default function PostMedia({
               </div>
             ) : (
               <img
-                src={url}
+                src={"http://localhost:5000/" + url}
                 className="w-100 h-100 object-fit-contain"
                 alt={`Post media ${index + 1}`}
               />

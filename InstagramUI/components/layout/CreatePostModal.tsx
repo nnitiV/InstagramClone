@@ -16,17 +16,20 @@ export default function CreatePostModal() {
         }
     }
     const handlePostCreation = async () => {
-        if(caption.length <= 0 || previewUrl.length <= 0) return;
-        let post: PostToSave = {
-            title: "",
-            caption,
-            contentUrls: [previewUrl],
+        if (caption.length <= 0 || previewUrl.length <= 0) return;
+        let url = "";
+        if (selectedFile) {
+            url = await uploadFile(selectedFile);
         }
-        if(selectedFile) {
-            await uploadFile(selectedFile);
+        if (url.length > 0) {
+            let post: PostToSave = {
+                title: "",
+                caption,
+                contentUrls: [url],
+            }
+            await createPost(post);
+            document.getElementById("discardChanges")?.click();
         }
-        await createPost(post);
-        document.getElementById("discardChanges")?.click();
     }
 
     const discardPost = () => {
@@ -45,8 +48,8 @@ export default function CreatePostModal() {
                     <div className="modal-body">
                         <div className="mb-3">
                             <label htmlFor="caption" className="form-label">Caption</label>
-                            <input type="text" className="form-control" id="caption" 
-                            value={caption} onChange={e => setCaption(e.target.value)} />
+                            <input type="text" className="form-control" id="caption"
+                                value={caption} onChange={e => setCaption(e.target.value)} />
                         </div>
                         <div className="d-flex flex-column align-items-center mb-4">
                             <div className="mb-3" style={{ height: "250px" }}>
@@ -54,7 +57,7 @@ export default function CreatePostModal() {
                                     src={previewUrl || "https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png"}
                                     alt="Profile Preview"
                                     className="border object-fit-cover mb-3"
-                                    style={{maxWidth: "100%", maxHeight: "100%"}}
+                                    style={{ maxWidth: "100%", maxHeight: "100%" }}
                                 />
                             </div>
                             <div className="d-flex gap-2">

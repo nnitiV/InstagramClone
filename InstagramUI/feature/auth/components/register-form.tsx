@@ -56,9 +56,6 @@ export default function Register() {
             setIsRegistering(false);
         }
     }
-    useEffect(() => {
-        console.log(registerInfo);
-    }, [registerInfo])
     return (
         <form className="col-11 col-md-8 col-lg-5 shadow rounded-3 p-5 row g-3" onSubmit={handleSubmit}>
             <h1 className="col-12 text-center">Register</h1>

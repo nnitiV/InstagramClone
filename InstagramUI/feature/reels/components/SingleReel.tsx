@@ -293,10 +293,10 @@ export default function SingleReel({ reel }: SingleReelProps) {
                 ></button>
               </div>
               <div className="list-group list-group-flush rounded-bottom-3 overflow-hidden">
-                <button className="list-group-item list-group-item-action px-4 py-3 border-0 border-end-0 border-start-0" onClick={() => console.log('Report')}>
+                <button className="list-group-item list-group-item-action px-4 py-3 border-0 border-end-0 border-start-0">
                   <i className="bi bi-flag me-3 text-danger"></i>Report
                 </button>
-                <button className="list-group-item list-group-item-action px-4 py-3 border-0 border-end-0 border-start-0" onClick={() => console.log('Turn off comments')}>
+                <button className="list-group-item list-group-item-action px-4 py-3 border-0 border-end-0 border-start-0">
                   <i className="bi bi-chat-square-dots me-3 text-muted"></i>Turn off comments
                 </button>
                 <button className="list-group-item list-group-item-action px-4 py-3 border-0 border-end-0 border-start-0" onClick={() => navigator.clipboard.writeText(window.location.href)}>

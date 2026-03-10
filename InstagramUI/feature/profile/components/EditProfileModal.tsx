@@ -37,15 +37,11 @@ export default function EditProfileModal({ user }: EditProfileModalProps) {
     const updateUser = async () => {
         let userToSave = { ...editUser };
         let photoUrl = "";
-        console.log("Selected file: ", selectedFile);
         if (selectedFile) {
             photoUrl = await uploadFile(selectedFile);
         }
-        console.log("Photo url: ", photoUrl);
         if (photoUrl.length > 0) userToSave.profilePictureUrl = photoUrl;
-        console.log("User with profile picture: ", userToSave.profilePictureUrl);
         const res = await updateUserProfile(userToSave);
-        console.log(res);
     }
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];

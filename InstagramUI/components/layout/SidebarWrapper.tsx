@@ -10,7 +10,6 @@ export default function SidebarWrapper({ children, picture }: SidebarProps) {
     const path = usePathname();
     
     const hiddenRoutes = ['/login', '/register', '/stories']
-    console.log(path, hiddenRoutes.some(route => route.startsWith(path)));
 
     const hideSidebar = hiddenRoutes.some(route => path.startsWith(route));
 

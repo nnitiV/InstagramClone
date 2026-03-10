@@ -5,9 +5,11 @@ import EmptyUserPosts from "@/feature/profile/components/EmptyUserPosts";
 import Header from "@/feature/profile/components/Header";
 import Highlights from "@/feature/profile/components/Highlights";
 import Posts from "@/feature/profile/components/Posts";
-import { checkFollowStatus, followUser, getUserByUsername, unfollowUser } from "@/feature/profile/services/profile.service";
+import { checkFollowStatus, followUser, getUserByUsername, getUserPosts, unfollowUser } from "@/feature/profile/services/profile.service";
 import { Post } from "@/types/feed";
 import { UserProfile } from "@/types/user";
+import { redirect } from 'next/navigation';
+import { NextRequest, NextResponse } from "next/server";
 import { use, useEffect, useState } from "react";
 
 type UserProfileProps = {
@@ -30,10 +32,15 @@ export default function SearchPage({ params }: UserProfileProps) {
         checkWidth();
 
         const getUser = async () => {
-            let userFetched = await getUserByUsername(username);
-            if (userFetched.user) setUser(userFetched.user);
+            let userFetched = (await getUserByUsername(username)).user;
+            if (userFetched) setUser(userFetched);
             const userInfo = await getLoggedUserInfo();
-            setIsSelf(userInfo.id == userFetched.user.id);
+            if(userInfo.id == userFetched.id) {
+                return redirect("/profile");
+            }
+            setIsSelf(userInfo.id == userFetched.id);
+            let userPosts = await getUserPosts(userFetched.id);
+            setPosts(userPosts.items);
         }
         getUser();
         setIsLoading(false);
@@ -88,7 +95,7 @@ export default function SearchPage({ params }: UserProfileProps) {
                             }
                         </div>
                         <Highlights userId={user?.id} isLoggedUser={false} />
-                        {posts && posts && .length > 0 ?
+                        {posts && posts.length > 0 ?
                             <Posts posts={posts} setSelectedPost={setSelectedPost} />
                             :
                             <EmptyUserPosts isLoggedUser={false} />

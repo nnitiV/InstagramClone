@@ -43,7 +43,6 @@ export default function PostActions({
 
     const handleSave = async () => {
         setIsSaved(!isSaved);
-        console.log(`Toggled save for post ${postId}`);
     };
 
     return (

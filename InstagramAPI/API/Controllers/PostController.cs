@@ -16,7 +16,6 @@ namespace API.Controllers
         {
             _postService = postService;
         }
-
         [HttpGet("{postId}")]
         public async Task<IActionResult> GetPostById(int postId)
         {
@@ -28,7 +27,6 @@ namespace API.Controllers
             }
             return Ok(post);
         }
-
         [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetAllUserPostsByUserId(int userId, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
@@ -61,7 +59,6 @@ namespace API.Controllers
             var response = new { message = "Added post with success!", id = postId };
             return CreatedAtAction(nameof(GetPostById), new { postId = postId }, response);
         }
-
         [Authorize]
         [HttpPut]
         public async Task<IActionResult> UpdatePost(UpdatePostDto post)
@@ -79,7 +76,6 @@ namespace API.Controllers
 
             return Ok(new { message = "Post updated successfully!", id = post.Id });
         }
-
         [Authorize]
         [HttpDelete("{postId}")]
         public async Task<IActionResult> DeletePost(int postId)

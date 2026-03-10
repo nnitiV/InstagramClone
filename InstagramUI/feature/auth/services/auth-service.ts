@@ -27,7 +27,6 @@ export const handleLogin = async (login: string, password: string, rememberMe: b
 
     if (rememberMe) {
         const decode = jwtDecode<TokenPayload>(data.token);
-        console.log("Decode:", decode);
         const expireDate = new Date(decode.exp * 1000);
         cookieStore.set({
             name: tokenName,
@@ -46,7 +45,6 @@ export const handleLogin = async (login: string, password: string, rememberMe: b
 }
 
 export const handleRegister = async (registerInfo: RegisterUser) => {
-    console.log(registerInfo);
     const res = await fetch(`${BASE_ROUTE_URL}${route}/register`, {
         method: "POST",
         body: JSON.stringify(registerInfo),
@@ -102,7 +100,6 @@ export const getLoggedUserInfo = async () => {
         }
     })
     if (!res.ok) {
-        console.log("Not ok.");
         return;
     }
 
@@ -141,6 +138,5 @@ export const uploadFile = async (selectedFile: File) => {
     });
     if(!res.ok) return "";
     const data = await res.json();
-    console.log("Data:", data);
     return data.url;
 }

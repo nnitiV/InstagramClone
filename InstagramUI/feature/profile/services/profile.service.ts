@@ -86,10 +86,9 @@ export const getFollowingList = async (userId: number) => {
     return await res.json();
 };
 
-export const getUserPosts = async () => {
+export const getUserPosts = async (userId: number) => {
     const token = await getLoggedUserToken();
-    const id = (await getLoggedUserInfo())?.id;
-    const res = await fetch(`${BASE_ROUTE_URL}/post/user/${id}`, {
+    const res = await fetch(`${BASE_ROUTE_URL}/post/user/${userId}`, {
         headers: {
             "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json",

@@ -26,7 +26,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
         <div className="mb-2">
             <div className="d-flex">
                 <img
-                    src={comment.profilePictureUrl || "https://via.placeholder.com/32?text=👤"}
+                    src={"http://localhost:5000/" + comment.profilePictureUrl || "https://via.placeholder.com/32?text=👤"}
                     className="rounded-circle me-2"
                     style={{ width: "32px", height: "32px" }}
                     alt={`${comment.username}'s profile`}

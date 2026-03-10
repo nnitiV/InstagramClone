@@ -26,7 +26,6 @@ export default function SearchOffset() {
         const fetchUserList = async () => {
             if (debounceSearch) {
                 const usersRes = await searchUsers(debounceSearch);
-                console.log("Res:", usersRes);
                 setUsers(usersRes.result);
                 setIsSearching(false);
             }

@@ -13,9 +13,9 @@ export default function Posts({posts, setSelectedPost}: PostsProps) {
             {posts.map((post, _) => (
                 <div key={post.id} onClick={() => setSelectedPost(post)} className="bg-secondary transparent-background-hover-2 p-0 m-0" style={{ width: "250px", height: "350px" }}>
                     {posts && post.contentUrls[0].includes("mp4") ?
-                        <video className="w-100 h-100" loop muted src={`${post.contentUrls[0]}#t=0`}></video>
+                        <video className="w-100 h-100" loop muted src={`${"http://localhost:5000/" + post.contentUrls[0]}#t=0`}></video>
                         :
-                        <img className="w-100 h-100 object-fit-cover" src={post.contentUrls[0]} alt="" />
+                        <img className="w-100 h-100 object-fit-cover" src={"http://localhost:5000/" + post.contentUrls[0]} alt="" />
                     }
                 </div>
             ))}
