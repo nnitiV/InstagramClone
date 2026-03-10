@@ -99,3 +99,20 @@ export const likePost = async (postId: number) => {
     }
     return await res.json();
 }
+
+
+export const unlikePost = async (postId: number) => {
+    const token = await getLoggedUserToken();
+    const res = await fetch(`${BASE_ROUTE_URL}/postLike/${postId}`, {
+        method: "DELETE",
+        headers: {
+            "Content-Type": "Application/Json",
+            "Authorization": `Bearer ${token}`
+        }
+    });
+    if(!res.ok) {
+        console.error(res.status);
+        return;
+    }
+    return await res.json();
+}

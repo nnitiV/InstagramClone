@@ -122,16 +122,12 @@ export default function ExploreModal({ post, onClose }: CommentModalProps) {
             >
                 <div className="modal-content overflow-hidden border-0" style={{ height: "90vh", borderRadius: "4px" }}>
                     <div className="row g-0 h-100 flex-column flex-md-row">
-
                         <div className="col-12 col-md-7 bg-black d-flex align-items-center justify-content-center col-media">
                             <div className="w-100 h-100 d-flex align-items-center justify-content-center overflow-hidden">
                                 <PostMedia contentUrls={post.contentUrls} />
                             </div>
                         </div>
-
                         <div className="col-12 col-md-5 d-flex flex-column bg-white col-comments">
-
-                            {/* Header (Fixo) */}
                             <div className="p-3 border-bottom d-flex align-items-center justify-content-between flex-shrink-0">
                                 <div className="d-flex align-items-center">
                                     <img
@@ -143,7 +139,6 @@ export default function ExploreModal({ post, onClose }: CommentModalProps) {
                                 </div>
                                 <button className="btn-close small" onClick={onClose}></button>
                             </div>
-
                             <div className="flex-grow-1 overflow-auto p-3 no-scrollbar" style={{ minHeight: 0 }}>
                                 <div className="d-flex mb-3">
                                     <img src={"http://localhost:5000/" + post.authorProfilePicture} className="rounded-circle me-2 object-fit-cover" style={{ width: "32px", height: "32px" }} />
@@ -171,7 +166,6 @@ export default function ExploreModal({ post, onClose }: CommentModalProps) {
                                     <p className="text-center text-muted small py-5">No comments yet.</p>
                                 )}
                             </div>
-
                             <div className="border-top p-3 flex-shrink-0">
                                 <PostActions
                                     postId={post.id}
