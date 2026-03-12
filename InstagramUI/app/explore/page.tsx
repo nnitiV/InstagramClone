@@ -8,10 +8,10 @@ import ExploreGridItems from "@/feature/explore/components/ExploreGridItems";
 import { getPosts } from "@/feature/feed/services/feed.service";
 
 export default function ExplorePage() {
-    const [posts, setPosts] =  useState<Post[]>([]);
+  const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPost, setSelectedPost] = useState<Post | null>();
 
-  useEffect(() =>{
+  useEffect(() => {
     const fetchPosts = async () => setPosts(await getPosts());
     fetchPosts();
   }, []);

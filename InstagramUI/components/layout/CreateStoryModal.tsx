@@ -22,6 +22,8 @@ export default function CreateStoryModal() {
             }
             let res = await createStory(story);
         }
+        discardPost();
+        document.getElementById("close")?.click();
     }
     const discardPost = () => {
         setPreviewUrl("");
@@ -33,7 +35,7 @@ export default function CreateStoryModal() {
                 <div className="modal-content">
                     <div className="modal-header">
                         <h1 className="modal-title fs-5" id="createStoryLabel">Create Story</h1>
-                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" className="btn-close" id="close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div className="modal-body">
                         <div className="d-flex flex-column align-items-center mb-4">
@@ -74,7 +76,7 @@ export default function CreateStoryModal() {
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" id="discardChanges" data-bs-dismiss="modal" onClick={discardPost}>Discard</button>
-                        <button type="button" className="btn btn-primary" onClick={handlePostCreation}>Create post</button>
+                        <button type="button" className="btn btn-primary" onClick={handlePostCreation}>Create story</button>
                     </div>
                 </div>
             </div>
