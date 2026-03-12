@@ -7,13 +7,15 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import CommentsList from "./CommentList";
 import { addPostComments, getPostComments } from "../../services/feed.service";
 import { getLoggedUserInfo } from "@/feature/auth/services/auth-service";
+import { redirect } from "next/navigation";
 
 type CommentModalProps = {
     post: Post;
     onClose: () => void;
+    goToUser: (userId: number) => Promise<never>;
 };
 
-export default function CommentModal({ post, onClose }: CommentModalProps) {
+export default function CommentModal({ post, onClose, goToUser }: CommentModalProps) {
     if (!post) return null;
 
     const [comments, setComments] = useState<PostComment[]>([]);
@@ -176,7 +178,7 @@ export default function CommentModal({ post, onClose }: CommentModalProps) {
                             <div className="col-12 col-md-5 d-flex flex-column bg-white flex-grow-1 flex-md-grow-0">
                                 {/* Header */}
                                 <div className="p-3 border-bottom d-flex align-items-center justify-content-between">
-                                    <div className="d-flex align-items-center">
+                                    <div className="d-flex align-items-center" onClick={() => goToUser(post.userId)}>
                                         <img
                                             src={post.authorProfilePicture ? "http://localhost:5000/" + post.authorProfilePicture : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                                             className="rounded-circle border me-2"
@@ -190,7 +192,7 @@ export default function CommentModal({ post, onClose }: CommentModalProps) {
                                 {/* Scrollable comments area */}
                                 <div className="flex-grow-1 overflow-y-auto p-3">
                                     {/* Post caption */}
-                                    <div className="d-flex mb-3">
+                                    <div className="d-flex mb-3" onClick={() => goToUser(post.userId)}>
                                         <img
                                             src={post.authorProfilePicture ? "http://localhost:5000/" + post.authorProfilePicture : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                                             className="rounded-circle me-2"

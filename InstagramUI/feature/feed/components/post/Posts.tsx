@@ -9,6 +9,7 @@ import { getUserById } from "@/feature/profile/services/profile.service";
 import { redirect } from "next/navigation";
 import { ptBR } from "date-fns/locale";
 import { formatDistanceToNow } from "date-fns";
+import { userInfo } from "os";
 
 type PostsProps = {
     posts: Post[],
@@ -81,6 +82,7 @@ export default function Posts({ posts }: PostsProps) {
                         <CommentModal
                             post={selectedPost}
                             onClose={() => setSelectedPost(null)}
+                            goToUser={goToUserProfile}
                         />
                     )
                 }

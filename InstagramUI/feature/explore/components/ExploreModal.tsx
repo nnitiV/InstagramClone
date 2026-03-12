@@ -6,14 +6,16 @@ import PostActions from "@/feature/feed/components/post/PostActions";
 import PostMedia from "@/feature/feed/components/post/PostMedia";
 import { addPostComments, getPostComments } from "@/feature/feed/services/feed.service";
 import { Post, PostComment, PostCommentTree } from "@/types/feed";
+import { redirect } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
 
 type CommentModalProps = {
     post: Post;
     onClose: () => void;
+    username: string | undefined;
 };
 
-export default function ExploreModal({ post, onClose }: CommentModalProps) {
+export default function ExploreModal({ post, onClose, username }: CommentModalProps) {
     if (!post) return null;
     const [comments, setComments] = useState<PostComment[]>([]);
     const [tree, setTree] = useState<PostCommentTree[]>([]);
@@ -114,6 +116,10 @@ export default function ExploreModal({ post, onClose }: CommentModalProps) {
         load();
     }, [post.id, buildCommentTree]);
 
+    const goToUser = () => {
+        redirect(`/profile/${username}`)
+    }
+
     return (
         <div className="modal show d-block" style={{ backgroundColor: "rgba(0,0,0,0.7)" }} onClick={onClose}>
             <div
@@ -129,7 +135,7 @@ export default function ExploreModal({ post, onClose }: CommentModalProps) {
                         </div>
                         <div className="col-12 col-md-5 d-flex flex-column bg-white col-comments">
                             <div className="p-3 border-bottom d-flex align-items-center justify-content-between flex-shrink-0">
-                                <div className="d-flex align-items-center">
+                                <div className="d-flex align-items-center" onClick={goToUser}>
                                     <img
                                         src={post.authorProfilePicture ? "http://localhost:5000/" + post.authorProfilePicture : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                                         className="rounded-circle border me-2 object-fit-cover"
@@ -140,7 +146,7 @@ export default function ExploreModal({ post, onClose }: CommentModalProps) {
                                 <button className="btn-close small" onClick={onClose}></button>
                             </div>
                             <div className="flex-grow-1 overflow-auto p-3 no-scrollbar" style={{ minHeight: 0 }}>
-                                <div className="d-flex mb-3">
+                                <div className="d-flex mb-3" onClick={goToUser}>
                                     <img src={post.authorProfilePicture ? "http://localhost:5000/" + post.authorProfilePicture : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} className="rounded-circle me-2 object-fit-cover" style={{ width: "32px", height: "32px" }} />
                                     <p className="small mb-0">
                                         <span className="fw-bold me-2">{post.authorName}</span>
