@@ -24,7 +24,7 @@ export default function MessageSidebar({ width, shouldHideSidebar, lastMessages 
             <div className="scrollbox w-100 overflow-y-auto">
                 <div className="users scrollbox-content px-2">
                     {lastMessages.length > 0 ?
-                        lastMessages.map((message) => (
+                        lastMessages.filter(item => item.receiverId != item.senderId).map((message) => (
                             <MessageUserItem key={message.id} message={message} setSearchText={setSearchText} />
                         ))
                         :

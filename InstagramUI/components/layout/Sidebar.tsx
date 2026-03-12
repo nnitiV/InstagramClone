@@ -10,7 +10,7 @@ import CreateStoryModal from "./CreateStoryModal";
 export default function Sidebar({ children, picture }: { children: ReactNode, picture: string }) {
   const SIDEBAR_LINKS = [
   { url: "/", icon: "house", text: "Home",target: "", isModal: false  },
-  { url: "/reels", icon: "camera-reels", text: "Reels",target: "", isModal: false  },
+  // { url: "/reels", icon: "camera-reels", text: "Reels",target: "", isModal: false  },
   { url: "/messages", icon: "chat-right", text: "Messages",target: "", isModal: false  },
   { url: "#", icon: "search", text: "Search", target: "searchOffcanvas", isModal: false, },
   { url: "/explore", icon: "compass", text: "Explore", target: "", isModal: false },

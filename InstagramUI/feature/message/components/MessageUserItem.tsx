@@ -15,7 +15,8 @@ export default function MessageUserItem({ message, setSearchText }: MesssageUser
     useEffect(() => {
         const getUserId = async () => {
             const userId = (await getLoggedUserInfo()).id;
-            console.log(userId);
+            console.log("Mine user id: ", userId);
+            console.log("Message: ", message);
             setId(userId);
         }
         getUserId();
@@ -34,7 +35,7 @@ export default function MessageUserItem({ message, setSearchText }: MesssageUser
     };
 
     return (
-        <Link href={`/messages/${message.senderId ? message.senderId : message.receiverId}`} key={message.id} className="text-decoration-none text-body w-75"
+        <Link href={`/messages/${message.senderId != id ? message.senderId : message.receiverId}`} key={message.id} className="text-decoration-none text-body w-75"
             onClick={() => setSearchText("")}>
             <div className="d-flex mb-1 cursor-pointer transparent-background-hover w-100 rounded px-2 py-2" data-bs-dismiss="offcanvas"
                 data-mdb-ripple-init
@@ -49,7 +50,7 @@ export default function MessageUserItem({ message, setSearchText }: MesssageUser
                 </div>
                 <div className="d-flex flex-column justify-content-center" style={{ fontSize: "14px" }}>
                     <p className="m-0 p-0">{message.name}</p>
-                    <p className="m-0 p-0" style={{ color: "rgba(75,75,75,0.75)" }}>{message.senderId == 0 && "You: "}{message.lastMessage} - {formatShortDate(message.lastMessageAt)}</p>
+                    <p className="m-0 p-0" style={{ color: "rgba(75,75,75,0.75)" }}>{message.senderId == id && "You: "}{message.lastMessage} - {formatShortDate(message.lastMessageAt)}</p>
                 </div>
             </div>
         </Link>
