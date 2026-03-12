@@ -3,6 +3,7 @@ using Application.Interfaces;
 using Application.Services;
 using Domain.Entities;
 using Domain.Exceptions;
+using System.Reflection;
 
 namespace Infrastructure.Service
 {
@@ -29,9 +30,11 @@ namespace Infrastructure.Service
             {
                 Id = m.Id,
                 SenderId = m.SenderId,
-                SenderUsername = m.Sender?.Username ?? "Unknown",
-                SenderPhotoUrl = m.Sender?.ProfilePictureUrl ?? "",
-                ReceiverId = m.ReceiverId, // Keep it nullable in DTO if possible
+                SenderName = m.Sender.Username,
+                SenderPhoto = m.Sender.ProfilePictureUrl,
+                ReceiverName = m.Receiver.Username,
+                ReceiverPhoto = m.Receiver.ProfilePictureUrl,
+                ReceiverId = m.ReceiverId, 
                 Content = m.Content,
                 SentAt = m.SentAt,
                 IsRead = m.IsRead
@@ -48,6 +51,7 @@ namespace Infrastructure.Service
             {
                 throw new ArgumentException("You must provide either a ReceiverId or a GroupId.");
             }
+
             Message message = new Message
             {
                 SenderId = currentUserId,
@@ -70,16 +74,24 @@ namespace Infrastructure.Service
                 message.ReceiverId = messageDto.ReceiverId.Value;
             }
 
+
+
             await _messageRepository.AddMessageAsync(message);
-            return new MessageDto
+            var sender = await _userService.GetById(currentUserId);
+            var receive = await _userService.GetById(messageDto.ReceiverId.Value);
+
+            MessageDto messageToReturn = new MessageDto
             {
                 Id = message.Id,
-                SenderId = message.SenderId,
-                ReceiverId = message.ReceiverId,
                 Content = message.Content,
-                SentAt = message.SentAt,
-                IsRead = message.IsRead
+                SenderId = message.SenderId,
+                ReceiverId = message.ReceiverId.Value,
+                SenderName = sender.Username,
+                SenderPhoto = sender.ProfilePictureUrl,
+                ReceiverName = receive.Username,
+                ReceiverPhoto = receive.ProfilePictureUrl
             };
+            return messageToReturn;
         }
         public async Task<Group> CreateGroupAsync(int creatorId, CreateGroupDto groupDto)
         {
@@ -116,8 +128,10 @@ namespace Infrastructure.Service
             {
                 Id = m.Id,
                 SenderId = m.SenderId,
-                SenderUsername = m.Sender?.Username ?? "Unknown",
-                SenderPhotoUrl = m.Sender?.ProfilePictureUrl ?? "",
+                SenderName = m.Sender.Username,
+                SenderPhoto = m.Sender.ProfilePictureUrl,
+                ReceiverName = m.Receiver.Username,
+                ReceiverPhoto = m.Receiver.ProfilePictureUrl,
                 GroupId = m.GroupId,
                 Content = m.Content,
                 SentAt = m.SentAt,
@@ -137,7 +151,7 @@ namespace Infrastructure.Service
             List<LastMessageDto> result = new();
             foreach (var m in messages)
             {
-                result.Add(new LastMessageDto
+                LastMessageDto lastMessage = new LastMessageDto
                 {
                     Id = m.Id,
                     IsGroup = false,
@@ -145,9 +159,18 @@ namespace Infrastructure.Service
                     SenderId = m.SenderId,
                     LastMessage = m.Content,
                     LastMessageAt = m.SentAt,
-                    Name = m.Receiver.Username,
-                    PictureUrl = m.Receiver.ProfilePictureUrl,
-                });
+                };
+                if (m.ReceiverId.Value == userId)
+                {
+                    lastMessage.Name = m.Sender.Username;
+                    lastMessage.PictureUrl = m.Sender.ProfilePictureUrl;
+                }
+                else
+                {
+                    lastMessage.Name = m.Receiver.Username;
+                    lastMessage.PictureUrl = m.Receiver.ProfilePictureUrl;
+                }
+                result.Add(lastMessage);
             }
             foreach (var m in groupMessages)
             {

@@ -1,7 +1,7 @@
 import "./global.css";
-import Sidebar from "@/components/layout/Sidebar";
 import { getLoggedUserTokenInfo } from "@/feature/auth/services/auth-service";
 import SidebarWrapper from "../components/layout/SidebarWrapper";
+import ChatProvider from "@/components/layout/ChatProvider";
 
 export default async function RootLayout({
   children,
@@ -19,6 +19,7 @@ export default async function RootLayout({
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" />
       </head>
       <body>
+        <ChatProvider />
         <SidebarWrapper picture={token != null ? token.picture : ""}>
           {children}
         </SidebarWrapper>

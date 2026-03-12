@@ -24,8 +24,7 @@ namespace API.Hubs
             var userId = Context.User.GetUserId();
 
             var savedMessage = await _messageService.SendMessageAsync(userId, sendMessageDto);
-
-            if(sendMessageDto.GroupId.HasValue)
+            if (sendMessageDto.GroupId.HasValue)
             {
                 await Clients.Group(sendMessageDto.GroupId.Value.ToString()).SendAsync("ReceiveMessage", savedMessage);
             }

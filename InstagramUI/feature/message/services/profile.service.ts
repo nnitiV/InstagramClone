@@ -31,7 +31,7 @@ export const getChatHistory = async (chatId: number) => {
     return await res.json();
 }
 
-export const sendMessage = async (message: SendMessage) => {
+export const sendMessageService = async (message: SendMessage) => {
     const token = await getLoggedUserToken();
     const res = await fetch(`${BASE_ROUTE_URL}/messages`, {
         method: "POST",

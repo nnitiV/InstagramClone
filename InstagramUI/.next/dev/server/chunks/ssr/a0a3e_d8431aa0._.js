@@ -1,0 +1,2825 @@
+module.exports = [
+"[project]/InstagramUI/node_modules/next/dist/compiled/client-only/index.js [app-ssr] (ecmascript)", ((__turbopack_context__, module, exports) => {
+
+}),
+"[project]/InstagramUI/node_modules/styled-jsx/dist/index/index.js [app-ssr] (ecmascript)", ((__turbopack_context__, module, exports) => {
+
+__turbopack_context__.r("[project]/InstagramUI/node_modules/next/dist/compiled/client-only/index.js [app-ssr] (ecmascript)");
+var React = __turbopack_context__.r("[project]/InstagramUI/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react.js [app-ssr] (ecmascript)");
+function _interopDefaultLegacy(e) {
+    return e && typeof e === 'object' && 'default' in e ? e : {
+        'default': e
+    };
+}
+var React__default = /*#__PURE__*/ _interopDefaultLegacy(React);
+/*
+Based on Glamor's sheet
+https://github.com/threepointone/glamor/blob/667b480d31b3721a905021b26e1290ce92ca2879/src/sheet.js
+*/ function _defineProperties(target, props) {
+    for(var i = 0; i < props.length; i++){
+        var descriptor = props[i];
+        descriptor.enumerable = descriptor.enumerable || false;
+        descriptor.configurable = true;
+        if ("value" in descriptor) descriptor.writable = true;
+        Object.defineProperty(target, descriptor.key, descriptor);
+    }
+}
+function _createClass(Constructor, protoProps, staticProps) {
+    if (protoProps) _defineProperties(Constructor.prototype, protoProps);
+    if (staticProps) _defineProperties(Constructor, staticProps);
+    return Constructor;
+}
+var isProd = typeof process !== "undefined" && process.env && ("TURBOPACK compile-time value", "development") === "production";
+var isString = function(o) {
+    return Object.prototype.toString.call(o) === "[object String]";
+};
+var StyleSheet = /*#__PURE__*/ function() {
+    function StyleSheet(param) {
+        var ref = param === void 0 ? {} : param, _name = ref.name, name = _name === void 0 ? "stylesheet" : _name, _optimizeForSpeed = ref.optimizeForSpeed, optimizeForSpeed = _optimizeForSpeed === void 0 ? isProd : _optimizeForSpeed;
+        invariant$1(isString(name), "`name` must be a string");
+        this._name = name;
+        this._deletedRulePlaceholder = "#" + name + "-deleted-rule____{}";
+        invariant$1(typeof optimizeForSpeed === "boolean", "`optimizeForSpeed` must be a boolean");
+        this._optimizeForSpeed = optimizeForSpeed;
+        this._serverSheet = undefined;
+        this._tags = [];
+        this._injected = false;
+        this._rulesCount = 0;
+        var node = ("TURBOPACK compile-time value", "undefined") !== "undefined" && document.querySelector('meta[property="csp-nonce"]');
+        this._nonce = ("TURBOPACK compile-time falsy", 0) ? "TURBOPACK unreachable" : null;
+    }
+    var _proto = StyleSheet.prototype;
+    _proto.setOptimizeForSpeed = function setOptimizeForSpeed(bool) {
+        invariant$1(typeof bool === "boolean", "`setOptimizeForSpeed` accepts a boolean");
+        invariant$1(this._rulesCount === 0, "optimizeForSpeed cannot be when rules have already been inserted");
+        this.flush();
+        this._optimizeForSpeed = bool;
+        this.inject();
+    };
+    _proto.isOptimizeForSpeed = function isOptimizeForSpeed() {
+        return this._optimizeForSpeed;
+    };
+    _proto.inject = function inject() {
+        var _this = this;
+        invariant$1(!this._injected, "sheet already injected");
+        this._injected = true;
+        if (("TURBOPACK compile-time value", "undefined") !== "undefined" && this._optimizeForSpeed) //TURBOPACK unreachable
+        ;
+        this._serverSheet = {
+            cssRules: [],
+            insertRule: function(rule, index) {
+                if (typeof index === "number") {
+                    _this._serverSheet.cssRules[index] = {
+                        cssText: rule
+                    };
+                } else {
+                    _this._serverSheet.cssRules.push({
+                        cssText: rule
+                    });
+                }
+                return index;
+            },
+            deleteRule: function(index) {
+                _this._serverSheet.cssRules[index] = null;
+            }
+        };
+    };
+    _proto.getSheetForTag = function getSheetForTag(tag) {
+        if (tag.sheet) {
+            return tag.sheet;
+        }
+        // this weirdness brought to you by firefox
+        for(var i = 0; i < document.styleSheets.length; i++){
+            if (document.styleSheets[i].ownerNode === tag) {
+                return document.styleSheets[i];
+            }
+        }
+    };
+    _proto.getSheet = function getSheet() {
+        return this.getSheetForTag(this._tags[this._tags.length - 1]);
+    };
+    _proto.insertRule = function insertRule(rule, index) {
+        invariant$1(isString(rule), "`insertRule` accepts only strings");
+        if ("TURBOPACK compile-time truthy", 1) {
+            if (typeof index !== "number") {
+                index = this._serverSheet.cssRules.length;
+            }
+            this._serverSheet.insertRule(rule, index);
+            return this._rulesCount++;
+        }
+        //TURBOPACK unreachable
+        ;
+        var sheet;
+        var insertionPoint;
+    };
+    _proto.replaceRule = function replaceRule(index, rule) {
+        if (this._optimizeForSpeed || ("TURBOPACK compile-time value", "undefined") === "undefined") {
+            var sheet = ("TURBOPACK compile-time falsy", 0) ? "TURBOPACK unreachable" : this._serverSheet;
+            if (!rule.trim()) {
+                rule = this._deletedRulePlaceholder;
+            }
+            if (!sheet.cssRules[index]) {
+                // @TBD Should we throw an error?
+                return index;
+            }
+            sheet.deleteRule(index);
+            try {
+                sheet.insertRule(rule, index);
+            } catch (error) {
+                if ("TURBOPACK compile-time truthy", 1) {
+                    console.warn("StyleSheet: illegal rule: \n\n" + rule + "\n\nSee https://stackoverflow.com/q/20007992 for more info");
+                }
+                // In order to preserve the indices we insert a deleteRulePlaceholder
+                sheet.insertRule(this._deletedRulePlaceholder, index);
+            }
+        } else //TURBOPACK unreachable
+        {
+            var tag;
+        }
+        return index;
+    };
+    _proto.deleteRule = function deleteRule(index) {
+        if ("TURBOPACK compile-time truthy", 1) {
+            this._serverSheet.deleteRule(index);
+            return;
+        }
+        //TURBOPACK unreachable
+        ;
+        var tag;
+    };
+    _proto.flush = function flush() {
+        this._injected = false;
+        this._rulesCount = 0;
+        if ("TURBOPACK compile-time falsy", 0) //TURBOPACK unreachable
+        ;
+        else {
+            // simpler on server
+            this._serverSheet.cssRules = [];
+        }
+    };
+    _proto.cssRules = function cssRules() {
+        var _this = this;
+        if ("TURBOPACK compile-time truthy", 1) {
+            return this._serverSheet.cssRules;
+        }
+        //TURBOPACK unreachable
+        ;
+    };
+    _proto.makeStyleTag = function makeStyleTag(name, cssString, relativeToTag) {
+        if (cssString) {
+            invariant$1(isString(cssString), "makeStyleTag accepts only strings as second parameter");
+        }
+        var tag = document.createElement("style");
+        if (this._nonce) tag.setAttribute("nonce", this._nonce);
+        tag.type = "text/css";
+        tag.setAttribute("data-" + name, "");
+        if (cssString) {
+            tag.appendChild(document.createTextNode(cssString));
+        }
+        var head = document.head || document.getElementsByTagName("head")[0];
+        if (relativeToTag) {
+            head.insertBefore(tag, relativeToTag);
+        } else {
+            head.appendChild(tag);
+        }
+        return tag;
+    };
+    _createClass(StyleSheet, [
+        {
+            key: "length",
+            get: function get() {
+                return this._rulesCount;
+            }
+        }
+    ]);
+    return StyleSheet;
+}();
+function invariant$1(condition, message) {
+    if (!condition) {
+        throw new Error("StyleSheet: " + message + ".");
+    }
+}
+function hash(str) {
+    var _$hash = 5381, i = str.length;
+    while(i){
+        _$hash = _$hash * 33 ^ str.charCodeAt(--i);
+    }
+    /* JavaScript does bitwise operations (like XOR, above) on 32-bit signed
+   * integers. Since we want the results to be always positive, convert the
+   * signed int to an unsigned by doing an unsigned bitshift. */ return _$hash >>> 0;
+}
+var stringHash = hash;
+var sanitize = function(rule) {
+    return rule.replace(/\/style/gi, "\\/style");
+};
+var cache = {};
+/**
+ * computeId
+ *
+ * Compute and memoize a jsx id from a basedId and optionally props.
+ */ function computeId(baseId, props) {
+    if (!props) {
+        return "jsx-" + baseId;
+    }
+    var propsToString = String(props);
+    var key = baseId + propsToString;
+    if (!cache[key]) {
+        cache[key] = "jsx-" + stringHash(baseId + "-" + propsToString);
+    }
+    return cache[key];
+}
+/**
+ * computeSelector
+ *
+ * Compute and memoize dynamic selectors.
+ */ function computeSelector(id, css) {
+    var selectoPlaceholderRegexp = /__jsx-style-dynamic-selector/g;
+    // Sanitize SSR-ed CSS.
+    // Client side code doesn't need to be sanitized since we use
+    // document.createTextNode (dev) and the CSSOM api sheet.insertRule (prod).
+    if ("TURBOPACK compile-time truthy", 1) {
+        css = sanitize(css);
+    }
+    var idcss = id + css;
+    if (!cache[idcss]) {
+        cache[idcss] = css.replace(selectoPlaceholderRegexp, id);
+    }
+    return cache[idcss];
+}
+function mapRulesToStyle(cssRules, options) {
+    if (options === void 0) options = {};
+    return cssRules.map(function(args) {
+        var id = args[0];
+        var css = args[1];
+        return /*#__PURE__*/ React__default["default"].createElement("style", {
+            id: "__" + id,
+            // Avoid warnings upon render with a key
+            key: "__" + id,
+            nonce: options.nonce ? options.nonce : undefined,
+            dangerouslySetInnerHTML: {
+                __html: css
+            }
+        });
+    });
+}
+var StyleSheetRegistry = /*#__PURE__*/ function() {
+    function StyleSheetRegistry(param) {
+        var ref = param === void 0 ? {} : param, _styleSheet = ref.styleSheet, styleSheet = _styleSheet === void 0 ? null : _styleSheet, _optimizeForSpeed = ref.optimizeForSpeed, optimizeForSpeed = _optimizeForSpeed === void 0 ? false : _optimizeForSpeed;
+        this._sheet = styleSheet || new StyleSheet({
+            name: "styled-jsx",
+            optimizeForSpeed: optimizeForSpeed
+        });
+        this._sheet.inject();
+        if (styleSheet && typeof optimizeForSpeed === "boolean") {
+            this._sheet.setOptimizeForSpeed(optimizeForSpeed);
+            this._optimizeForSpeed = this._sheet.isOptimizeForSpeed();
+        }
+        this._fromServer = undefined;
+        this._indices = {};
+        this._instancesCounts = {};
+    }
+    var _proto = StyleSheetRegistry.prototype;
+    _proto.add = function add(props) {
+        var _this = this;
+        if (undefined === this._optimizeForSpeed) {
+            this._optimizeForSpeed = Array.isArray(props.children);
+            this._sheet.setOptimizeForSpeed(this._optimizeForSpeed);
+            this._optimizeForSpeed = this._sheet.isOptimizeForSpeed();
+        }
+        if (("TURBOPACK compile-time value", "undefined") !== "undefined" && !this._fromServer) //TURBOPACK unreachable
+        ;
+        var ref = this.getIdAndRules(props), styleId = ref.styleId, rules = ref.rules;
+        // Deduping: just increase the instances count.
+        if (styleId in this._instancesCounts) {
+            this._instancesCounts[styleId] += 1;
+            return;
+        }
+        var indices = rules.map(function(rule) {
+            return _this._sheet.insertRule(rule);
+        }) // Filter out invalid rules
+        .filter(function(index) {
+            return index !== -1;
+        });
+        this._indices[styleId] = indices;
+        this._instancesCounts[styleId] = 1;
+    };
+    _proto.remove = function remove(props) {
+        var _this = this;
+        var styleId = this.getIdAndRules(props).styleId;
+        invariant(styleId in this._instancesCounts, "styleId: `" + styleId + "` not found");
+        this._instancesCounts[styleId] -= 1;
+        if (this._instancesCounts[styleId] < 1) {
+            var tagFromServer = this._fromServer && this._fromServer[styleId];
+            if (tagFromServer) {
+                tagFromServer.parentNode.removeChild(tagFromServer);
+                delete this._fromServer[styleId];
+            } else {
+                this._indices[styleId].forEach(function(index) {
+                    return _this._sheet.deleteRule(index);
+                });
+                delete this._indices[styleId];
+            }
+            delete this._instancesCounts[styleId];
+        }
+    };
+    _proto.update = function update(props, nextProps) {
+        this.add(nextProps);
+        this.remove(props);
+    };
+    _proto.flush = function flush() {
+        this._sheet.flush();
+        this._sheet.inject();
+        this._fromServer = undefined;
+        this._indices = {};
+        this._instancesCounts = {};
+    };
+    _proto.cssRules = function cssRules() {
+        var _this = this;
+        var fromServer = this._fromServer ? Object.keys(this._fromServer).map(function(styleId) {
+            return [
+                styleId,
+                _this._fromServer[styleId]
+            ];
+        }) : [];
+        var cssRules = this._sheet.cssRules();
+        return fromServer.concat(Object.keys(this._indices).map(function(styleId) {
+            return [
+                styleId,
+                _this._indices[styleId].map(function(index) {
+                    return cssRules[index].cssText;
+                }).join(_this._optimizeForSpeed ? "" : "\n")
+            ];
+        }) // filter out empty rules
+        .filter(function(rule) {
+            return Boolean(rule[1]);
+        }));
+    };
+    _proto.styles = function styles(options) {
+        return mapRulesToStyle(this.cssRules(), options);
+    };
+    _proto.getIdAndRules = function getIdAndRules(props) {
+        var css = props.children, dynamic = props.dynamic, id = props.id;
+        if (dynamic) {
+            var styleId = computeId(id, dynamic);
+            return {
+                styleId: styleId,
+                rules: Array.isArray(css) ? css.map(function(rule) {
+                    return computeSelector(styleId, rule);
+                }) : [
+                    computeSelector(styleId, css)
+                ]
+            };
+        }
+        return {
+            styleId: computeId(id),
+            rules: Array.isArray(css) ? css : [
+                css
+            ]
+        };
+    };
+    /**
+   * selectFromServer
+   *
+   * Collects style tags from the document with id __jsx-XXX
+   */ _proto.selectFromServer = function selectFromServer() {
+        var elements = Array.prototype.slice.call(document.querySelectorAll('[id^="__jsx-"]'));
+        return elements.reduce(function(acc, element) {
+            var id = element.id.slice(2);
+            acc[id] = element;
+            return acc;
+        }, {});
+    };
+    return StyleSheetRegistry;
+}();
+function invariant(condition, message) {
+    if (!condition) {
+        throw new Error("StyleSheetRegistry: " + message + ".");
+    }
+}
+var StyleSheetContext = /*#__PURE__*/ React.createContext(null);
+StyleSheetContext.displayName = "StyleSheetContext";
+function createStyleRegistry() {
+    return new StyleSheetRegistry();
+}
+function StyleRegistry(param) {
+    var configuredRegistry = param.registry, children = param.children;
+    var rootRegistry = React.useContext(StyleSheetContext);
+    var ref = React.useState(function() {
+        return rootRegistry || configuredRegistry || createStyleRegistry();
+    }), registry = ref[0];
+    return /*#__PURE__*/ React__default["default"].createElement(StyleSheetContext.Provider, {
+        value: registry
+    }, children);
+}
+function useStyleRegistry() {
+    return React.useContext(StyleSheetContext);
+}
+// Opt-into the new `useInsertionEffect` API in React 18, fallback to `useLayoutEffect`.
+// https://github.com/reactwg/react-18/discussions/110
+var useInsertionEffect = React__default["default"].useInsertionEffect || React__default["default"].useLayoutEffect;
+var defaultRegistry = ("TURBOPACK compile-time falsy", 0) ? "TURBOPACK unreachable" : undefined;
+function JSXStyle(props) {
+    var registry = ("TURBOPACK compile-time falsy", 0) ? "TURBOPACK unreachable" : useStyleRegistry();
+    // If `registry` does not exist, we do nothing here.
+    if (!registry) {
+        return null;
+    }
+    if ("TURBOPACK compile-time truthy", 1) {
+        registry.add(props);
+        return null;
+    }
+    //TURBOPACK unreachable
+    ;
+}
+JSXStyle.dynamic = function(info) {
+    return info.map(function(tagInfo) {
+        var baseId = tagInfo[0];
+        var props = tagInfo[1];
+        return computeId(baseId, props);
+    }).join(" ");
+};
+exports.StyleRegistry = StyleRegistry;
+exports.createStyleRegistry = createStyleRegistry;
+exports.style = JSXStyle;
+exports.useStyleRegistry = useStyleRegistry;
+}),
+"[project]/InstagramUI/node_modules/styled-jsx/style.js [app-ssr] (ecmascript)", ((__turbopack_context__, module, exports) => {
+
+module.exports = __turbopack_context__.r("[project]/InstagramUI/node_modules/styled-jsx/dist/index/index.js [app-ssr] (ecmascript)").style;
+}),
+"[project]/InstagramUI/node_modules/date-fns/locale/pt-BR/_lib/formatDistance.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "formatDistance",
+    ()=>formatDistance
+]);
+const formatDistanceLocale = {
+    lessThanXSeconds: {
+        one: "menos de um segundo",
+        other: "menos de {{count}} segundos"
+    },
+    xSeconds: {
+        one: "1 segundo",
+        other: "{{count}} segundos"
+    },
+    halfAMinute: "meio minuto",
+    lessThanXMinutes: {
+        one: "menos de um minuto",
+        other: "menos de {{count}} minutos"
+    },
+    xMinutes: {
+        one: "1 minuto",
+        other: "{{count}} minutos"
+    },
+    aboutXHours: {
+        one: "cerca de 1 hora",
+        other: "cerca de {{count}} horas"
+    },
+    xHours: {
+        one: "1 hora",
+        other: "{{count}} horas"
+    },
+    xDays: {
+        one: "1 dia",
+        other: "{{count}} dias"
+    },
+    aboutXWeeks: {
+        one: "cerca de 1 semana",
+        other: "cerca de {{count}} semanas"
+    },
+    xWeeks: {
+        one: "1 semana",
+        other: "{{count}} semanas"
+    },
+    aboutXMonths: {
+        one: "cerca de 1 mês",
+        other: "cerca de {{count}} meses"
+    },
+    xMonths: {
+        one: "1 mês",
+        other: "{{count}} meses"
+    },
+    aboutXYears: {
+        one: "cerca de 1 ano",
+        other: "cerca de {{count}} anos"
+    },
+    xYears: {
+        one: "1 ano",
+        other: "{{count}} anos"
+    },
+    overXYears: {
+        one: "mais de 1 ano",
+        other: "mais de {{count}} anos"
+    },
+    almostXYears: {
+        one: "quase 1 ano",
+        other: "quase {{count}} anos"
+    }
+};
+const formatDistance = (token, count, options)=>{
+    let result;
+    const tokenValue = formatDistanceLocale[token];
+    if (typeof tokenValue === "string") {
+        result = tokenValue;
+    } else if (count === 1) {
+        result = tokenValue.one;
+    } else {
+        result = tokenValue.other.replace("{{count}}", String(count));
+    }
+    if (options?.addSuffix) {
+        if (options.comparison && options.comparison > 0) {
+            return "em " + result;
+        } else {
+            return "há " + result;
+        }
+    }
+    return result;
+};
+}),
+"[project]/InstagramUI/node_modules/date-fns/locale/_lib/buildFormatLongFn.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "buildFormatLongFn",
+    ()=>buildFormatLongFn
+]);
+function buildFormatLongFn(args) {
+    return (options = {})=>{
+        // TODO: Remove String()
+        const width = options.width ? String(options.width) : args.defaultWidth;
+        const format = args.formats[width] || args.formats[args.defaultWidth];
+        return format;
+    };
+}
+}),
+"[project]/InstagramUI/node_modules/date-fns/locale/pt-BR/_lib/formatLong.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "formatLong",
+    ()=>formatLong
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildFormatLongFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/locale/_lib/buildFormatLongFn.js [app-ssr] (ecmascript)");
+;
+const dateFormats = {
+    full: "EEEE, d 'de' MMMM 'de' y",
+    long: "d 'de' MMMM 'de' y",
+    medium: "d MMM y",
+    short: "dd/MM/yyyy"
+};
+const timeFormats = {
+    full: "HH:mm:ss zzzz",
+    long: "HH:mm:ss z",
+    medium: "HH:mm:ss",
+    short: "HH:mm"
+};
+const dateTimeFormats = {
+    full: "{{date}} 'às' {{time}}",
+    long: "{{date}} 'às' {{time}}",
+    medium: "{{date}}, {{time}}",
+    short: "{{date}}, {{time}}"
+};
+const formatLong = {
+    date: (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildFormatLongFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["buildFormatLongFn"])({
+        formats: dateFormats,
+        defaultWidth: "full"
+    }),
+    time: (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildFormatLongFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["buildFormatLongFn"])({
+        formats: timeFormats,
+        defaultWidth: "full"
+    }),
+    dateTime: (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildFormatLongFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["buildFormatLongFn"])({
+        formats: dateTimeFormats,
+        defaultWidth: "full"
+    })
+};
+}),
+"[project]/InstagramUI/node_modules/date-fns/locale/pt-BR/_lib/formatRelative.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "formatRelative",
+    ()=>formatRelative
+]);
+const formatRelativeLocale = {
+    lastWeek: (date)=>{
+        const weekday = date.getDay();
+        const last = weekday === 0 || weekday === 6 ? "último" : "última";
+        return "'" + last + "' eeee 'às' p";
+    },
+    yesterday: "'ontem às' p",
+    today: "'hoje às' p",
+    tomorrow: "'amanhã às' p",
+    nextWeek: "eeee 'às' p",
+    other: "P"
+};
+const formatRelative = (token, date, _baseDate, _options)=>{
+    const format = formatRelativeLocale[token];
+    if (typeof format === "function") {
+        return format(date);
+    }
+    return format;
+};
+}),
+"[project]/InstagramUI/node_modules/date-fns/locale/_lib/buildLocalizeFn.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+/**
+ * The localize function argument callback which allows to convert raw value to
+ * the actual type.
+ *
+ * @param value - The value to convert
+ *
+ * @returns The converted value
+ */ /**
+ * The map of localized values for each width.
+ */ /**
+ * The index type of the locale unit value. It types conversion of units of
+ * values that don't start at 0 (i.e. quarters).
+ */ /**
+ * Converts the unit value to the tuple of values.
+ */ /**
+ * The tuple of localized era values. The first element represents BC,
+ * the second element represents AD.
+ */ /**
+ * The tuple of localized quarter values. The first element represents Q1.
+ */ /**
+ * The tuple of localized day values. The first element represents Sunday.
+ */ /**
+ * The tuple of localized month values. The first element represents January.
+ */ __turbopack_context__.s([
+    "buildLocalizeFn",
+    ()=>buildLocalizeFn
+]);
+function buildLocalizeFn(args) {
+    return (value, options)=>{
+        const context = options?.context ? String(options.context) : "standalone";
+        let valuesArray;
+        if (context === "formatting" && args.formattingValues) {
+            const defaultWidth = args.defaultFormattingWidth || args.defaultWidth;
+            const width = options?.width ? String(options.width) : defaultWidth;
+            valuesArray = args.formattingValues[width] || args.formattingValues[defaultWidth];
+        } else {
+            const defaultWidth = args.defaultWidth;
+            const width = options?.width ? String(options.width) : args.defaultWidth;
+            valuesArray = args.values[width] || args.values[defaultWidth];
+        }
+        const index = args.argumentCallback ? args.argumentCallback(value) : value;
+        // @ts-expect-error - For some reason TypeScript just don't want to match it, no matter how hard we try. I challenge you to try to remove it!
+        return valuesArray[index];
+    };
+}
+}),
+"[project]/InstagramUI/node_modules/date-fns/locale/pt-BR/_lib/localize.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "localize",
+    ()=>localize
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildLocalizeFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/locale/_lib/buildLocalizeFn.js [app-ssr] (ecmascript)");
+;
+const eraValues = {
+    narrow: [
+        "AC",
+        "DC"
+    ],
+    abbreviated: [
+        "AC",
+        "DC"
+    ],
+    wide: [
+        "antes de cristo",
+        "depois de cristo"
+    ]
+};
+const quarterValues = {
+    narrow: [
+        "1",
+        "2",
+        "3",
+        "4"
+    ],
+    abbreviated: [
+        "T1",
+        "T2",
+        "T3",
+        "T4"
+    ],
+    wide: [
+        "1º trimestre",
+        "2º trimestre",
+        "3º trimestre",
+        "4º trimestre"
+    ]
+};
+const monthValues = {
+    narrow: [
+        "j",
+        "f",
+        "m",
+        "a",
+        "m",
+        "j",
+        "j",
+        "a",
+        "s",
+        "o",
+        "n",
+        "d"
+    ],
+    abbreviated: [
+        "jan",
+        "fev",
+        "mar",
+        "abr",
+        "mai",
+        "jun",
+        "jul",
+        "ago",
+        "set",
+        "out",
+        "nov",
+        "dez"
+    ],
+    wide: [
+        "janeiro",
+        "fevereiro",
+        "março",
+        "abril",
+        "maio",
+        "junho",
+        "julho",
+        "agosto",
+        "setembro",
+        "outubro",
+        "novembro",
+        "dezembro"
+    ]
+};
+const dayValues = {
+    narrow: [
+        "D",
+        "S",
+        "T",
+        "Q",
+        "Q",
+        "S",
+        "S"
+    ],
+    short: [
+        "dom",
+        "seg",
+        "ter",
+        "qua",
+        "qui",
+        "sex",
+        "sab"
+    ],
+    abbreviated: [
+        "domingo",
+        "segunda",
+        "terça",
+        "quarta",
+        "quinta",
+        "sexta",
+        "sábado"
+    ],
+    wide: [
+        "domingo",
+        "segunda-feira",
+        "terça-feira",
+        "quarta-feira",
+        "quinta-feira",
+        "sexta-feira",
+        "sábado"
+    ]
+};
+const dayPeriodValues = {
+    narrow: {
+        am: "a",
+        pm: "p",
+        midnight: "mn",
+        noon: "md",
+        morning: "manhã",
+        afternoon: "tarde",
+        evening: "tarde",
+        night: "noite"
+    },
+    abbreviated: {
+        am: "AM",
+        pm: "PM",
+        midnight: "meia-noite",
+        noon: "meio-dia",
+        morning: "manhã",
+        afternoon: "tarde",
+        evening: "tarde",
+        night: "noite"
+    },
+    wide: {
+        am: "a.m.",
+        pm: "p.m.",
+        midnight: "meia-noite",
+        noon: "meio-dia",
+        morning: "manhã",
+        afternoon: "tarde",
+        evening: "tarde",
+        night: "noite"
+    }
+};
+const formattingDayPeriodValues = {
+    narrow: {
+        am: "a",
+        pm: "p",
+        midnight: "mn",
+        noon: "md",
+        morning: "da manhã",
+        afternoon: "da tarde",
+        evening: "da tarde",
+        night: "da noite"
+    },
+    abbreviated: {
+        am: "AM",
+        pm: "PM",
+        midnight: "meia-noite",
+        noon: "meio-dia",
+        morning: "da manhã",
+        afternoon: "da tarde",
+        evening: "da tarde",
+        night: "da noite"
+    },
+    wide: {
+        am: "a.m.",
+        pm: "p.m.",
+        midnight: "meia-noite",
+        noon: "meio-dia",
+        morning: "da manhã",
+        afternoon: "da tarde",
+        evening: "da tarde",
+        night: "da noite"
+    }
+};
+const ordinalNumber = (dirtyNumber, options)=>{
+    const number = Number(dirtyNumber);
+    if (options?.unit === "week") {
+        return number + "ª";
+    }
+    return number + "º";
+};
+const localize = {
+    ordinalNumber,
+    era: (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildLocalizeFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["buildLocalizeFn"])({
+        values: eraValues,
+        defaultWidth: "wide"
+    }),
+    quarter: (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildLocalizeFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["buildLocalizeFn"])({
+        values: quarterValues,
+        defaultWidth: "wide",
+        argumentCallback: (quarter)=>quarter - 1
+    }),
+    month: (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildLocalizeFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["buildLocalizeFn"])({
+        values: monthValues,
+        defaultWidth: "wide"
+    }),
+    day: (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildLocalizeFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["buildLocalizeFn"])({
+        values: dayValues,
+        defaultWidth: "wide"
+    }),
+    dayPeriod: (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildLocalizeFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["buildLocalizeFn"])({
+        values: dayPeriodValues,
+        defaultWidth: "wide",
+        formattingValues: formattingDayPeriodValues,
+        defaultFormattingWidth: "wide"
+    })
+};
+}),
+"[project]/InstagramUI/node_modules/date-fns/locale/_lib/buildMatchFn.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "buildMatchFn",
+    ()=>buildMatchFn
+]);
+function buildMatchFn(args) {
+    return (string, options = {})=>{
+        const width = options.width;
+        const matchPattern = width && args.matchPatterns[width] || args.matchPatterns[args.defaultMatchWidth];
+        const matchResult = string.match(matchPattern);
+        if (!matchResult) {
+            return null;
+        }
+        const matchedString = matchResult[0];
+        const parsePatterns = width && args.parsePatterns[width] || args.parsePatterns[args.defaultParseWidth];
+        const key = Array.isArray(parsePatterns) ? findIndex(parsePatterns, (pattern)=>pattern.test(matchedString)) : findKey(parsePatterns, (pattern)=>pattern.test(matchedString));
+        let value;
+        value = args.valueCallback ? args.valueCallback(key) : key;
+        value = options.valueCallback ? options.valueCallback(value) : value;
+        const rest = string.slice(matchedString.length);
+        return {
+            value,
+            rest
+        };
+    };
+}
+function findKey(object, predicate) {
+    for(const key in object){
+        if (Object.prototype.hasOwnProperty.call(object, key) && predicate(object[key])) {
+            return key;
+        }
+    }
+    return undefined;
+}
+function findIndex(array, predicate) {
+    for(let key = 0; key < array.length; key++){
+        if (predicate(array[key])) {
+            return key;
+        }
+    }
+    return undefined;
+}
+}),
+"[project]/InstagramUI/node_modules/date-fns/locale/_lib/buildMatchPatternFn.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "buildMatchPatternFn",
+    ()=>buildMatchPatternFn
+]);
+function buildMatchPatternFn(args) {
+    return (string, options = {})=>{
+        const matchResult = string.match(args.matchPattern);
+        if (!matchResult) return null;
+        const matchedString = matchResult[0];
+        const parseResult = string.match(args.parsePattern);
+        if (!parseResult) return null;
+        let value = args.valueCallback ? args.valueCallback(parseResult[0]) : parseResult[0];
+        // [TODO] I challenge you to fix the type
+        value = options.valueCallback ? options.valueCallback(value) : value;
+        const rest = string.slice(matchedString.length);
+        return {
+            value,
+            rest
+        };
+    };
+}
+}),
+"[project]/InstagramUI/node_modules/date-fns/locale/pt-BR/_lib/match.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "match",
+    ()=>match
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildMatchFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/locale/_lib/buildMatchFn.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildMatchPatternFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/locale/_lib/buildMatchPatternFn.js [app-ssr] (ecmascript)");
+;
+;
+const matchOrdinalNumberPattern = /^(\d+)[ºªo]?/i;
+const parseOrdinalNumberPattern = /\d+/i;
+const matchEraPatterns = {
+    narrow: /^(ac|dc|a|d)/i,
+    abbreviated: /^(a\.?\s?c\.?|d\.?\s?c\.?)/i,
+    wide: /^(antes de cristo|depois de cristo)/i
+};
+const parseEraPatterns = {
+    any: [
+        /^ac/i,
+        /^dc/i
+    ],
+    wide: [
+        /^antes de cristo/i,
+        /^depois de cristo/i
+    ]
+};
+const matchQuarterPatterns = {
+    narrow: /^[1234]/i,
+    abbreviated: /^T[1234]/i,
+    wide: /^[1234](º)? trimestre/i
+};
+const parseQuarterPatterns = {
+    any: [
+        /1/i,
+        /2/i,
+        /3/i,
+        /4/i
+    ]
+};
+const matchMonthPatterns = {
+    narrow: /^[jfmajsond]/i,
+    abbreviated: /^(jan|fev|mar|abr|mai|jun|jul|ago|set|out|nov|dez)/i,
+    wide: /^(janeiro|fevereiro|março|abril|maio|junho|julho|agosto|setembro|outubro|novembro|dezembro)/i
+};
+const parseMonthPatterns = {
+    narrow: [
+        /^j/i,
+        /^f/i,
+        /^m/i,
+        /^a/i,
+        /^m/i,
+        /^j/i,
+        /^j/i,
+        /^a/i,
+        /^s/i,
+        /^o/i,
+        /^n/i,
+        /^d/i
+    ],
+    any: [
+        /^ja/i,
+        /^fev/i,
+        /^mar/i,
+        /^abr/i,
+        /^mai/i,
+        /^jun/i,
+        /^jul/i,
+        /^ago/i,
+        /^set/i,
+        /^out/i,
+        /^nov/i,
+        /^dez/i
+    ]
+};
+const matchDayPatterns = {
+    narrow: /^(dom|[23456]ª?|s[aá]b)/i,
+    short: /^(dom|[23456]ª?|s[aá]b)/i,
+    abbreviated: /^(dom|seg|ter|qua|qui|sex|s[aá]b)/i,
+    wide: /^(domingo|(segunda|ter[cç]a|quarta|quinta|sexta)([- ]feira)?|s[aá]bado)/i
+};
+const parseDayPatterns = {
+    short: [
+        /^d/i,
+        /^2/i,
+        /^3/i,
+        /^4/i,
+        /^5/i,
+        /^6/i,
+        /^s[aá]/i
+    ],
+    narrow: [
+        /^d/i,
+        /^2/i,
+        /^3/i,
+        /^4/i,
+        /^5/i,
+        /^6/i,
+        /^s[aá]/i
+    ],
+    any: [
+        /^d/i,
+        /^seg/i,
+        /^t/i,
+        /^qua/i,
+        /^qui/i,
+        /^sex/i,
+        /^s[aá]b/i
+    ]
+};
+const matchDayPeriodPatterns = {
+    narrow: /^(a|p|mn|md|(da) (manhã|tarde|noite))/i,
+    any: /^([ap]\.?\s?m\.?|meia[-\s]noite|meio[-\s]dia|(da) (manhã|tarde|noite))/i
+};
+const parseDayPeriodPatterns = {
+    any: {
+        am: /^a/i,
+        pm: /^p/i,
+        midnight: /^mn|^meia[-\s]noite/i,
+        noon: /^md|^meio[-\s]dia/i,
+        morning: /manhã/i,
+        afternoon: /tarde/i,
+        evening: /tarde/i,
+        night: /noite/i
+    }
+};
+const match = {
+    ordinalNumber: (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildMatchPatternFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["buildMatchPatternFn"])({
+        matchPattern: matchOrdinalNumberPattern,
+        parsePattern: parseOrdinalNumberPattern,
+        valueCallback: (value)=>parseInt(value, 10)
+    }),
+    era: (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildMatchFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["buildMatchFn"])({
+        matchPatterns: matchEraPatterns,
+        defaultMatchWidth: "wide",
+        parsePatterns: parseEraPatterns,
+        defaultParseWidth: "any"
+    }),
+    quarter: (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildMatchFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["buildMatchFn"])({
+        matchPatterns: matchQuarterPatterns,
+        defaultMatchWidth: "wide",
+        parsePatterns: parseQuarterPatterns,
+        defaultParseWidth: "any",
+        valueCallback: (index)=>index + 1
+    }),
+    month: (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildMatchFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["buildMatchFn"])({
+        matchPatterns: matchMonthPatterns,
+        defaultMatchWidth: "wide",
+        parsePatterns: parseMonthPatterns,
+        defaultParseWidth: "any"
+    }),
+    day: (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildMatchFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["buildMatchFn"])({
+        matchPatterns: matchDayPatterns,
+        defaultMatchWidth: "wide",
+        parsePatterns: parseDayPatterns,
+        defaultParseWidth: "any"
+    }),
+    dayPeriod: (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildMatchFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["buildMatchFn"])({
+        matchPatterns: matchDayPeriodPatterns,
+        defaultMatchWidth: "any",
+        parsePatterns: parseDayPeriodPatterns,
+        defaultParseWidth: "any"
+    })
+};
+}),
+"[project]/InstagramUI/node_modules/date-fns/locale/pt-BR.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>__TURBOPACK__default__export__,
+    "ptBR",
+    ()=>ptBR
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$pt$2d$BR$2f$_lib$2f$formatDistance$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/locale/pt-BR/_lib/formatDistance.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$pt$2d$BR$2f$_lib$2f$formatLong$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/locale/pt-BR/_lib/formatLong.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$pt$2d$BR$2f$_lib$2f$formatRelative$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/locale/pt-BR/_lib/formatRelative.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$pt$2d$BR$2f$_lib$2f$localize$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/locale/pt-BR/_lib/localize.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$pt$2d$BR$2f$_lib$2f$match$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/locale/pt-BR/_lib/match.js [app-ssr] (ecmascript)");
+;
+;
+;
+;
+;
+const ptBR = {
+    code: "pt-BR",
+    formatDistance: __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$pt$2d$BR$2f$_lib$2f$formatDistance$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["formatDistance"],
+    formatLong: __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$pt$2d$BR$2f$_lib$2f$formatLong$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["formatLong"],
+    formatRelative: __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$pt$2d$BR$2f$_lib$2f$formatRelative$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["formatRelative"],
+    localize: __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$pt$2d$BR$2f$_lib$2f$localize$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["localize"],
+    match: __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$pt$2d$BR$2f$_lib$2f$match$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["match"],
+    options: {
+        weekStartsOn: 0 /* Sunday */ ,
+        firstWeekContainsDate: 1
+    }
+};
+const __TURBOPACK__default__export__ = ptBR;
+}),
+"[project]/InstagramUI/node_modules/date-fns/constants.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+/**
+ * @module constants
+ * @summary Useful constants
+ * @description
+ * Collection of useful date constants.
+ *
+ * The constants could be imported from `date-fns/constants`:
+ *
+ * ```ts
+ * import { maxTime, minTime } from "./constants/date-fns/constants";
+ *
+ * function isAllowedTime(time) {
+ *   return time <= maxTime && time >= minTime;
+ * }
+ * ```
+ */ /**
+ * @constant
+ * @name daysInWeek
+ * @summary Days in 1 week.
+ */ __turbopack_context__.s([
+    "constructFromSymbol",
+    ()=>constructFromSymbol,
+    "daysInWeek",
+    ()=>daysInWeek,
+    "daysInYear",
+    ()=>daysInYear,
+    "maxTime",
+    ()=>maxTime,
+    "millisecondsInDay",
+    ()=>millisecondsInDay,
+    "millisecondsInHour",
+    ()=>millisecondsInHour,
+    "millisecondsInMinute",
+    ()=>millisecondsInMinute,
+    "millisecondsInSecond",
+    ()=>millisecondsInSecond,
+    "millisecondsInWeek",
+    ()=>millisecondsInWeek,
+    "minTime",
+    ()=>minTime,
+    "minutesInDay",
+    ()=>minutesInDay,
+    "minutesInHour",
+    ()=>minutesInHour,
+    "minutesInMonth",
+    ()=>minutesInMonth,
+    "minutesInYear",
+    ()=>minutesInYear,
+    "monthsInQuarter",
+    ()=>monthsInQuarter,
+    "monthsInYear",
+    ()=>monthsInYear,
+    "quartersInYear",
+    ()=>quartersInYear,
+    "secondsInDay",
+    ()=>secondsInDay,
+    "secondsInHour",
+    ()=>secondsInHour,
+    "secondsInMinute",
+    ()=>secondsInMinute,
+    "secondsInMonth",
+    ()=>secondsInMonth,
+    "secondsInQuarter",
+    ()=>secondsInQuarter,
+    "secondsInWeek",
+    ()=>secondsInWeek,
+    "secondsInYear",
+    ()=>secondsInYear
+]);
+const daysInWeek = 7;
+const daysInYear = 365.2425;
+const maxTime = Math.pow(10, 8) * 24 * 60 * 60 * 1000;
+const minTime = -maxTime;
+const millisecondsInWeek = 604800000;
+const millisecondsInDay = 86400000;
+const millisecondsInMinute = 60000;
+const millisecondsInHour = 3600000;
+const millisecondsInSecond = 1000;
+const minutesInYear = 525600;
+const minutesInMonth = 43200;
+const minutesInDay = 1440;
+const minutesInHour = 60;
+const monthsInQuarter = 3;
+const monthsInYear = 12;
+const quartersInYear = 4;
+const secondsInHour = 3600;
+const secondsInMinute = 60;
+const secondsInDay = secondsInHour * 24;
+const secondsInWeek = secondsInDay * 7;
+const secondsInYear = secondsInDay * daysInYear;
+const secondsInMonth = secondsInYear / 12;
+const secondsInQuarter = secondsInMonth * 3;
+const constructFromSymbol = Symbol.for("constructDateFrom");
+}),
+"[project]/InstagramUI/node_modules/date-fns/constructFrom.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "constructFrom",
+    ()=>constructFrom,
+    "default",
+    ()=>__TURBOPACK__default__export__
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$constants$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/constants.js [app-ssr] (ecmascript)");
+;
+function constructFrom(date, value) {
+    if (typeof date === "function") return date(value);
+    if (date && typeof date === "object" && __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$constants$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["constructFromSymbol"] in date) return date[__TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$constants$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["constructFromSymbol"]](value);
+    if (date instanceof Date) return new date.constructor(value);
+    return new Date(value);
+}
+const __TURBOPACK__default__export__ = constructFrom;
+}),
+"[project]/InstagramUI/node_modules/date-fns/constructNow.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "constructNow",
+    ()=>constructNow,
+    "default",
+    ()=>__TURBOPACK__default__export__
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$constructFrom$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/constructFrom.js [app-ssr] (ecmascript)");
+;
+function constructNow(date) {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$constructFrom$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["constructFrom"])(date, Date.now());
+}
+const __TURBOPACK__default__export__ = constructNow;
+}),
+"[project]/InstagramUI/node_modules/date-fns/locale/en-US/_lib/formatDistance.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "formatDistance",
+    ()=>formatDistance
+]);
+const formatDistanceLocale = {
+    lessThanXSeconds: {
+        one: "less than a second",
+        other: "less than {{count}} seconds"
+    },
+    xSeconds: {
+        one: "1 second",
+        other: "{{count}} seconds"
+    },
+    halfAMinute: "half a minute",
+    lessThanXMinutes: {
+        one: "less than a minute",
+        other: "less than {{count}} minutes"
+    },
+    xMinutes: {
+        one: "1 minute",
+        other: "{{count}} minutes"
+    },
+    aboutXHours: {
+        one: "about 1 hour",
+        other: "about {{count}} hours"
+    },
+    xHours: {
+        one: "1 hour",
+        other: "{{count}} hours"
+    },
+    xDays: {
+        one: "1 day",
+        other: "{{count}} days"
+    },
+    aboutXWeeks: {
+        one: "about 1 week",
+        other: "about {{count}} weeks"
+    },
+    xWeeks: {
+        one: "1 week",
+        other: "{{count}} weeks"
+    },
+    aboutXMonths: {
+        one: "about 1 month",
+        other: "about {{count}} months"
+    },
+    xMonths: {
+        one: "1 month",
+        other: "{{count}} months"
+    },
+    aboutXYears: {
+        one: "about 1 year",
+        other: "about {{count}} years"
+    },
+    xYears: {
+        one: "1 year",
+        other: "{{count}} years"
+    },
+    overXYears: {
+        one: "over 1 year",
+        other: "over {{count}} years"
+    },
+    almostXYears: {
+        one: "almost 1 year",
+        other: "almost {{count}} years"
+    }
+};
+const formatDistance = (token, count, options)=>{
+    let result;
+    const tokenValue = formatDistanceLocale[token];
+    if (typeof tokenValue === "string") {
+        result = tokenValue;
+    } else if (count === 1) {
+        result = tokenValue.one;
+    } else {
+        result = tokenValue.other.replace("{{count}}", count.toString());
+    }
+    if (options?.addSuffix) {
+        if (options.comparison && options.comparison > 0) {
+            return "in " + result;
+        } else {
+            return result + " ago";
+        }
+    }
+    return result;
+};
+}),
+"[project]/InstagramUI/node_modules/date-fns/locale/en-US/_lib/formatLong.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "formatLong",
+    ()=>formatLong
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildFormatLongFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/locale/_lib/buildFormatLongFn.js [app-ssr] (ecmascript)");
+;
+const dateFormats = {
+    full: "EEEE, MMMM do, y",
+    long: "MMMM do, y",
+    medium: "MMM d, y",
+    short: "MM/dd/yyyy"
+};
+const timeFormats = {
+    full: "h:mm:ss a zzzz",
+    long: "h:mm:ss a z",
+    medium: "h:mm:ss a",
+    short: "h:mm a"
+};
+const dateTimeFormats = {
+    full: "{{date}} 'at' {{time}}",
+    long: "{{date}} 'at' {{time}}",
+    medium: "{{date}}, {{time}}",
+    short: "{{date}}, {{time}}"
+};
+const formatLong = {
+    date: (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildFormatLongFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["buildFormatLongFn"])({
+        formats: dateFormats,
+        defaultWidth: "full"
+    }),
+    time: (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildFormatLongFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["buildFormatLongFn"])({
+        formats: timeFormats,
+        defaultWidth: "full"
+    }),
+    dateTime: (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildFormatLongFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["buildFormatLongFn"])({
+        formats: dateTimeFormats,
+        defaultWidth: "full"
+    })
+};
+}),
+"[project]/InstagramUI/node_modules/date-fns/locale/en-US/_lib/formatRelative.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "formatRelative",
+    ()=>formatRelative
+]);
+const formatRelativeLocale = {
+    lastWeek: "'last' eeee 'at' p",
+    yesterday: "'yesterday at' p",
+    today: "'today at' p",
+    tomorrow: "'tomorrow at' p",
+    nextWeek: "eeee 'at' p",
+    other: "P"
+};
+const formatRelative = (token, _date, _baseDate, _options)=>formatRelativeLocale[token];
+}),
+"[project]/InstagramUI/node_modules/date-fns/locale/en-US/_lib/localize.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "localize",
+    ()=>localize
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildLocalizeFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/locale/_lib/buildLocalizeFn.js [app-ssr] (ecmascript)");
+;
+const eraValues = {
+    narrow: [
+        "B",
+        "A"
+    ],
+    abbreviated: [
+        "BC",
+        "AD"
+    ],
+    wide: [
+        "Before Christ",
+        "Anno Domini"
+    ]
+};
+const quarterValues = {
+    narrow: [
+        "1",
+        "2",
+        "3",
+        "4"
+    ],
+    abbreviated: [
+        "Q1",
+        "Q2",
+        "Q3",
+        "Q4"
+    ],
+    wide: [
+        "1st quarter",
+        "2nd quarter",
+        "3rd quarter",
+        "4th quarter"
+    ]
+};
+// Note: in English, the names of days of the week and months are capitalized.
+// If you are making a new locale based on this one, check if the same is true for the language you're working on.
+// Generally, formatted dates should look like they are in the middle of a sentence,
+// e.g. in Spanish language the weekdays and months should be in the lowercase.
+const monthValues = {
+    narrow: [
+        "J",
+        "F",
+        "M",
+        "A",
+        "M",
+        "J",
+        "J",
+        "A",
+        "S",
+        "O",
+        "N",
+        "D"
+    ],
+    abbreviated: [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec"
+    ],
+    wide: [
+        "January",
+        "February",
+        "March",
+        "April",
+        "May",
+        "June",
+        "July",
+        "August",
+        "September",
+        "October",
+        "November",
+        "December"
+    ]
+};
+const dayValues = {
+    narrow: [
+        "S",
+        "M",
+        "T",
+        "W",
+        "T",
+        "F",
+        "S"
+    ],
+    short: [
+        "Su",
+        "Mo",
+        "Tu",
+        "We",
+        "Th",
+        "Fr",
+        "Sa"
+    ],
+    abbreviated: [
+        "Sun",
+        "Mon",
+        "Tue",
+        "Wed",
+        "Thu",
+        "Fri",
+        "Sat"
+    ],
+    wide: [
+        "Sunday",
+        "Monday",
+        "Tuesday",
+        "Wednesday",
+        "Thursday",
+        "Friday",
+        "Saturday"
+    ]
+};
+const dayPeriodValues = {
+    narrow: {
+        am: "a",
+        pm: "p",
+        midnight: "mi",
+        noon: "n",
+        morning: "morning",
+        afternoon: "afternoon",
+        evening: "evening",
+        night: "night"
+    },
+    abbreviated: {
+        am: "AM",
+        pm: "PM",
+        midnight: "midnight",
+        noon: "noon",
+        morning: "morning",
+        afternoon: "afternoon",
+        evening: "evening",
+        night: "night"
+    },
+    wide: {
+        am: "a.m.",
+        pm: "p.m.",
+        midnight: "midnight",
+        noon: "noon",
+        morning: "morning",
+        afternoon: "afternoon",
+        evening: "evening",
+        night: "night"
+    }
+};
+const formattingDayPeriodValues = {
+    narrow: {
+        am: "a",
+        pm: "p",
+        midnight: "mi",
+        noon: "n",
+        morning: "in the morning",
+        afternoon: "in the afternoon",
+        evening: "in the evening",
+        night: "at night"
+    },
+    abbreviated: {
+        am: "AM",
+        pm: "PM",
+        midnight: "midnight",
+        noon: "noon",
+        morning: "in the morning",
+        afternoon: "in the afternoon",
+        evening: "in the evening",
+        night: "at night"
+    },
+    wide: {
+        am: "a.m.",
+        pm: "p.m.",
+        midnight: "midnight",
+        noon: "noon",
+        morning: "in the morning",
+        afternoon: "in the afternoon",
+        evening: "in the evening",
+        night: "at night"
+    }
+};
+const ordinalNumber = (dirtyNumber, _options)=>{
+    const number = Number(dirtyNumber);
+    // If ordinal numbers depend on context, for example,
+    // if they are different for different grammatical genders,
+    // use `options.unit`.
+    //
+    // `unit` can be 'year', 'quarter', 'month', 'week', 'date', 'dayOfYear',
+    // 'day', 'hour', 'minute', 'second'.
+    const rem100 = number % 100;
+    if (rem100 > 20 || rem100 < 10) {
+        switch(rem100 % 10){
+            case 1:
+                return number + "st";
+            case 2:
+                return number + "nd";
+            case 3:
+                return number + "rd";
+        }
+    }
+    return number + "th";
+};
+const localize = {
+    ordinalNumber,
+    era: (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildLocalizeFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["buildLocalizeFn"])({
+        values: eraValues,
+        defaultWidth: "wide"
+    }),
+    quarter: (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildLocalizeFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["buildLocalizeFn"])({
+        values: quarterValues,
+        defaultWidth: "wide",
+        argumentCallback: (quarter)=>quarter - 1
+    }),
+    month: (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildLocalizeFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["buildLocalizeFn"])({
+        values: monthValues,
+        defaultWidth: "wide"
+    }),
+    day: (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildLocalizeFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["buildLocalizeFn"])({
+        values: dayValues,
+        defaultWidth: "wide"
+    }),
+    dayPeriod: (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildLocalizeFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["buildLocalizeFn"])({
+        values: dayPeriodValues,
+        defaultWidth: "wide",
+        formattingValues: formattingDayPeriodValues,
+        defaultFormattingWidth: "wide"
+    })
+};
+}),
+"[project]/InstagramUI/node_modules/date-fns/locale/en-US/_lib/match.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "match",
+    ()=>match
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildMatchFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/locale/_lib/buildMatchFn.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildMatchPatternFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/locale/_lib/buildMatchPatternFn.js [app-ssr] (ecmascript)");
+;
+;
+const matchOrdinalNumberPattern = /^(\d+)(th|st|nd|rd)?/i;
+const parseOrdinalNumberPattern = /\d+/i;
+const matchEraPatterns = {
+    narrow: /^(b|a)/i,
+    abbreviated: /^(b\.?\s?c\.?|b\.?\s?c\.?\s?e\.?|a\.?\s?d\.?|c\.?\s?e\.?)/i,
+    wide: /^(before christ|before common era|anno domini|common era)/i
+};
+const parseEraPatterns = {
+    any: [
+        /^b/i,
+        /^(a|c)/i
+    ]
+};
+const matchQuarterPatterns = {
+    narrow: /^[1234]/i,
+    abbreviated: /^q[1234]/i,
+    wide: /^[1234](th|st|nd|rd)? quarter/i
+};
+const parseQuarterPatterns = {
+    any: [
+        /1/i,
+        /2/i,
+        /3/i,
+        /4/i
+    ]
+};
+const matchMonthPatterns = {
+    narrow: /^[jfmasond]/i,
+    abbreviated: /^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)/i,
+    wide: /^(january|february|march|april|may|june|july|august|september|october|november|december)/i
+};
+const parseMonthPatterns = {
+    narrow: [
+        /^j/i,
+        /^f/i,
+        /^m/i,
+        /^a/i,
+        /^m/i,
+        /^j/i,
+        /^j/i,
+        /^a/i,
+        /^s/i,
+        /^o/i,
+        /^n/i,
+        /^d/i
+    ],
+    any: [
+        /^ja/i,
+        /^f/i,
+        /^mar/i,
+        /^ap/i,
+        /^may/i,
+        /^jun/i,
+        /^jul/i,
+        /^au/i,
+        /^s/i,
+        /^o/i,
+        /^n/i,
+        /^d/i
+    ]
+};
+const matchDayPatterns = {
+    narrow: /^[smtwf]/i,
+    short: /^(su|mo|tu|we|th|fr|sa)/i,
+    abbreviated: /^(sun|mon|tue|wed|thu|fri|sat)/i,
+    wide: /^(sunday|monday|tuesday|wednesday|thursday|friday|saturday)/i
+};
+const parseDayPatterns = {
+    narrow: [
+        /^s/i,
+        /^m/i,
+        /^t/i,
+        /^w/i,
+        /^t/i,
+        /^f/i,
+        /^s/i
+    ],
+    any: [
+        /^su/i,
+        /^m/i,
+        /^tu/i,
+        /^w/i,
+        /^th/i,
+        /^f/i,
+        /^sa/i
+    ]
+};
+const matchDayPeriodPatterns = {
+    narrow: /^(a|p|mi|n|(in the|at) (morning|afternoon|evening|night))/i,
+    any: /^([ap]\.?\s?m\.?|midnight|noon|(in the|at) (morning|afternoon|evening|night))/i
+};
+const parseDayPeriodPatterns = {
+    any: {
+        am: /^a/i,
+        pm: /^p/i,
+        midnight: /^mi/i,
+        noon: /^no/i,
+        morning: /morning/i,
+        afternoon: /afternoon/i,
+        evening: /evening/i,
+        night: /night/i
+    }
+};
+const match = {
+    ordinalNumber: (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildMatchPatternFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["buildMatchPatternFn"])({
+        matchPattern: matchOrdinalNumberPattern,
+        parsePattern: parseOrdinalNumberPattern,
+        valueCallback: (value)=>parseInt(value, 10)
+    }),
+    era: (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildMatchFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["buildMatchFn"])({
+        matchPatterns: matchEraPatterns,
+        defaultMatchWidth: "wide",
+        parsePatterns: parseEraPatterns,
+        defaultParseWidth: "any"
+    }),
+    quarter: (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildMatchFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["buildMatchFn"])({
+        matchPatterns: matchQuarterPatterns,
+        defaultMatchWidth: "wide",
+        parsePatterns: parseQuarterPatterns,
+        defaultParseWidth: "any",
+        valueCallback: (index)=>index + 1
+    }),
+    month: (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildMatchFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["buildMatchFn"])({
+        matchPatterns: matchMonthPatterns,
+        defaultMatchWidth: "wide",
+        parsePatterns: parseMonthPatterns,
+        defaultParseWidth: "any"
+    }),
+    day: (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildMatchFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["buildMatchFn"])({
+        matchPatterns: matchDayPatterns,
+        defaultMatchWidth: "wide",
+        parsePatterns: parseDayPatterns,
+        defaultParseWidth: "any"
+    }),
+    dayPeriod: (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$_lib$2f$buildMatchFn$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["buildMatchFn"])({
+        matchPatterns: matchDayPeriodPatterns,
+        defaultMatchWidth: "any",
+        parsePatterns: parseDayPeriodPatterns,
+        defaultParseWidth: "any"
+    })
+};
+}),
+"[project]/InstagramUI/node_modules/date-fns/locale/en-US.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>__TURBOPACK__default__export__,
+    "enUS",
+    ()=>enUS
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$en$2d$US$2f$_lib$2f$formatDistance$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/locale/en-US/_lib/formatDistance.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$en$2d$US$2f$_lib$2f$formatLong$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/locale/en-US/_lib/formatLong.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$en$2d$US$2f$_lib$2f$formatRelative$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/locale/en-US/_lib/formatRelative.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$en$2d$US$2f$_lib$2f$localize$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/locale/en-US/_lib/localize.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$en$2d$US$2f$_lib$2f$match$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/locale/en-US/_lib/match.js [app-ssr] (ecmascript)");
+;
+;
+;
+;
+;
+const enUS = {
+    code: "en-US",
+    formatDistance: __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$en$2d$US$2f$_lib$2f$formatDistance$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["formatDistance"],
+    formatLong: __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$en$2d$US$2f$_lib$2f$formatLong$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["formatLong"],
+    formatRelative: __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$en$2d$US$2f$_lib$2f$formatRelative$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["formatRelative"],
+    localize: __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$en$2d$US$2f$_lib$2f$localize$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["localize"],
+    match: __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$en$2d$US$2f$_lib$2f$match$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["match"],
+    options: {
+        weekStartsOn: 0 /* Sunday */ ,
+        firstWeekContainsDate: 1
+    }
+};
+const __TURBOPACK__default__export__ = enUS;
+}),
+"[project]/InstagramUI/node_modules/date-fns/locale/en-US.js [app-ssr] (ecmascript) <export enUS as defaultLocale>", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "defaultLocale",
+    ()=>__TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$en$2d$US$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["enUS"]
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$en$2d$US$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/locale/en-US.js [app-ssr] (ecmascript)");
+}),
+"[project]/InstagramUI/node_modules/date-fns/_lib/defaultOptions.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "getDefaultOptions",
+    ()=>getDefaultOptions,
+    "setDefaultOptions",
+    ()=>setDefaultOptions
+]);
+let defaultOptions = {};
+function getDefaultOptions() {
+    return defaultOptions;
+}
+function setDefaultOptions(newOptions) {
+    defaultOptions = newOptions;
+}
+}),
+"[project]/InstagramUI/node_modules/date-fns/toDate.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>__TURBOPACK__default__export__,
+    "toDate",
+    ()=>toDate
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$constructFrom$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/constructFrom.js [app-ssr] (ecmascript)");
+;
+function toDate(argument, context) {
+    // [TODO] Get rid of `toDate` or `constructFrom`?
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$constructFrom$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["constructFrom"])(context || argument, argument);
+}
+const __TURBOPACK__default__export__ = toDate;
+}),
+"[project]/InstagramUI/node_modules/date-fns/_lib/getTimezoneOffsetInMilliseconds.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "getTimezoneOffsetInMilliseconds",
+    ()=>getTimezoneOffsetInMilliseconds
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$toDate$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/toDate.js [app-ssr] (ecmascript)");
+;
+function getTimezoneOffsetInMilliseconds(date) {
+    const _date = (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$toDate$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toDate"])(date);
+    const utcDate = new Date(Date.UTC(_date.getFullYear(), _date.getMonth(), _date.getDate(), _date.getHours(), _date.getMinutes(), _date.getSeconds(), _date.getMilliseconds()));
+    utcDate.setUTCFullYear(_date.getFullYear());
+    return +date - +utcDate;
+}
+}),
+"[project]/InstagramUI/node_modules/date-fns/_lib/normalizeDates.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "normalizeDates",
+    ()=>normalizeDates
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$constructFrom$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/constructFrom.js [app-ssr] (ecmascript)");
+;
+function normalizeDates(context, ...dates) {
+    const normalize = __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$constructFrom$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["constructFrom"].bind(null, context || dates.find((date)=>typeof date === "object"));
+    return dates.map(normalize);
+}
+}),
+"[project]/InstagramUI/node_modules/date-fns/compareAsc.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "compareAsc",
+    ()=>compareAsc,
+    "default",
+    ()=>__TURBOPACK__default__export__
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$toDate$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/toDate.js [app-ssr] (ecmascript)");
+;
+function compareAsc(dateLeft, dateRight) {
+    const diff = +(0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$toDate$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toDate"])(dateLeft) - +(0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$toDate$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toDate"])(dateRight);
+    if (diff < 0) return -1;
+    else if (diff > 0) return 1;
+    // Return 0 if diff is 0; return NaN if diff is NaN
+    return diff;
+}
+const __TURBOPACK__default__export__ = compareAsc;
+}),
+"[project]/InstagramUI/node_modules/date-fns/differenceInCalendarMonths.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>__TURBOPACK__default__export__,
+    "differenceInCalendarMonths",
+    ()=>differenceInCalendarMonths
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$_lib$2f$normalizeDates$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/_lib/normalizeDates.js [app-ssr] (ecmascript)");
+;
+function differenceInCalendarMonths(laterDate, earlierDate, options) {
+    const [laterDate_, earlierDate_] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$_lib$2f$normalizeDates$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["normalizeDates"])(options?.in, laterDate, earlierDate);
+    const yearsDiff = laterDate_.getFullYear() - earlierDate_.getFullYear();
+    const monthsDiff = laterDate_.getMonth() - earlierDate_.getMonth();
+    return yearsDiff * 12 + monthsDiff;
+}
+const __TURBOPACK__default__export__ = differenceInCalendarMonths;
+}),
+"[project]/InstagramUI/node_modules/date-fns/endOfDay.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>__TURBOPACK__default__export__,
+    "endOfDay",
+    ()=>endOfDay
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$toDate$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/toDate.js [app-ssr] (ecmascript)");
+;
+function endOfDay(date, options) {
+    const _date = (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$toDate$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toDate"])(date, options?.in);
+    _date.setHours(23, 59, 59, 999);
+    return _date;
+}
+const __TURBOPACK__default__export__ = endOfDay;
+}),
+"[project]/InstagramUI/node_modules/date-fns/endOfMonth.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>__TURBOPACK__default__export__,
+    "endOfMonth",
+    ()=>endOfMonth
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$toDate$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/toDate.js [app-ssr] (ecmascript)");
+;
+function endOfMonth(date, options) {
+    const _date = (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$toDate$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toDate"])(date, options?.in);
+    const month = _date.getMonth();
+    _date.setFullYear(_date.getFullYear(), month + 1, 0);
+    _date.setHours(23, 59, 59, 999);
+    return _date;
+}
+const __TURBOPACK__default__export__ = endOfMonth;
+}),
+"[project]/InstagramUI/node_modules/date-fns/isLastDayOfMonth.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>__TURBOPACK__default__export__,
+    "isLastDayOfMonth",
+    ()=>isLastDayOfMonth
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$endOfDay$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/endOfDay.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$endOfMonth$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/endOfMonth.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$toDate$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/toDate.js [app-ssr] (ecmascript)");
+;
+;
+;
+function isLastDayOfMonth(date, options) {
+    const _date = (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$toDate$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toDate"])(date, options?.in);
+    return +(0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$endOfDay$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["endOfDay"])(_date, options) === +(0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$endOfMonth$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["endOfMonth"])(_date, options);
+}
+const __TURBOPACK__default__export__ = isLastDayOfMonth;
+}),
+"[project]/InstagramUI/node_modules/date-fns/differenceInMonths.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>__TURBOPACK__default__export__,
+    "differenceInMonths",
+    ()=>differenceInMonths
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$_lib$2f$normalizeDates$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/_lib/normalizeDates.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$compareAsc$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/compareAsc.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$differenceInCalendarMonths$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/differenceInCalendarMonths.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$isLastDayOfMonth$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/isLastDayOfMonth.js [app-ssr] (ecmascript)");
+;
+;
+;
+;
+function differenceInMonths(laterDate, earlierDate, options) {
+    const [laterDate_, workingLaterDate, earlierDate_] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$_lib$2f$normalizeDates$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["normalizeDates"])(options?.in, laterDate, laterDate, earlierDate);
+    const sign = (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$compareAsc$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["compareAsc"])(workingLaterDate, earlierDate_);
+    const difference = Math.abs((0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$differenceInCalendarMonths$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["differenceInCalendarMonths"])(workingLaterDate, earlierDate_));
+    if (difference < 1) return 0;
+    if (workingLaterDate.getMonth() === 1 && workingLaterDate.getDate() > 27) workingLaterDate.setDate(30);
+    workingLaterDate.setMonth(workingLaterDate.getMonth() - sign * difference);
+    let isLastMonthNotFull = (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$compareAsc$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["compareAsc"])(workingLaterDate, earlierDate_) === -sign;
+    if ((0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$isLastDayOfMonth$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["isLastDayOfMonth"])(laterDate_) && difference === 1 && (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$compareAsc$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["compareAsc"])(laterDate_, earlierDate_) === 1) {
+        isLastMonthNotFull = false;
+    }
+    const result = sign * (difference - +isLastMonthNotFull);
+    return result === 0 ? 0 : result;
+}
+const __TURBOPACK__default__export__ = differenceInMonths;
+}),
+"[project]/InstagramUI/node_modules/date-fns/_lib/getRoundingMethod.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "getRoundingMethod",
+    ()=>getRoundingMethod
+]);
+function getRoundingMethod(method) {
+    return (number)=>{
+        const round = method ? Math[method] : Math.trunc;
+        const result = round(number);
+        // Prevent negative zero
+        return result === 0 ? 0 : result;
+    };
+}
+}),
+"[project]/InstagramUI/node_modules/date-fns/differenceInMilliseconds.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>__TURBOPACK__default__export__,
+    "differenceInMilliseconds",
+    ()=>differenceInMilliseconds
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$toDate$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/toDate.js [app-ssr] (ecmascript)");
+;
+function differenceInMilliseconds(laterDate, earlierDate) {
+    return +(0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$toDate$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toDate"])(laterDate) - +(0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$toDate$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["toDate"])(earlierDate);
+}
+const __TURBOPACK__default__export__ = differenceInMilliseconds;
+}),
+"[project]/InstagramUI/node_modules/date-fns/differenceInSeconds.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>__TURBOPACK__default__export__,
+    "differenceInSeconds",
+    ()=>differenceInSeconds
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$_lib$2f$getRoundingMethod$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/_lib/getRoundingMethod.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$differenceInMilliseconds$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/differenceInMilliseconds.js [app-ssr] (ecmascript)");
+;
+;
+function differenceInSeconds(laterDate, earlierDate, options) {
+    const diff = (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$differenceInMilliseconds$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["differenceInMilliseconds"])(laterDate, earlierDate) / 1000;
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$_lib$2f$getRoundingMethod$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getRoundingMethod"])(options?.roundingMethod)(diff);
+}
+const __TURBOPACK__default__export__ = differenceInSeconds;
+}),
+"[project]/InstagramUI/node_modules/date-fns/formatDistance.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>__TURBOPACK__default__export__,
+    "formatDistance",
+    ()=>formatDistance
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$en$2d$US$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__enUS__as__defaultLocale$3e$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/locale/en-US.js [app-ssr] (ecmascript) <export enUS as defaultLocale>");
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$_lib$2f$defaultOptions$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/_lib/defaultOptions.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$_lib$2f$getTimezoneOffsetInMilliseconds$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/_lib/getTimezoneOffsetInMilliseconds.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$_lib$2f$normalizeDates$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/_lib/normalizeDates.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$compareAsc$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/compareAsc.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$constants$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/constants.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$differenceInMonths$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/differenceInMonths.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$differenceInSeconds$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/differenceInSeconds.js [app-ssr] (ecmascript)");
+;
+;
+;
+;
+;
+;
+;
+;
+function formatDistance(laterDate, earlierDate, options) {
+    const defaultOptions = (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$_lib$2f$defaultOptions$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getDefaultOptions"])();
+    const locale = options?.locale ?? defaultOptions.locale ?? __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$locale$2f$en$2d$US$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__$3c$export__enUS__as__defaultLocale$3e$__["defaultLocale"];
+    const minutesInAlmostTwoDays = 2520;
+    const comparison = (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$compareAsc$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["compareAsc"])(laterDate, earlierDate);
+    if (isNaN(comparison)) throw new RangeError("Invalid time value");
+    const localizeOptions = Object.assign({}, options, {
+        addSuffix: options?.addSuffix,
+        comparison: comparison
+    });
+    const [laterDate_, earlierDate_] = (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$_lib$2f$normalizeDates$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["normalizeDates"])(options?.in, ...comparison > 0 ? [
+        earlierDate,
+        laterDate
+    ] : [
+        laterDate,
+        earlierDate
+    ]);
+    const seconds = (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$differenceInSeconds$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["differenceInSeconds"])(earlierDate_, laterDate_);
+    const offsetInSeconds = ((0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$_lib$2f$getTimezoneOffsetInMilliseconds$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getTimezoneOffsetInMilliseconds"])(earlierDate_) - (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$_lib$2f$getTimezoneOffsetInMilliseconds$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["getTimezoneOffsetInMilliseconds"])(laterDate_)) / 1000;
+    const minutes = Math.round((seconds - offsetInSeconds) / 60);
+    let months;
+    // 0 up to 2 mins
+    if (minutes < 2) {
+        if (options?.includeSeconds) {
+            if (seconds < 5) {
+                return locale.formatDistance("lessThanXSeconds", 5, localizeOptions);
+            } else if (seconds < 10) {
+                return locale.formatDistance("lessThanXSeconds", 10, localizeOptions);
+            } else if (seconds < 20) {
+                return locale.formatDistance("lessThanXSeconds", 20, localizeOptions);
+            } else if (seconds < 40) {
+                return locale.formatDistance("halfAMinute", 0, localizeOptions);
+            } else if (seconds < 60) {
+                return locale.formatDistance("lessThanXMinutes", 1, localizeOptions);
+            } else {
+                return locale.formatDistance("xMinutes", 1, localizeOptions);
+            }
+        } else {
+            if (minutes === 0) {
+                return locale.formatDistance("lessThanXMinutes", 1, localizeOptions);
+            } else {
+                return locale.formatDistance("xMinutes", minutes, localizeOptions);
+            }
+        }
+    // 2 mins up to 0.75 hrs
+    } else if (minutes < 45) {
+        return locale.formatDistance("xMinutes", minutes, localizeOptions);
+    // 0.75 hrs up to 1.5 hrs
+    } else if (minutes < 90) {
+        return locale.formatDistance("aboutXHours", 1, localizeOptions);
+    // 1.5 hrs up to 24 hrs
+    } else if (minutes < __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$constants$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["minutesInDay"]) {
+        const hours = Math.round(minutes / 60);
+        return locale.formatDistance("aboutXHours", hours, localizeOptions);
+    // 1 day up to 1.75 days
+    } else if (minutes < minutesInAlmostTwoDays) {
+        return locale.formatDistance("xDays", 1, localizeOptions);
+    // 1.75 days up to 30 days
+    } else if (minutes < __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$constants$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["minutesInMonth"]) {
+        const days = Math.round(minutes / __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$constants$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["minutesInDay"]);
+        return locale.formatDistance("xDays", days, localizeOptions);
+    // 1 month up to 2 months
+    } else if (minutes < __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$constants$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["minutesInMonth"] * 2) {
+        months = Math.round(minutes / __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$constants$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["minutesInMonth"]);
+        return locale.formatDistance("aboutXMonths", months, localizeOptions);
+    }
+    months = (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$differenceInMonths$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["differenceInMonths"])(earlierDate_, laterDate_);
+    // 2 months up to 12 months
+    if (months < 12) {
+        const nearestMonth = Math.round(minutes / __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$constants$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["minutesInMonth"]);
+        return locale.formatDistance("xMonths", nearestMonth, localizeOptions);
+    // 1 year up to max Date
+    } else {
+        const monthsSinceStartOfYear = months % 12;
+        const years = Math.trunc(months / 12);
+        // N years up to 1 years 3 months
+        if (monthsSinceStartOfYear < 3) {
+            return locale.formatDistance("aboutXYears", years, localizeOptions);
+        // N years 3 months up to N years 9 months
+        } else if (monthsSinceStartOfYear < 9) {
+            return locale.formatDistance("overXYears", years, localizeOptions);
+        // N years 9 months up to N year 12 months
+        } else {
+            return locale.formatDistance("almostXYears", years + 1, localizeOptions);
+        }
+    }
+}
+const __TURBOPACK__default__export__ = formatDistance;
+}),
+"[project]/InstagramUI/node_modules/date-fns/formatDistanceToNow.js [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "default",
+    ()=>__TURBOPACK__default__export__,
+    "formatDistanceToNow",
+    ()=>formatDistanceToNow
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$constructNow$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/constructNow.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$formatDistance$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/date-fns/formatDistance.js [app-ssr] (ecmascript)");
+;
+;
+function formatDistanceToNow(date, options) {
+    return (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$formatDistance$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["formatDistance"])(date, (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$date$2d$fns$2f$constructNow$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["constructNow"])(date), options);
+}
+const __TURBOPACK__default__export__ = formatDistanceToNow;
+}),
+"[project]/InstagramUI/node_modules/zustand/esm/vanilla.mjs [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "createStore",
+    ()=>createStore
+]);
+const createStoreImpl = (createState)=>{
+    let state;
+    const listeners = /* @__PURE__ */ new Set();
+    const setState = (partial, replace)=>{
+        const nextState = typeof partial === "function" ? partial(state) : partial;
+        if (!Object.is(nextState, state)) {
+            const previousState = state;
+            state = (replace != null ? replace : typeof nextState !== "object" || nextState === null) ? nextState : Object.assign({}, state, nextState);
+            listeners.forEach((listener)=>listener(state, previousState));
+        }
+    };
+    const getState = ()=>state;
+    const getInitialState = ()=>initialState;
+    const subscribe = (listener)=>{
+        listeners.add(listener);
+        return ()=>listeners.delete(listener);
+    };
+    const api = {
+        setState,
+        getState,
+        getInitialState,
+        subscribe
+    };
+    const initialState = state = createState(setState, getState, api);
+    return api;
+};
+const createStore = (createState)=>createState ? createStoreImpl(createState) : createStoreImpl;
+;
+}),
+"[project]/InstagramUI/node_modules/zustand/esm/react.mjs [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "create",
+    ()=>create,
+    "useStore",
+    ()=>useStore
+]);
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/next/dist/server/route-modules/app-page/vendored/ssr/react.js [app-ssr] (ecmascript)");
+var __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$zustand$2f$esm$2f$vanilla$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__ = __turbopack_context__.i("[project]/InstagramUI/node_modules/zustand/esm/vanilla.mjs [app-ssr] (ecmascript)");
+;
+;
+const identity = (arg)=>arg;
+function useStore(api, selector = identity) {
+    const slice = __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].useSyncExternalStore(api.subscribe, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].useCallback(()=>selector(api.getState()), [
+        api,
+        selector
+    ]), __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].useCallback(()=>selector(api.getInitialState()), [
+        api,
+        selector
+    ]));
+    __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$next$2f$dist$2f$server$2f$route$2d$modules$2f$app$2d$page$2f$vendored$2f$ssr$2f$react$2e$js__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["default"].useDebugValue(slice);
+    return slice;
+}
+const createImpl = (createState)=>{
+    const api = (0, __TURBOPACK__imported__module__$5b$project$5d2f$InstagramUI$2f$node_modules$2f$zustand$2f$esm$2f$vanilla$2e$mjs__$5b$app$2d$ssr$5d$__$28$ecmascript$29$__["createStore"])(createState);
+    const useBoundStore = (selector)=>useStore(api, selector);
+    Object.assign(useBoundStore, api);
+    return useBoundStore;
+};
+const create = (createState)=>createState ? createImpl(createState) : createImpl;
+;
+}),
+"[project]/InstagramUI/node_modules/zustand/esm/middleware.mjs [app-ssr] (ecmascript)", ((__turbopack_context__) => {
+"use strict";
+
+__turbopack_context__.s([
+    "combine",
+    ()=>combine,
+    "createJSONStorage",
+    ()=>createJSONStorage,
+    "devtools",
+    ()=>devtools,
+    "persist",
+    ()=>persist,
+    "redux",
+    ()=>redux,
+    "subscribeWithSelector",
+    ()=>subscribeWithSelector,
+    "unstable_ssrSafe",
+    ()=>ssrSafe
+]);
+const __TURBOPACK__import$2e$meta__ = {
+    get url () {
+        return `file://${__turbopack_context__.P("InstagramUI/node_modules/zustand/esm/middleware.mjs")}`;
+    }
+};
+const reduxImpl = (reducer, initial)=>(set, _get, api)=>{
+        api.dispatch = (action)=>{
+            set((state)=>reducer(state, action), false, action);
+            return action;
+        };
+        api.dispatchFromDevtools = true;
+        return {
+            dispatch: (...args)=>api.dispatch(...args),
+            ...initial
+        };
+    };
+const redux = reduxImpl;
+const shouldDispatchFromDevtools = (api)=>!!api.dispatchFromDevtools && typeof api.dispatch === "function";
+const trackedConnections = /* @__PURE__ */ new Map();
+const getTrackedConnectionState = (name)=>{
+    const api = trackedConnections.get(name);
+    if (!api) return {};
+    return Object.fromEntries(Object.entries(api.stores).map(([key, api2])=>[
+            key,
+            api2.getState()
+        ]));
+};
+const extractConnectionInformation = (store, extensionConnector, options)=>{
+    if (store === void 0) {
+        return {
+            type: "untracked",
+            connection: extensionConnector.connect(options)
+        };
+    }
+    const existingConnection = trackedConnections.get(options.name);
+    if (existingConnection) {
+        return {
+            type: "tracked",
+            store,
+            ...existingConnection
+        };
+    }
+    const newConnection = {
+        connection: extensionConnector.connect(options),
+        stores: {}
+    };
+    trackedConnections.set(options.name, newConnection);
+    return {
+        type: "tracked",
+        store,
+        ...newConnection
+    };
+};
+const removeStoreFromTrackedConnections = (name, store)=>{
+    if (store === void 0) return;
+    const connectionInfo = trackedConnections.get(name);
+    if (!connectionInfo) return;
+    delete connectionInfo.stores[store];
+    if (Object.keys(connectionInfo.stores).length === 0) {
+        trackedConnections.delete(name);
+    }
+};
+const findCallerName = (stack)=>{
+    var _a, _b;
+    if (!stack) return void 0;
+    const traceLines = stack.split("\n");
+    const apiSetStateLineIndex = traceLines.findIndex((traceLine)=>traceLine.includes("api.setState"));
+    if (apiSetStateLineIndex < 0) return void 0;
+    const callerLine = ((_a = traceLines[apiSetStateLineIndex + 1]) == null ? void 0 : _a.trim()) || "";
+    return (_b = /.+ (.+) .+/.exec(callerLine)) == null ? void 0 : _b[1];
+};
+const devtoolsImpl = (fn, devtoolsOptions = {})=>(set, get, api)=>{
+        const { enabled, anonymousActionType, store, ...options } = devtoolsOptions;
+        let extensionConnector;
+        try {
+            extensionConnector = (enabled != null ? enabled : (__TURBOPACK__import$2e$meta__.env ? __TURBOPACK__import$2e$meta__.env.MODE : void 0) !== "production") && window.__REDUX_DEVTOOLS_EXTENSION__;
+        } catch (e) {}
+        if (!extensionConnector) {
+            return fn(set, get, api);
+        }
+        const { connection, ...connectionInformation } = extractConnectionInformation(store, extensionConnector, options);
+        let isRecording = true;
+        api.setState = (state, replace, nameOrAction)=>{
+            const r = set(state, replace);
+            if (!isRecording) return r;
+            const action = nameOrAction === void 0 ? {
+                type: anonymousActionType || findCallerName(new Error().stack) || "anonymous"
+            } : typeof nameOrAction === "string" ? {
+                type: nameOrAction
+            } : nameOrAction;
+            if (store === void 0) {
+                connection == null ? void 0 : connection.send(action, get());
+                return r;
+            }
+            connection == null ? void 0 : connection.send({
+                ...action,
+                type: `${store}/${action.type}`
+            }, {
+                ...getTrackedConnectionState(options.name),
+                [store]: api.getState()
+            });
+            return r;
+        };
+        api.devtools = {
+            cleanup: ()=>{
+                if (connection && typeof connection.unsubscribe === "function") {
+                    connection.unsubscribe();
+                }
+                removeStoreFromTrackedConnections(options.name, store);
+            }
+        };
+        const setStateFromDevtools = (...a)=>{
+            const originalIsRecording = isRecording;
+            isRecording = false;
+            set(...a);
+            isRecording = originalIsRecording;
+        };
+        const initialState = fn(api.setState, get, api);
+        if (connectionInformation.type === "untracked") {
+            connection == null ? void 0 : connection.init(initialState);
+        } else {
+            connectionInformation.stores[connectionInformation.store] = api;
+            connection == null ? void 0 : connection.init(Object.fromEntries(Object.entries(connectionInformation.stores).map(([key, store2])=>[
+                    key,
+                    key === connectionInformation.store ? initialState : store2.getState()
+                ])));
+        }
+        if (shouldDispatchFromDevtools(api)) {
+            let didWarnAboutReservedActionType = false;
+            const originalDispatch = api.dispatch;
+            api.dispatch = (...args)=>{
+                if ((__TURBOPACK__import$2e$meta__.env ? __TURBOPACK__import$2e$meta__.env.MODE : void 0) !== "production" && args[0].type === "__setState" && !didWarnAboutReservedActionType) {
+                    console.warn('[zustand devtools middleware] "__setState" action type is reserved to set state from the devtools. Avoid using it.');
+                    didWarnAboutReservedActionType = true;
+                }
+                originalDispatch(...args);
+            };
+        }
+        connection.subscribe((message)=>{
+            var _a;
+            switch(message.type){
+                case "ACTION":
+                    if (typeof message.payload !== "string") {
+                        console.error("[zustand devtools middleware] Unsupported action format");
+                        return;
+                    }
+                    return parseJsonThen(message.payload, (action)=>{
+                        if (action.type === "__setState") {
+                            if (store === void 0) {
+                                setStateFromDevtools(action.state);
+                                return;
+                            }
+                            if (Object.keys(action.state).length !== 1) {
+                                console.error(`
+                    [zustand devtools middleware] Unsupported __setState action format.
+                    When using 'store' option in devtools(), the 'state' should have only one key, which is a value of 'store' that was passed in devtools(),
+                    and value of this only key should be a state object. Example: { "type": "__setState", "state": { "abc123Store": { "foo": "bar" } } }
+                    `);
+                            }
+                            const stateFromDevtools = action.state[store];
+                            if (stateFromDevtools === void 0 || stateFromDevtools === null) {
+                                return;
+                            }
+                            if (JSON.stringify(api.getState()) !== JSON.stringify(stateFromDevtools)) {
+                                setStateFromDevtools(stateFromDevtools);
+                            }
+                            return;
+                        }
+                        if (shouldDispatchFromDevtools(api)) {
+                            api.dispatch(action);
+                        }
+                    });
+                case "DISPATCH":
+                    switch(message.payload.type){
+                        case "RESET":
+                            setStateFromDevtools(initialState);
+                            if (store === void 0) {
+                                return connection == null ? void 0 : connection.init(api.getState());
+                            }
+                            return connection == null ? void 0 : connection.init(getTrackedConnectionState(options.name));
+                        case "COMMIT":
+                            if (store === void 0) {
+                                connection == null ? void 0 : connection.init(api.getState());
+                                return;
+                            }
+                            return connection == null ? void 0 : connection.init(getTrackedConnectionState(options.name));
+                        case "ROLLBACK":
+                            return parseJsonThen(message.state, (state)=>{
+                                if (store === void 0) {
+                                    setStateFromDevtools(state);
+                                    connection == null ? void 0 : connection.init(api.getState());
+                                    return;
+                                }
+                                setStateFromDevtools(state[store]);
+                                connection == null ? void 0 : connection.init(getTrackedConnectionState(options.name));
+                            });
+                        case "JUMP_TO_STATE":
+                        case "JUMP_TO_ACTION":
+                            return parseJsonThen(message.state, (state)=>{
+                                if (store === void 0) {
+                                    setStateFromDevtools(state);
+                                    return;
+                                }
+                                if (JSON.stringify(api.getState()) !== JSON.stringify(state[store])) {
+                                    setStateFromDevtools(state[store]);
+                                }
+                            });
+                        case "IMPORT_STATE":
+                            {
+                                const { nextLiftedState } = message.payload;
+                                const lastComputedState = (_a = nextLiftedState.computedStates.slice(-1)[0]) == null ? void 0 : _a.state;
+                                if (!lastComputedState) return;
+                                if (store === void 0) {
+                                    setStateFromDevtools(lastComputedState);
+                                } else {
+                                    setStateFromDevtools(lastComputedState[store]);
+                                }
+                                connection == null ? void 0 : connection.send(null, // FIXME no-any
+                                nextLiftedState);
+                                return;
+                            }
+                        case "PAUSE_RECORDING":
+                            return isRecording = !isRecording;
+                    }
+                    return;
+            }
+        });
+        return initialState;
+    };
+const devtools = devtoolsImpl;
+const parseJsonThen = (stringified, fn)=>{
+    let parsed;
+    try {
+        parsed = JSON.parse(stringified);
+    } catch (e) {
+        console.error("[zustand devtools middleware] Could not parse the received json", e);
+    }
+    if (parsed !== void 0) fn(parsed);
+};
+const subscribeWithSelectorImpl = (fn)=>(set, get, api)=>{
+        const origSubscribe = api.subscribe;
+        api.subscribe = (selector, optListener, options)=>{
+            let listener = selector;
+            if (optListener) {
+                const equalityFn = (options == null ? void 0 : options.equalityFn) || Object.is;
+                let currentSlice = selector(api.getState());
+                listener = (state)=>{
+                    const nextSlice = selector(state);
+                    if (!equalityFn(currentSlice, nextSlice)) {
+                        const previousSlice = currentSlice;
+                        optListener(currentSlice = nextSlice, previousSlice);
+                    }
+                };
+                if (options == null ? void 0 : options.fireImmediately) {
+                    optListener(currentSlice, currentSlice);
+                }
+            }
+            return origSubscribe(listener);
+        };
+        const initialState = fn(set, get, api);
+        return initialState;
+    };
+const subscribeWithSelector = subscribeWithSelectorImpl;
+function combine(initialState, create) {
+    return (...args)=>Object.assign({}, initialState, create(...args));
+}
+function createJSONStorage(getStorage, options) {
+    let storage;
+    try {
+        storage = getStorage();
+    } catch (e) {
+        return;
+    }
+    const persistStorage = {
+        getItem: (name)=>{
+            var _a;
+            const parse = (str2)=>{
+                if (str2 === null) {
+                    return null;
+                }
+                return JSON.parse(str2, options == null ? void 0 : options.reviver);
+            };
+            const str = (_a = storage.getItem(name)) != null ? _a : null;
+            if (str instanceof Promise) {
+                return str.then(parse);
+            }
+            return parse(str);
+        },
+        setItem: (name, newValue)=>storage.setItem(name, JSON.stringify(newValue, options == null ? void 0 : options.replacer)),
+        removeItem: (name)=>storage.removeItem(name)
+    };
+    return persistStorage;
+}
+const toThenable = (fn)=>(input)=>{
+        try {
+            const result = fn(input);
+            if (result instanceof Promise) {
+                return result;
+            }
+            return {
+                then (onFulfilled) {
+                    return toThenable(onFulfilled)(result);
+                },
+                catch (_onRejected) {
+                    return this;
+                }
+            };
+        } catch (e) {
+            return {
+                then (_onFulfilled) {
+                    return this;
+                },
+                catch (onRejected) {
+                    return toThenable(onRejected)(e);
+                }
+            };
+        }
+    };
+const persistImpl = (config, baseOptions)=>(set, get, api)=>{
+        let options = {
+            storage: createJSONStorage(()=>window.localStorage),
+            partialize: (state)=>state,
+            version: 0,
+            merge: (persistedState, currentState)=>({
+                    ...currentState,
+                    ...persistedState
+                }),
+            ...baseOptions
+        };
+        let hasHydrated = false;
+        let hydrationVersion = 0;
+        const hydrationListeners = /* @__PURE__ */ new Set();
+        const finishHydrationListeners = /* @__PURE__ */ new Set();
+        let storage = options.storage;
+        if (!storage) {
+            return config((...args)=>{
+                console.warn(`[zustand persist middleware] Unable to update item '${options.name}', the given storage is currently unavailable.`);
+                set(...args);
+            }, get, api);
+        }
+        const setItem = ()=>{
+            const state = options.partialize({
+                ...get()
+            });
+            return storage.setItem(options.name, {
+                state,
+                version: options.version
+            });
+        };
+        const savedSetState = api.setState;
+        api.setState = (state, replace)=>{
+            savedSetState(state, replace);
+            return setItem();
+        };
+        const configResult = config((...args)=>{
+            set(...args);
+            return setItem();
+        }, get, api);
+        api.getInitialState = ()=>configResult;
+        let stateFromStorage;
+        const hydrate = ()=>{
+            var _a, _b;
+            if (!storage) return;
+            const currentVersion = ++hydrationVersion;
+            hasHydrated = false;
+            hydrationListeners.forEach((cb)=>{
+                var _a2;
+                return cb((_a2 = get()) != null ? _a2 : configResult);
+            });
+            const postRehydrationCallback = ((_b = options.onRehydrateStorage) == null ? void 0 : _b.call(options, (_a = get()) != null ? _a : configResult)) || void 0;
+            return toThenable(storage.getItem.bind(storage))(options.name).then((deserializedStorageValue)=>{
+                if (deserializedStorageValue) {
+                    if (typeof deserializedStorageValue.version === "number" && deserializedStorageValue.version !== options.version) {
+                        if (options.migrate) {
+                            const migration = options.migrate(deserializedStorageValue.state, deserializedStorageValue.version);
+                            if (migration instanceof Promise) {
+                                return migration.then((result)=>[
+                                        true,
+                                        result
+                                    ]);
+                            }
+                            return [
+                                true,
+                                migration
+                            ];
+                        }
+                        console.error(`State loaded from storage couldn't be migrated since no migrate function was provided`);
+                    } else {
+                        return [
+                            false,
+                            deserializedStorageValue.state
+                        ];
+                    }
+                }
+                return [
+                    false,
+                    void 0
+                ];
+            }).then((migrationResult)=>{
+                var _a2;
+                if (currentVersion !== hydrationVersion) {
+                    return;
+                }
+                const [migrated, migratedState] = migrationResult;
+                stateFromStorage = options.merge(migratedState, (_a2 = get()) != null ? _a2 : configResult);
+                set(stateFromStorage, true);
+                if (migrated) {
+                    return setItem();
+                }
+            }).then(()=>{
+                if (currentVersion !== hydrationVersion) {
+                    return;
+                }
+                postRehydrationCallback == null ? void 0 : postRehydrationCallback(stateFromStorage, void 0);
+                stateFromStorage = get();
+                hasHydrated = true;
+                finishHydrationListeners.forEach((cb)=>cb(stateFromStorage));
+            }).catch((e)=>{
+                if (currentVersion !== hydrationVersion) {
+                    return;
+                }
+                postRehydrationCallback == null ? void 0 : postRehydrationCallback(void 0, e);
+            });
+        };
+        api.persist = {
+            setOptions: (newOptions)=>{
+                options = {
+                    ...options,
+                    ...newOptions
+                };
+                if (newOptions.storage) {
+                    storage = newOptions.storage;
+                }
+            },
+            clearStorage: ()=>{
+                storage == null ? void 0 : storage.removeItem(options.name);
+            },
+            getOptions: ()=>options,
+            rehydrate: ()=>hydrate(),
+            hasHydrated: ()=>hasHydrated,
+            onHydrate: (cb)=>{
+                hydrationListeners.add(cb);
+                return ()=>{
+                    hydrationListeners.delete(cb);
+                };
+            },
+            onFinishHydration: (cb)=>{
+                finishHydrationListeners.add(cb);
+                return ()=>{
+                    finishHydrationListeners.delete(cb);
+                };
+            }
+        };
+        if (!options.skipHydration) {
+            hydrate();
+        }
+        return stateFromStorage || configResult;
+    };
+const persist = persistImpl;
+function ssrSafe(config, isSSR = ("TURBOPACK compile-time value", "undefined") === "undefined") {
+    return (set, get, api)=>{
+        if (!isSSR) {
+            return config(set, get, api);
+        }
+        const ssrSet = ()=>{
+            throw new Error("Cannot set state of Zustand store in SSR");
+        };
+        api.setState = ssrSet;
+        return config(ssrSet, get, api);
+    };
+}
+;
+}),
+];
+
+//# sourceMappingURL=a0a3e_d8431aa0._.js.map

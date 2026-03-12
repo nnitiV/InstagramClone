@@ -1,12 +1,15 @@
 export type MessageType = {
     id: number;
-    username: string;
-    profilePicture: string;
+    senderName: string;
+    senderPhoto: string;
+    receiverName: string;
+    receiverPhoto: string;
     lastMessage: string;
     timestamp: string;
     isUnread: boolean;
     isOnline: boolean;
     senderId: number | string;
+    receiverId: number | string;
     content: string;
 }
 

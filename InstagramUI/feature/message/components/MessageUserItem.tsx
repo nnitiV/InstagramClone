@@ -15,8 +15,6 @@ export default function MessageUserItem({ message, setSearchText }: MesssageUser
     useEffect(() => {
         const getUserId = async () => {
             const userId = (await getLoggedUserInfo()).id;
-            console.log("Mine user id: ", userId);
-            console.log("Message: ", message);
             setId(userId);
         }
         getUserId();
@@ -42,7 +40,8 @@ export default function MessageUserItem({ message, setSearchText }: MesssageUser
                 data-mdb-ripple-color="light">
                 <div className="p-1 rounded-circle position-relative me-2">
                     <img
-                        src={message.pictureUrl ? "http://localhost:5000/" + message.pictureUrl : "https://cdn-icons-png.flaticon.com/512/6522/6522516.png"}
+                        src={message.pictureUrl ? "http://localhost:5000/" + message.pictureUrl 
+                            : "https://cdn-icons-png.flaticon.com/512/6522/6522516.png"}
                         alt="Story"
                         className="rounded-circle"
                         style={{ width: "46px", height: "46px", objectFit: "cover", }}
@@ -50,7 +49,10 @@ export default function MessageUserItem({ message, setSearchText }: MesssageUser
                 </div>
                 <div className="d-flex flex-column justify-content-center" style={{ fontSize: "14px" }}>
                     <p className="m-0 p-0">{message.name}</p>
-                    <p className="m-0 p-0" style={{ color: "rgba(75,75,75,0.75)" }}>{message.senderId == id && "You: "}{message.lastMessage} - {formatShortDate(message.lastMessageAt)}</p>
+                    <p className="m-0 p-0" style={{ color: "rgba(75,75,75,0.75)" }}>
+                        {message.senderId == id && "You: "}
+                        {message.lastMessage} - {formatShortDate(message.lastMessageAt)}
+                    </p>
                 </div>
             </div>
         </Link>

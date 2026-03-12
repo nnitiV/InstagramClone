@@ -4,8 +4,10 @@
     {
         public int Id { get; set; }
         public int SenderId { get; set; }
-        public string SenderUsername { get; set; } = string.Empty;
-        public string SenderPhotoUrl { get; set; } = string.Empty;
+        public string SenderName { get; set; }
+        public string SenderPhoto { get; set; }
+        public string ReceiverName { get; set; }
+        public string ReceiverPhoto { get; set; }
         public int? ReceiverId { get; set; }
         public int? GroupId { get; set; }
         public string Content { get; set; } = string.Empty;

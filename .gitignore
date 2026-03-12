@@ -1,57 +1,49 @@
 # =========================
-# .NET / C# / Visual Studio
+# NEXT.JS / REACT / NODE.JS
 # =========================
-## Ignore Visual Studio temporary files, build results, and user settings
-.vs/
-bin/
-obj/
-*.user
-*.suo
-*.userprefs
-
-## Ignore environment-specific settings
-appsettings.Development.json
-appsettings.Local.json
-
-# =========================
-#  Next.js / Node / Frontend
-# =========================
-## Dependencies 
+# Dependências
 node_modules/
-.pnp
+/.pnp
 .pnp.js
-.yarn/install-state.gz
 
-## Testing
-coverage/
+# Build do Next.js
+/.next/
+/out/
+/build/
+/dist/
 
-## Next.js build output
-.next/
-out/
-
-## Production build output
-build/
-dist/
-
-## Environment variables
-.env
-.env*.local
-
-## Debug logs
+# Logs de erro
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
+.pnpm-debug.log*
 
-## Vercel
-.vercel/
-
-## TypeScript
-*.tsbuildinfo
-next-env.d.ts
+# Variáveis de Ambiente (Segurança)
+.env
+.env*.local
+.env.development
+.env.test
+.env.production
 
 # =========================
-# OS Junk Files
+# .NET / C# / VISUAL STUDIO
+# =========================
+# Pastas de Build (Extremamente pesadas)
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+TestResults/
+
+# Arquivos temporários e de cache da IDE (AQUI ESTÁ O SEU ERRO!)
+.vs/
+.vscode/
+*.user
+*.suo
+*.rsuser
+*.sln.docstates
+
+# =========================
+# SISTEMA OPERACIONAL
 # =========================
 .DS_Store
 Thumbs.db
