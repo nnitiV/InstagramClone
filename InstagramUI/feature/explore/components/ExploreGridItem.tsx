@@ -9,13 +9,13 @@ export default function ExploreGridItem({ post, setPostForModal }: ExploreGridIt
     const isVideo = post.contentUrls[0].includes(".mp4");
     
     const mediaClasses = "object-fit-cover w-100 h-100 rounded cursor-pointer transparent-background-hover-2";
-    
+    console.log(post);
     return (<div className="ratio ratio-1x1 mb-1">
         {isVideo ? (
             <video
                 onClick={() => setPostForModal(post.id)}
                 className={mediaClasses}
-                src={`${post.contentUrls[0]}#t=1`}
+                src={`${post.contentUrls[0] ? "http://localhost:5000/" + post.contentUrls[0] : ""}`}
                 preload="metadata"
                 muted
                 playsInline
@@ -24,7 +24,7 @@ export default function ExploreGridItem({ post, setPostForModal }: ExploreGridIt
             <img
                 onClick={() => setPostForModal(post.id)}
                 className={mediaClasses}
-                src={post.contentUrls[0]}
+                src={post.contentUrls[0] ? "http://localhost:5000/" + post.contentUrls[0] : ""}
                 alt="Explore"
             />
         )}

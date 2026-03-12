@@ -4,15 +4,16 @@ import ExploreGridItem from './ExploreGridItem';
 
 type ExploreGridItemsProps = {
     setPostForModal: (id: number) => void;
+    posts: Post[];
 }
 
-export default function ExploreGridItems({ setPostForModal }: ExploreGridItemsProps) {
+export default function ExploreGridItems({ setPostForModal, posts }: ExploreGridItemsProps) {
     return (
         <div className="container-fluid p-1 p-md-3">
             <div className="row justify-content-center">
                 <div className="col-12 col-md-9 col-lg-8">
                     <div className="row g-1">
-                        {MOCK_EXPLORE_POSTS.map((post) => (
+                        {posts.map((post) => (
                             <div key={post.id} className="col-4">
                                 <ExploreGridItem post={post} setPostForModal={setPostForModal} />
                             </div>
