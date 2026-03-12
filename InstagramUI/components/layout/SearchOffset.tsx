@@ -1,7 +1,8 @@
+"use client";
 import { searchUsers } from "@/services/search.service";
 import { UserProfile } from "@/types/user";
 import Link from "next/link";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 export function useDebounce<T>(value: T, delay: number) {
     const [debounceValue, setDebounceValue] = useState<T>(value);

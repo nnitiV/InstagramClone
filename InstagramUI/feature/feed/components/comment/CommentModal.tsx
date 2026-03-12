@@ -178,7 +178,7 @@ export default function CommentModal({ post, onClose }: CommentModalProps) {
                                 <div className="p-3 border-bottom d-flex align-items-center justify-content-between">
                                     <div className="d-flex align-items-center">
                                         <img
-                                            src={"http://localhost:5000/" + post.authorProfilePicture || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                                            src={post.authorProfilePicture ? "http://localhost:5000/" + post.authorProfilePicture : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                                             className="rounded-circle border me-2"
                                             style={{ width: "32px", height: "32px", objectFit: "cover" }}
                                         />
@@ -192,7 +192,7 @@ export default function CommentModal({ post, onClose }: CommentModalProps) {
                                     {/* Post caption */}
                                     <div className="d-flex mb-3">
                                         <img
-                                            src={"http://localhost:5000/" + post.authorProfilePicture || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                                            src={post.authorProfilePicture ? "http://localhost:5000/" + post.authorProfilePicture : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                                             className="rounded-circle me-2"
                                             style={{ width: "32px", height: "32px", objectFit: "cover" }}
                                         />
