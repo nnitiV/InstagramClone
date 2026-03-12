@@ -1,16 +1,22 @@
 "use client";
 import { Story } from "@/types/feed";
 import Link from "next/link";
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import StoryItem from "./StoryItem";
+import { useStoryStore } from "@/feature/story/store/useStoryStore";
 
 type StoriesProps = {
-    stories: Story[];
+    serverStories: Story[];
     userPhoto?: string; // Optional: Pass the logged-in user's photo
 }
 
-export default function Stories({ stories, userPhoto }: StoriesProps) {
+export default function Stories({ serverStories, userPhoto }: StoriesProps) {
     const scrollRef = useRef<HTMLDivElement>(null);
+
+    const { stories, setInitialStories } = useStoryStore();
+    useEffect(() => {
+        setInitialStories(serverStories);
+    }, [serverStories, setInitialStories]);
 
     const scroll = (direction: "left" | "right") => {
         if (scrollRef.current) {
@@ -34,24 +40,6 @@ export default function Stories({ stories, userPhoto }: StoriesProps) {
                 className="d-flex flex-row overflow-x-auto py-3 no-scrollbar align-items-center"
                 style={{ scrollbarWidth: "none", msOverflowStyle: "none", whiteSpace: "nowrap", scrollBehavior: "smooth" }}
             >
-                <Link href="#" className="text-decoration-none text-body">
-                        <div
-                            className="d-flex flex-column align-items-center px-2 cursor-pointer"
-                            style={{ minWidth: "85px" }}
-                        >
-                            <div className="p-1 rounded-circle border border-2 position-relative">
-                                <img
-                                    src={userPhoto == null || userPhoto.length <= 0 ? "https://cdn-icons-png.flaticon.com/512/6522/6522516.png" : userPhoto}
-                                    alt="Story"
-                                    className="rounded-circle"
-                                    style={{ width: "62px", height: "62px", objectFit: "cover", border: "2px solid white" }}
-                                />
-                            </div>
-                            <p className="text-truncate small mt-1 mb-0 text-center" style={{ maxWidth: "70px", fontSize: "11px" }}>
-                                Your story
-                            </p>
-                        </div>
-                    </Link>
 
                 {stories.map((story, index) => (
                     <StoryItem key={story.id} story={story} />

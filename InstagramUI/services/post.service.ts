@@ -1,6 +1,6 @@
 import { BASE_ROUTE_URL } from "@/constants";
 import { getLoggedUserToken } from "@/feature/auth/services/auth-service"
-import { PostToSave } from "@/types/post";
+import { PostToSave, StoryToSave } from "@/types/post";
 
 export const createPost = async (post: PostToSave) => {
     const token = await getLoggedUserToken();
@@ -10,6 +10,21 @@ export const createPost = async (post: PostToSave) => {
         headers: {
             "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json"
+        }
+    });
+    if(!res.ok) return null;
+    return await res.json();
+}
+
+export const createStory = async (story: StoryToSave) => {
+    const token = await getLoggedUserToken();
+    const formData = new FormData();
+    formData.append("File", story.file);
+    const res = await fetch(`${BASE_ROUTE_URL}/story`, {
+        method: "POST",
+        body: formData,
+        headers: {
+            "Authorization": `Bearer ${token}`,
         }
     });
     if(!res.ok) return null;

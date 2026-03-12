@@ -3,3 +3,7 @@ export type PostToSave = {
     caption: string;
     contentUrls: string[];
 }
+
+export type StoryToSave = {
+    file: File;
+}

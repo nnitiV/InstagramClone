@@ -16,9 +16,8 @@ export default async function Home() {
       <div className="container-fluid mt-3">
         <div className="row justify-content-center">
           <div className="col-12 col-md-10 col-lg-8">
-            
-            {stories.length > 0 ? (
-              <Stories stories={stories} userPhoto={token?.picture} />
+            {stories.stories.length > 0 ? (
+              <Stories serverStories={stories.stories} userPhoto={token?.picture} />
             ) : (
               <EmptyStory />
             )}

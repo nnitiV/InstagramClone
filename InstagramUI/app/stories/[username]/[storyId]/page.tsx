@@ -14,9 +14,7 @@ type StoriesPageProps = {
 
 export default function StoriesPage({ params }: StoriesPageProps) {
     const { storyId } = use(params);
-    const storeStories = useStoryStore(state => state.stories);
-    const mockStories = useMemo(() => STORIES_MOCK, []);
-    const stories = useMemo(() => storeStories.concat(mockStories), [storeStories, mockStories]);
+    const stories = useStoryStore(state => state.stories);
 
     const nav = useStoryNavigation(stories, storyId);
 

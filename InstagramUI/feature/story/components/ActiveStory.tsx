@@ -1,5 +1,8 @@
 import { Story } from "@/types/feed"
+import { formatDistanceToNow } from "date-fns";
+import { ptBR } from "date-fns/locale";
 import Link from "next/link"
+import { redirect } from "next/navigation";
 
 type StoryProps = {
   activeStory: Story | undefined;
@@ -11,6 +14,21 @@ type StoryProps = {
   firstAfterStory: { id: number; username: string };
 }
 export default function ActiveStory({ activeStory, activeStoryPosition, amountOfActiveStory, thereBefore, thereAfter, firstPreviousStory: firstPreviousStoryIndex, firstAfterStory: firstAfterStoryIndex }: StoryProps) {
+  const formatShortDate = (date: string) => {
+          return formatDistanceToNow(new Date(date), { locale: ptBR })
+              .replace('aproximadamente ', '')
+              .replace('há ', '')
+              .replace('menos de um minuto', 'agora')
+              .replace(' minutos', 'min')
+              .replace(' minuto', 'min')
+              .replace(' horas', 'h')
+              .replace(' hora', 'h')
+              .replace(' dias', 'd')
+              .replace(' dia', 'd');
+  };
+  const goTouser = () => {
+    redirect(`/profile/${activeStory?.username}`)
+  }
   return (
     <>
       {thereBefore &&
@@ -22,7 +40,7 @@ export default function ActiveStory({ activeStory, activeStoryPosition, amountOf
       }
       <div className="card p-0 m-0 border-0"
         style={{
-          width: "25vw", height: "90vh", backgroundImage: `url(${activeStory?.mediaurl != null ? activeStory.mediaurl : 'https://wallpapers.com/images/featured/anime-iphone-psdmm565oizldbbg.jpg'})`,
+          width: "25vw", height: "90vh", backgroundImage: `url(${"http://localhost:5000/" + activeStory?.mediaUrl})`,
           backgroundRepeat: "no-repeat", backgroundSize: "cover", backgroundPosition: "center"
         }}>
         <div className="card-body text-white d-flex flex-column justify-content-between">
@@ -33,12 +51,14 @@ export default function ActiveStory({ activeStory, activeStoryPosition, amountOf
               ))}
             </div>
             <div className="d-flex justify-content-between align-items-center px-2">
-              <div className="d-flex align-items-center">
-                <img src={activeStory?.profilePictureUrl != null ? activeStory.profilePictureUrl : "https://wallpapers.com/images/featured/anime-iphone-psdmm565oizldbbg.jpg"} alt="Profile picture"
+              <div className="d-flex align-items-center" onClick={goTouser}>
+                <img src={activeStory?.profilePictureUrl && activeStory?.profilePictureUrl.length > 0 ? "http://localhost:5000/" + activeStory?.profilePictureUrl : "https://cdn-icons-png.flaticon.com/512/6522/6522516.png"} alt="Profile picture"
                   className="rounded-circle border m-0 p-0 me-2" style={{ width: "48px", height: "48px", objectFit: "cover" }} />
                 <div className="text-start">
                   <p className="card-title m-0 p-0 fs-">{activeStory?.username}</p>
-                  <span className="text-secondary">{activeStory?.createdAt.toDateString()}</span>
+                  <span className="text-secondary">
+                    {formatShortDate(activeStory?.createdAt != null ? activeStory?.createdAt.toString() : "")}
+                    </span>
                 </div>
               </div>
               <div className="fs-4 w-25 d-flex justify-content-between">

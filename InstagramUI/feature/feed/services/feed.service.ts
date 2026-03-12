@@ -1,7 +1,7 @@
 "use server";
 
 import { BASE_ROUTE_URL } from "@/constants";
-import { getLoggedUserInfo, getLoggedUserToken } from "@/feature/auth/services/auth-service";
+import { getLoggedUserToken } from "@/feature/auth/services/auth-service";
 import { PostComment } from "@/types/feed";
 
 export const getStories = async () => {

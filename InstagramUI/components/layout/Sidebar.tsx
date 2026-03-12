@@ -5,6 +5,7 @@ import SearchOffset from "./SearchOffset";
 import SidebarItem from "./SidebarItem";
 import NotificationsOffset from "./NotificationsOffset";
 import CreatePostModal from "./CreatePostModal";
+import CreateStoryModal from "./CreateStoryModal";
 
 export default function Sidebar({ children, picture }: { children: ReactNode, picture: string }) {
   const SIDEBAR_LINKS = [
@@ -14,7 +15,9 @@ export default function Sidebar({ children, picture }: { children: ReactNode, pi
   { url: "#", icon: "search", text: "Search", target: "searchOffcanvas", isModal: false, },
   { url: "/explore", icon: "compass", text: "Explore", target: "", isModal: false },
   { url: "#", icon: "heart", text: "Notifications", target: "notificationsOffset", isModal: false },
-  { url: "#", icon: "plus-square", text: "Create", target: "createModal", isModal: true  },
+  { url: "#", icon: "plus-square", text: "Create", target: "createModal", isModal: true, isDropdown: true,
+    dropdownOptions: ["Post", "Story"], dropdownTargets: ["createModal", "createStory"],
+    },
   { url: "/profile", icon: "person-circle", text: "Profile",target: "", isModal: false  },
 ];
   return (
@@ -29,7 +32,9 @@ export default function Sidebar({ children, picture }: { children: ReactNode, pi
 
         <ul className="nav nav-pills flex-column align-items-center align-items-sm-start w-100" id="menu">
           {SIDEBAR_LINKS.map((item, index) => (
-            <SidebarItem key={index} url={item.url} iconName={item.icon} text={item.text} targetModal={item.target} isModal={item.isModal}/>
+            <SidebarItem key={index} url={item.url} iconName={item.icon} text={item.text} 
+            targetModal={item.target} isModal={item.isModal} isDropdown={item.isDropdown} dropdownOptions={item.dropdownOptions} 
+            dropdownTargets={item.dropdownTargets}/>
           ))}
         </ul>
 
@@ -53,6 +58,7 @@ export default function Sidebar({ children, picture }: { children: ReactNode, pi
 
       {/* Modals */}
       <CreatePostModal />
+      <CreateStoryModal />
       <SearchOffset />
       <NotificationsOffset />
     </div>

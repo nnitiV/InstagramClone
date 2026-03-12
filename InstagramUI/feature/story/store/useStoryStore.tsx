@@ -4,16 +4,18 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 type StoryStore = {
-    stories: Story[],
-    fetchStories: () => Promise<void>
+    stories: Story[];
+    fetchStories: () => Promise<void>;
+    setInitialStories: (serverStories: Story[]) => unknown;
 }
 
 export const useStoryStore = create<StoryStore>()(
     persist(set => ({
         stories: [],
         fetchStories: async () => {
-            set({stories: await getStories()});
+            set({stories: (await getStories()).stories});
         },
+        setInitialStories: (serverStories: Story[]) => set({ stories: serverStories }),
     }),
     {
         name: "instagram-stories",
