@@ -54,8 +54,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
           chats.splice(chatIndex, 1);
 
           updatedChat.lastMessage = message.content;
-          updatedChat.lastMessageAt =
-            message.timestamp || new Date().toISOString();
+          updatedChat.lastMessageAt = message.timestamp || new Date().toISOString();
           updatedChat.senderId = Number(message.senderId);
           updatedChat.receiverId = Number(message.receiverId);
 
