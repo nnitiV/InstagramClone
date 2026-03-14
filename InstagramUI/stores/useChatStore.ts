@@ -1,7 +1,12 @@
-import { getLoggedUserInfo, getLoggedUserToken } from "@/feature/auth/services/auth-service";
+import {
+  getLoggedUserInfo,
+  getLoggedUserToken,
+} from "@/feature/auth/services/auth-service";
 import { LastMessageDto, MessageType, SendMessage } from "@/types/messages";
 import * as SignalR from "@microsoft/signalr";
 import { create } from "zustand";
+import { useNotificationStore } from "./useNotificationStore";
+import { NotificationType } from "@/types/notification";
 
 interface ChatState {
   connection: SignalR.HubConnection | null;
@@ -32,6 +37,14 @@ export const useChatStore = create<ChatState>((set, get) => ({
       })
       .withAutomaticReconnect()
       .build();
+      
+    newConnection.on("ReceiveNotification",(notification: NotificationType) => {
+        useNotificationStore.getState().addRealTimeNotification(notification);
+      },
+    );
+    newConnection.on("RemoveNotification", (triggerById: number) => {
+        useNotificationStore.getState().removeFollowNotification(triggerById);
+    });
 
     newConnection.on("ReceiveMessage", async (message: MessageType) => {
       set((state: ChatState) => {
@@ -54,7 +67,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
           chats.splice(chatIndex, 1);
 
           updatedChat.lastMessage = message.content;
-          updatedChat.lastMessageAt = message.timestamp || new Date().toISOString();
+          updatedChat.lastMessageAt =
+            message.timestamp || new Date().toISOString();
           updatedChat.senderId = Number(message.senderId);
           updatedChat.receiverId = Number(message.receiverId);
 
@@ -65,8 +79,10 @@ export const useChatStore = create<ChatState>((set, get) => ({
           const souORemetente = Number(message.senderId) === idUserLogado;
           const newChat: LastMessageDto = {
             id: message.id,
-            name: souORemetente ? message.receiverName : message.senderName, 
-            pictureUrl: souORemetente ? message.receiverPhoto : message.senderPhoto,
+            name: souORemetente ? message.receiverName : message.senderName,
+            pictureUrl: souORemetente
+              ? message.receiverPhoto
+              : message.senderPhoto,
             lastMessage: message.content,
             lastMessageAt: message.timestamp || new Date().toISOString(),
             senderId: Number(message.senderId),
