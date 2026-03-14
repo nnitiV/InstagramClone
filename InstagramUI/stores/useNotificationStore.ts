@@ -7,7 +7,7 @@ interface NotificationState {
   
   setNotifications: (notifications: NotificationType[]) => void;
   addRealTimeNotification: (notification: NotificationType) => void;
-  removeFollowNotification: (triggerById: number) => void;
+  removeNotification: (triggerById: number, type: string) => void
   markAsRead: (id: number) => void;
 }
 
@@ -25,16 +25,19 @@ export const useNotificationStore = create<NotificationState>((set) => ({
       unreadCount: state.unreadCount + 1
   })),
 
-  removeFollowNotification: (triggerById) => set((state) => {
-      const notifToRemove = state.notifications.find(n => n.triggerById === triggerById && n.type === "Follow");
-      
-      if (!notifToRemove) return state; // Se não achar, não faz nada
+  removeNotification: (triggerById, type) => set((state) => {
+    // Agora ele busca pelo triggerById E pelo tipo específico passado
+    const notifToRemove = state.notifications.find(
+        n => n.triggerById === triggerById && n.type.toLowerCase() === type.toLowerCase()
+    );
+    
+    if (!notifToRemove) return state;
 
-      return {
-          notifications: state.notifications.filter(n => n.id !== notifToRemove.id),
-          unreadCount: !notifToRemove.isRead ? Math.max(0, state.unreadCount - 1) : state.unreadCount
-      };
-  }),
+    return {
+        notifications: state.notifications.filter(n => n.id !== notifToRemove.id),
+        unreadCount: !notifToRemove.isRead ? Math.max(0, state.unreadCount - 1) : state.unreadCount
+    };
+}),
 
   markAsRead: (id) => set((state) => ({
       notifications: state.notifications.map(n => 

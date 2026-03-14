@@ -1,53 +1,66 @@
-import { checkFollowStatus, followUser, unfollowUser } from "@/feature/profile/services/profile.service";
+import {
+  checkFollowStatus,
+  followUser,
+  unfollowUser,
+} from "@/feature/profile/services/profile.service";
 import { NotificationType } from "@/types/notification";
-import { formatDistanceToNow } from "date-fns";
+import { formatDistanceToNow, isValid } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 
 type FollowItemProps = {
-    follow: NotificationType;
-}
+  follow: NotificationType;
+};
 
-export default function FollowItem({follow}: FollowItemProps) {
-    const [isFollowing, setIsFollowing] = useState<boolean>(false);
-    useEffect(() => {
-        const checkStatus = async () => {
-            const following = await checkFollowStatus(follow.triggerById);
-            setIsFollowing(following.isFollowing);
-        }
-        checkStatus();
-    }, []);
-    const formatShortDate = (date: string) => {
-    return formatDistanceToNow(new Date(date), { locale: ptBR })
+export default function FollowItem({ follow }: FollowItemProps) {
+  const [isFollowing, setIsFollowing] = useState<boolean>(false);
+  useEffect(() => {
+    const checkStatus = async () => {
+      const following = await checkFollowStatus(follow.triggerById);
+      setIsFollowing(following.isFollowing);
+    };
+    checkStatus();
+  }, []);
+  const formatShortDate = (date: string | Date) => {
+    const d = new Date(date);
+
+    if (!date || !isValid(d)) return "agora";
+
+    let distance = formatDistanceToNow(d, { locale: ptBR });
+
+    return distance
       .replace("aproximadamente ", "")
-      .replace("há ", "")
+      .replace("cerca de ", "")
       .replace("menos de um minuto", "agora")
-      .replace(" minutos", "min")
-      .replace(" minuto", "min")
-      .replace(" horas", "h")
-      .replace(" hora", "h")
-      .replace(" dias", "d")
-      .replace(" dia", "d");
+      .replace("há ", "")
+      .replace(/ minutos?/g, "min") 
+      .replace(/ horas?/g, "h")
+      .replace(/ dias?/g, "d")
+      .replace(/ meses?/g, "mes")
+      .replace(/ anos?/g, "an");
   };
   const triggerFollow = () => {
     const doFollow = async () => {
-        if(!isFollowing) {
-            await followUser(follow.triggerById);
-            setIsFollowing(true);
-        } else {
-            await unfollowUser(follow.triggerById);
-            setIsFollowing(false);
-        }
-    }
+      if (!isFollowing) {
+        await followUser(follow.triggerById);
+        setIsFollowing(true);
+      } else {
+        await unfollowUser(follow.triggerById);
+        setIsFollowing(false);
+      }
+    };
     doFollow();
-  }
+  };
   return (
     <div
       key={follow.id}
       className="transparent-background-hover cursor-pointer rounded w-100 d-flex justify-content-between align-items-center px-2"
     >
-      <Link href={`/profile/${follow.triggerByUsername}`} className="text-decoration-none text-body">
+      <Link
+        href={`/profile/${follow.triggerByUsername}`}
+        className="text-decoration-none text-body"
+      >
         <div
           className="d-flex mb-1 p-0 py-2"
           data-bs-dismiss="offcanvas"
@@ -78,7 +91,7 @@ export default function FollowItem({follow}: FollowItemProps) {
               {follow.message}
               <span style={{ color: "rgba(25,25,25,0.4)" }}>
                 {" "}
-                {formatShortDate(follow.createdAt)}
+                {formatShortDate(follow.createdAt)} 
               </span>
             </p>
           </div>

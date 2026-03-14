@@ -5,6 +5,6 @@ namespace Application.Interfaces
     public interface INotificationDispatcher
     {
         Task SendNotificationToUserAsync(int receiverId, NotificationDto notificationDto);
-        Task SendRemoveNotificationAsync(int receiverId, int triggerUserId);
+        Task SendRemoveNotificationAsync(int receiverId, int triggerUserId, string type);
     }
 }

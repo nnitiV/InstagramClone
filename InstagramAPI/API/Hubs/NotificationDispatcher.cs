@@ -18,10 +18,10 @@ namespace API.Hubs
             await _hubContext.Clients.User(receiverId.ToString())
                                      .SendAsync("ReceiveNotification", notificationDto);
         }
-        public async Task SendRemoveNotificationAsync(int receiverId, int triggerUserId)
+        public async Task SendRemoveNotificationAsync(int receiverId, int triggerUserId, string type)
         {
             await _hubContext.Clients.User(receiverId.ToString())
-                                     .SendAsync("RemoveNotification", triggerUserId);
+                                     .SendAsync("RemoveNotification", triggerUserId, type);
         }
     }
 }

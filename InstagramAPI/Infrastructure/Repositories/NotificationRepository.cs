@@ -18,10 +18,14 @@ namespace Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-        public async Task<bool> DeleteNotification(int receiverId, int triggerUserId)
+        public async Task<bool> DeleteNotification(int receiverId, int triggerUserId, string notificationType)
         {
-            var rowsAffected = await _context.Notifications.Where(n => n.UserId == receiverId && n.TriggerById == triggerUserId)
+            var rowsAffected = await _context.Notifications
+                .Where(n => n.UserId == receiverId
+                         && n.TriggerById == triggerUserId
+                         && n.Type.ToLower() == notificationType.ToLower())
                 .ExecuteDeleteAsync();
+
             return rowsAffected > 0;
         }
 

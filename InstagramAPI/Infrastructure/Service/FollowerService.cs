@@ -101,7 +101,7 @@ namespace Infrastructure.Service
                 FollowersCount = followingUser.FollowersCount
             });
 
-            await _notificationService.DeleteNotification(followedUserId, followingUserId);
+            await _notificationService.DeleteNotification(followedUserId, followingUserId, "Follow");
 
             return true;
         }

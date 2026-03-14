@@ -35,16 +35,17 @@ namespace Infrastructure.Service
             await _notificationRepository.AddNotificationAsync(notification);
 
             notificationDto.Id = notification.Id;
+            notificationDto.CreatedAt = notification.CreatedAt;
 
             await _dispatcher.SendNotificationToUserAsync(receiverId, notificationDto);
         }
 
-        public async Task<bool> DeleteNotification(int receiverId, int triggerUserId)
+        public async Task<bool> DeleteNotification(int receiverId, int triggerUserId, string notificationType)
         {
-            var deletedNotification = await _notificationRepository.DeleteNotification(receiverId, triggerUserId);
+            var deletedNotification = await _notificationRepository.DeleteNotification(receiverId, triggerUserId, notificationType);
             if (deletedNotification)
             {
-                await _dispatcher.SendRemoveNotificationAsync(receiverId, triggerUserId);
+                await _dispatcher.SendRemoveNotificationAsync(receiverId, triggerUserId, notificationType);
             }
 
             return deletedNotification;

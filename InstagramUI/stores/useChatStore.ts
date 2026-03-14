@@ -42,9 +42,9 @@ export const useChatStore = create<ChatState>((set, get) => ({
         useNotificationStore.getState().addRealTimeNotification(notification);
       },
     );
-    newConnection.on("RemoveNotification", (triggerById: number) => {
-        useNotificationStore.getState().removeFollowNotification(triggerById);
-    });
+    newConnection.on("RemoveNotification", (triggerById: number, type: string) => {
+      useNotificationStore.getState().removeNotification(triggerById, type);
+  });
 
     newConnection.on("ReceiveMessage", async (message: MessageType) => {
       set((state: ChatState) => {
