@@ -111,7 +111,7 @@ export default function ActiveStory({
               </div>
             </div>
           </div>
-          <div className="d-flex align-items-center justify-content-around fs-4">
+          {/* <div className="d-flex align-items-center justify-content-around fs-4">
             <input
               type="text"
               className="form-control bg-transparent transparent-input  text-white rounded-4 w-75"
@@ -121,7 +121,7 @@ export default function ActiveStory({
             />
             <i className="bi bi-heart"></i>
             <i className="bi bi-send"></i>
-          </div>
+          </div> */}
         </div>
       </div>
       {thereAfter && (
