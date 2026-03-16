@@ -19,6 +19,7 @@ namespace Infrastructure.Service
 
         public async Task AddNotificationAsync(NotificationDto notificationDto, int receiverId)
         {
+            if (notificationDto.TriggerById == receiverId) return;
             if (notificationDto == null) throw new ArgumentNullException("Please, provide a notification.");
 
             var notification = new Notification

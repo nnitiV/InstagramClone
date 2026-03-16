@@ -14,11 +14,11 @@ type FollowItemProps = {
 };
 
 export default function FollowItem({ follow }: FollowItemProps) {
-  const [isFollowing, setIsFollowing] = useState<boolean>(false);
+  const [isFollowing, setIsFollowing] = useState<boolean | null>(false);
   useEffect(() => {
     const checkStatus = async () => {
       const following = await checkFollowStatus(follow.triggerById);
-      setIsFollowing(following.isFollowing);
+      setIsFollowing(following ? following.isFollowing : null);
     };
     checkStatus();
   }, []);
@@ -97,7 +97,7 @@ export default function FollowItem({ follow }: FollowItemProps) {
           </div>
         </div>
       </Link>
-      {isFollowing ? (
+      {isFollowing != null ? isFollowing ? (
         <button
           type="button"
           className="btn btn- ms-3"
@@ -115,7 +115,7 @@ export default function FollowItem({ follow }: FollowItemProps) {
         >
           Follow back
         </button>
-      )}
+      ) : <></>}
     </div>
   );
 }
