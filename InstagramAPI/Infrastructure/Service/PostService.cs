@@ -35,7 +35,7 @@ namespace Infrastructure.Service
                 Title = post.Title,
                 Caption = post.Caption,
                 UserId = post.UserId,
-                AuthorName = post.User?.Name ?? "Unknown",
+                AuthorName = post.User?.Username ?? "Unknown",
                 AuthorProfilePicture = post.User?.ProfilePictureUrl ?? string.Empty,
                 LikeCount = post.PostLikes?.Count ?? 0,
                 CommentCount = post.Comments?.Count ?? 0,

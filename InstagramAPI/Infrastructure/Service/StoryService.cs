@@ -3,6 +3,7 @@ using Application.Interfaces;
 using Application.Services;
 using Domain.Entities;
 using Domain.Exceptions;
+using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Infrastructure.Service
@@ -17,6 +18,30 @@ namespace Infrastructure.Service
             _storyRepository = storyRepository;
             _fileService = fileService;
             _userService = userService;
+        }
+
+        public async Task<StoryDto?> GetStoryById(int storyId)
+        {
+            if (storyId <= 0)
+            {
+                throw new ArgumentException("Please, provide a valid post id.");
+            }
+            Story? story = await _storyRepository.GetStoryByIdAsync(storyId);
+            if (story == null)
+            {
+                return null;
+            }
+            StoryDto storyToReturn = new StoryDto
+            {
+                Id = story.Id,
+                Username = story.User?.Username ?? "",
+                UserId = story.User?.Id,
+                ExpiresAt = story.ExpiresAt,
+                MediaUrl = story.MediaUrl,
+                ProfilePictureUrl = story.User?.ProfilePictureUrl ?? "",
+                CreatedAt = story.CreatedAt
+            };
+            return storyToReturn;
         }
 
         public async Task<StoryDto> CreateStoryAsync(int userId, CreateStoryDto dto)

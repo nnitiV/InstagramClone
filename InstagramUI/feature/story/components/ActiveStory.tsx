@@ -3,6 +3,8 @@ import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { useEffect, useState } from "react";
+import { checkStoryLikeStatus, likeStory, unlikeStory } from "../services/stories.service";
 
 type StoryProps = {
   activeStory: Story | undefined;
@@ -13,6 +15,7 @@ type StoryProps = {
   firstPreviousStory: { id: number; username: string };
   firstAfterStory: { id: number; username: string };
 };
+
 export default function ActiveStory({
   activeStory,
   activeStoryPosition,
@@ -22,6 +25,16 @@ export default function ActiveStory({
   firstPreviousStory: firstPreviousStoryIndex,
   firstAfterStory: firstAfterStoryIndex,
 }: StoryProps) {
+  const [isLiked, setIsLiked] = useState<boolean>(false);
+  const [isAnimating, setIsAnimating] = useState<boolean>(false);
+  useEffect(() => {
+    const checkStoryStatus = async () => {
+      if (activeStory != null) {
+        setIsLiked(await checkStoryLikeStatus(activeStory.id));
+      }
+    }
+    checkStoryStatus();
+  }, [])
   const formatShortDate = (date: string) => {
     return formatDistanceToNow(new Date(date), { locale: ptBR })
       .replace("aproximadamente ", "")
@@ -34,9 +47,29 @@ export default function ActiveStory({
       .replace(" dias", "d")
       .replace(" dia", "d");
   };
+
   const goTouser = () => {
     redirect(`/profile/${activeStory?.username}`);
   };
+
+  const toggleLikeStory = async () => {
+    if (activeStory != null) {
+      if (isLiked) {
+        const res = await unlikeStory(activeStory.id);
+        if (res != null) {
+          setIsLiked(false);
+        }
+      } else {
+        const res = await likeStory(activeStory.id);
+        if (res != null) {
+          setIsLiked(true);
+          setIsAnimating(true);
+          setTimeout(() => setIsAnimating(false), 300);
+        }
+      }
+    }
+  }
+
   return (
     <>
       {thereBefore && (
@@ -82,9 +115,9 @@ export default function ActiveStory({
                 <img
                   src={
                     activeStory?.profilePictureUrl &&
-                    activeStory?.profilePictureUrl.length > 0
+                      activeStory?.profilePictureUrl.length > 0
                       ? "http://localhost:5000/" +
-                        activeStory?.profilePictureUrl
+                      activeStory?.profilePictureUrl
                       : "https://cdn-icons-png.flaticon.com/512/6522/6522516.png"
                   }
                   alt="Profile picture"
@@ -111,7 +144,7 @@ export default function ActiveStory({
               </div>
             </div>
           </div>
-          {/* <div className="d-flex align-items-center justify-content-around fs-4">
+          <div className="d-flex align-items-center justify-content-around fs-4">
             <input
               type="text"
               className="form-control bg-transparent transparent-input  text-white rounded-4 w-75"
@@ -119,9 +152,13 @@ export default function ActiveStory({
               aria-label="Username"
               aria-describedby="basic-addon1"
             />
-            <i className="bi bi-heart"></i>
+            <i onClick={toggleLikeStory} className={isLiked ? "bi-heart-fill text-danger" : "bi-heart"}
+              style={{
+                transform: isAnimating ? "scale(1.2)" : "scale(1)",
+                transition: "transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)"
+              }}></i>
             <i className="bi bi-send"></i>
-          </div> */}
+          </div>
         </div>
       </div>
       {thereAfter && (
