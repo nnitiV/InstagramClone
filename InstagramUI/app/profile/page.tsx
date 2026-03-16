@@ -65,7 +65,7 @@ export default function SearchPage() {
                     {selectedPost &&
                         <ExploreModal post={selectedPost} onClose={() => setSelectedPost(null)} username={user?.username}/>
                     }
-                    <EditProfileModal user={user} />
+                    <EditProfileModal user={user} setUser={setUser} />
                 </>
             }
         </>

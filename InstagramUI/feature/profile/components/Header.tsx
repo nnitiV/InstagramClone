@@ -22,7 +22,7 @@ export default function Header({ isMobile, userProfile }: HeaderProps) {
     return (
         <>
             <div className={`profile-header d-flex align-items-center w-75 mx-auto my-3 ${isMobile && "flex-column"}`}>
-                <img className={`transparent-background-hover-2 rounded-circle me-5 ${isMobile && "mb-3"}`}
+                <img className={`transparent-background-hover-2 rounded-circle me-5 object-fit-cover ${isMobile && "mb-3"}`}
                     style={{ width: "156px", height: "156px" }} src={userProfile?.profilePictureUrl ? "http://localhost:5000/" + userProfile?.profilePictureUrl : "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png?20170328184010"} alt="" />
                 <div className="user-info">
                     <p className="m-0 p-0 fs-5 fw-bold" style={{ fontSize: ".75rem" }} >{userProfile?.username}</p>
