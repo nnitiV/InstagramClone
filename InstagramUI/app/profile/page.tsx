@@ -12,6 +12,7 @@ import EditProfileModal from "@/feature/profile/components/EditProfileModal";
 import { getUserPosts } from "@/feature/profile/services/profile.service";
 import CreatePostModal from "@/components/layout/CreatePostModal";
 import { usePostStore } from "@/stores/usePostStore";
+import { getPostByid } from "@/feature/feed/services/feed.service";
 
 export default function UserProfilePage() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -37,6 +38,13 @@ export default function UserProfilePage() {
         getProfileInformation();
         setIsLoading(false);
     }, []);
+    const setSelectedPostToSee = async (post: Post) => {
+        let postToSet = post;
+        if(post.authorName == null || post.authorName.length <= 0) {
+            postToSet = await getPostByid(post.id);
+        }
+        setSelectedPost(postToSet);
+    }
     return (
         <>
             {isLoading ?
@@ -60,7 +68,7 @@ export default function UserProfilePage() {
                         </div>
                         <Highlights userId={user?.id} isLoggedUser={true} />
                         {posts && posts.length > 0 ?
-                            <Posts posts={posts} setSelectedPost={setSelectedPost} />
+                            <Posts posts={posts} setSelectedPost={setSelectedPostToSee} />
                             :
                             <>
                                 <EmptyUserPosts isLoggedUser={true} />

@@ -111,7 +111,7 @@ namespace Infrastructure.Service
             }
             return await _postRepository.GetUserPostCountAsync(userId);
         }
-        public async Task<int> AddPostAsync(CreatePostDto createPostDto, int userId)
+        public async Task<CreatedPostDto> AddPostAsync(CreatePostDto createPostDto, int userId)
         {
             if (createPostDto == null)
             {
@@ -159,8 +159,15 @@ namespace Infrastructure.Service
             }
 
             await _postRepository.AddPostAsync(post);
-
-            return post.Id;
+            CreatedPostDto postToReturn = new CreatedPostDto
+            {
+                Id = post.Id,
+            };
+            if(post.Contents != null)
+            {
+                postToReturn.ContentUrl = post.Contents.ElementAt(0).ContentUrl;
+            }
+            return postToReturn;
         }
         public async Task<bool> UpdatePostAsync(UpdatePostDto updatePostDto, int userId)
         {

@@ -55,9 +55,9 @@ namespace API.Controllers
             {
                 return BadRequest(new { message = "Post can't be null." });
             }
-            int postId = await _postService.AddPostAsync(post, userId);
-            var response = new { message = "Added post with success!", id = postId };
-            return CreatedAtAction(nameof(GetPostById), new { postId = postId }, response);
+            CreatedPostDto postToReturn = await _postService.AddPostAsync(post, userId);
+            var response = new { message = "Added post with success!", post = postToReturn};
+            return CreatedAtAction(nameof(GetPostById), new { postId= postToReturn.Id }, response);
         }
         [Authorize]
         [HttpPut]

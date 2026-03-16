@@ -40,6 +40,21 @@ export const getPosts = async () => {
     return await res.json();
 }
 
+export const getPostByid = async (postId: number) => {
+    const token = await getLoggedUserToken();
+    if(!token) return null;
+    const res = await fetch(`${BASE_ROUTE_URL}/post/${postId}`, {
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    })
+    if(!res.ok) {
+        console.error(res);
+        return null;
+    }
+    return await res.json();
+}
+
 export const getPostComments = async (postId: number) => {
     const token = await getLoggedUserToken();
 
