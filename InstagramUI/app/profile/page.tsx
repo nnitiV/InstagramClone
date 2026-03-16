@@ -10,12 +10,15 @@ import { UserProfile } from "@/types/user";
 import EmptyUserPosts from "@/feature/profile/components/EmptyUserPosts";
 import EditProfileModal from "@/feature/profile/components/EditProfileModal";
 import { getUserPosts } from "@/feature/profile/services/profile.service";
+import CreatePostModal from "@/components/layout/CreatePostModal";
+import { usePostStore } from "@/stores/usePostStore";
 
-export default function SearchPage() {
+export default function UserProfilePage() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [user, setUser] = useState<UserProfile | null>(null);
-    const [posts, setPosts] = useState<Post[]>([]);
-    const [userHighlights, setUserHighlights] = useState<[]>([]);
+    const posts = usePostStore(state => state.posts);
+    const setPosts = usePostStore(state => state.setPosts);
+    // const [userHighlights, setUserHighlights] = useState<[]>([]);
     const [selectedPost, setSelectedPost] = useState<Post | null>(null);
     const [isMobile, setIsMobile] = useState<boolean>(false);
     useEffect(() => {
@@ -59,7 +62,10 @@ export default function SearchPage() {
                         {posts && posts.length > 0 ?
                             <Posts posts={posts} setSelectedPost={setSelectedPost} />
                             :
-                            <EmptyUserPosts isLoggedUser={true}/>
+                            <>
+                                <EmptyUserPosts isLoggedUser={true} />
+                                <CreatePostModal />
+                            </>
                         }
                     </div>
                     {selectedPost &&

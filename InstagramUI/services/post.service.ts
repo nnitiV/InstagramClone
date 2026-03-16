@@ -12,7 +12,11 @@ export const createPost = async (post: PostToSave) => {
             "Content-Type": "application/json"
         }
     });
-    if(!res.ok) return null;
+    console.log(res);
+    if(!res.ok) {
+        console.error(res);
+        return null;
+    }
     return await res.json();
 }
 

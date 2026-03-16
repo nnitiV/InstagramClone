@@ -35,7 +35,6 @@ export default function EmptyUserPosts({ isLoggedUser }: EmptyUserPosts) {
                     </Link>
                 </div>
             </div>
-            <CreatePostModal />
         </>
     );
 }
