@@ -3,6 +3,7 @@
 import { BASE_ROUTE_URL } from "@/constants";
 import { getLoggedUserToken } from "@/feature/auth/services/auth-service";
 import { PostComment } from "@/types/feed";
+import { error } from "console";
 
 export const getStories = async () => {
     const token = await getLoggedUserToken();
@@ -113,6 +114,49 @@ export const unlikePost = async (postId: number) => {
     if(!res.ok) {
         console.error(res.status);
         return;
+    }
+    return await res.json();
+}
+
+export const likeComment = async (commentId: number) => {
+    const token = await getLoggedUserToken();
+    const res = await fetch(`${BASE_ROUTE_URL}/commentLike/${commentId}`, {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    });
+    if(!res.ok) {
+        console.error(res);
+        return null;
+    }
+    return await res.json();
+}
+export const unlikeComment = async (commentId: number) => {
+    const token = await getLoggedUserToken();
+    const res = await fetch(`${BASE_ROUTE_URL}/commentLike/${commentId}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    });
+    if(!res.ok) {
+        console.error(res);
+        return null;
+    }
+    return await res.json();
+}
+
+export const checkCommentLikeStatus = async (commentId: number) => {
+    const token = await getLoggedUserToken();
+    const res = await fetch(`${BASE_ROUTE_URL}/commentLike/${commentId}/status`, {
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    });
+    if(!res.ok) {
+        console.error(res);
+        return null;
     }
     return await res.json();
 }

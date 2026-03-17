@@ -1,5 +1,7 @@
 "use client";
 import { PostComment, PostCommentTree } from "@/types/feed";
+import { useEffect, useState } from "react";
+import { checkCommentLikeStatus, likeComment, unlikeComment } from "../../services/feed.service";
 
 interface CommentItemProps {
     commentTree: PostCommentTree;
@@ -20,8 +22,29 @@ const CommentItem: React.FC<CommentItemProps> = ({
     onPostReply,
     onCancelReply
 }) => {
+    const [isLiked, setIsLiked] = useState<boolean>(false);
+    const [isAnimating, setIsAnimation] = useState<boolean>(false);
     const comment = commentTree.comment;
-
+    useEffect(() => {
+        const likeStatus = async () => {
+            let commentLikeStatus = await checkCommentLikeStatus(comment.id);
+            console.log(commentLikeStatus);
+            setIsLiked(commentLikeStatus)
+        };
+        likeStatus();   
+    },[]);
+    const likeUserComment = async () => {
+        if(!isLiked) {
+            const res = await likeComment(comment.id);
+            console.log(res);
+            setIsLiked(true);
+            setIsAnimation(true);
+            setTimeout(() => setIsAnimation(false), 300);
+        } else {
+            await unlikeComment(comment.id);
+            setIsLiked(false);
+        }
+    }
     return (
         <div className="mb-2">
             <div className="d-flex">
@@ -32,10 +55,16 @@ const CommentItem: React.FC<CommentItemProps> = ({
                     alt={`${comment.username}'s profile`}
                 />
                 <div className="flex-grow-1">
-                    <p className="small mb-1">
-                        <span className="fw-bold me-2">{comment.username}</span>
-                        {comment.text}
-                    </p>
+                    <div className="d-flex justify-content-between">
+                        <p className="small mb-1">
+                            <span className="fw-bold me-2">{comment.username}</span>
+                            {comment.text}
+                        </p>
+                        <i className={`bi ${isLiked ? "bi-heart-fill text-danger" : "bi-heart"}`} role="button" onClick={likeUserComment} style={{
+                            transform: isAnimating ? "scale(1.2)" : "scale(1)",
+                            transition: "transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)"
+                        }}></i>
+                    </div>
                     <div className="d-flex align-items-center gap-2 small text-muted">
                         <small>{new Date(comment.createdAt).toLocaleString()}</small>
                         {!isReplying && (

@@ -31,8 +31,8 @@ export default function PostActions({
             if (res) {
                 setIsLiked(true);
                 setLikeCount(prev => prev + 1);
-                    setIsAnimating(true);
-                    setTimeout(() => setIsAnimating(false), 300);
+                setIsAnimating(true);
+                setTimeout(() => setIsAnimating(false), 300);
             }
         } else {
             const res = await unlikePost(postId);

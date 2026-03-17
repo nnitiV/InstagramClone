@@ -9,7 +9,6 @@ import { getUserById } from "@/feature/profile/services/profile.service";
 import { redirect } from "next/navigation";
 import { ptBR } from "date-fns/locale";
 import { formatDistanceToNow } from "date-fns";
-import { userInfo } from "os";
 
 type PostsProps = {
     posts: Post[],
@@ -43,7 +42,8 @@ export default function Posts({ posts }: PostsProps) {
                                 <div className="d-flex align-items-center justify-content-between py-2">
                                     <div className="d-flex align-items-center cursor-pointer" onClick={() => goToUserProfile(post.userId)}>
                                         <img
-                                            src={post.authorProfilePicture ? "http://localhost:5000/" + post.authorProfilePicture : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                                            src={post.authorProfilePicture ? "http://localhost:5000/" + post.authorProfilePicture : 
+                                                "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                                             alt="User"
                                             className="rounded-circle border me-2"
                                             style={{ width: "32px", height: "32px", objectFit: "cover" }}
