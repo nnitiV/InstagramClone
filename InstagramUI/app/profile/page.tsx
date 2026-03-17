@@ -16,78 +16,97 @@ import { getPostByid } from "@/feature/feed/services/feed.service";
 import UpdatePostModal from "@/feature/explore/components/UpdatePostModal";
 
 export default function UserProfilePage() {
-    const [isLoading, setIsLoading] = useState<boolean>(true);
-    const [user, setUser] = useState<UserProfile | null>(null);
-    const posts = usePostStore(state => state.posts);
-    const setPosts = usePostStore(state => state.setPosts);
-    // const [userHighlights, setUserHighlights] = useState<[]>([]);
-    const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-    const [postToUpdate, setPostToUpdate] = useState<Post | null>(null);
-    const [isMobile, setIsMobile] = useState<boolean>(false);
-    useEffect(() => {
-        setIsLoading(true);
-        const checkWidth = () => setIsMobile(window.innerWidth <= 768);
-        checkWidth();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [user, setUser] = useState<UserProfile | null>(null);
+  const posts = usePostStore((state) => state.posts);
+  const setPosts = usePostStore((state) => state.setPosts);
+  // const [userHighlights, setUserHighlights] = useState<[]>([]);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [postToUpdate, setPostToUpdate] = useState<Post | null>(null);
+  const [isMobile, setIsMobile] = useState<boolean>(false);
+  useEffect(() => {
+    setIsLoading(true);
+    const checkWidth = () => setIsMobile(window.innerWidth <= 768);
+    checkWidth();
 
-        const getProfileInformation = async () => {
-            let userInfo = await getLoggedUserInfo();
-            setUser(userInfo);
-            if(userInfo != null) {
-                let userPosts = await getUserPosts(userInfo.id);
-                setPosts(userPosts.items);
-            }
-        }
-        getProfileInformation();
-        setIsLoading(false);
-    }, []);
-    const handleSetSelectedPost = async (post: Post) => {
-        let postToSet = post;
-        if(post.authorName == null || post.authorName.length <= 0) {
-            postToSet = await getPostByid(post.id);
-        }
-        setSelectedPost(postToSet);
+    const getProfileInformation = async () => {
+      let userInfo = await getLoggedUserInfo();
+      setUser(userInfo);
+      if (userInfo != null) {
+        let userPosts = await getUserPosts(userInfo.id);
+        setPosts(userPosts.items);
+      }
+    };
+    getProfileInformation();
+    setIsLoading(false);
+  }, []);
+  const handleSetSelectedPost = async (post: Post) => {
+    let postToSet = post;
+    if (post.authorName == null || post.authorName.length <= 0) {
+      postToSet = await getPostByid(post.id);
     }
-    return (
+    setSelectedPost(postToSet);
+  };
+  return (
+    <>
+      {isLoading ? (
+        <div className="d-flex justify-content-center align-items-center h-100 w-100">
+          <div className="spinner-border">
+            <span className="visually-hidden"> Loading...</span>
+          </div>
+        </div>
+      ) : (
         <>
-            {isLoading ?
-                <div className="d-flex justify-content-center align-items-center h-100 w-100">
-                    <div className="spinner-border">
-                        <span className="visually-hidden"> Loading...</span >
-                    </div >
-                </div>
-                :
-                <>
-                    <div className="vh-100 py-5">
-                        <Header isMobile={isMobile} userProfile={user} postsSize={posts.length}/>
-                        <div className={`user-buttons w-75 mx-auto ${isMobile && "d-flex justify-content-between"}`}>
-                            <button type="button" className="btn btn-light border fw-bold flex-grow-1 flex-sm-grow-0 me-sm-2 mb-2 mb-sm-0 px-4"
-                                data-bs-toggle="modal" data-bs-target="#editProfile">
-                                Edit profile
-                            </button>
-                            {/* <button type="button" className="btn btn-light border fw-bold flex-grow-1 flex-sm-grow-0 me-sm-2 mb-2 mb-sm-0 px-4">
+          <div className="vh-100 py-5">
+            <Header
+              isMobile={isMobile}
+              userProfile={user}
+              postsSize={posts.length}
+            />
+            <div
+              className={`user-buttons w-75 mx-auto ${isMobile && "d-flex justify-content-between"}`}
+            >
+              <button
+                type="button"
+                className="btn btn-light border fw-bold flex-grow-1 flex-sm-grow-0 me-sm-2 mb-2 mb-sm-0 px-4"
+                data-bs-toggle="modal"
+                data-bs-target="#editProfile"
+              >
+                Edit profile
+              </button>
+              {/* <button type="button" className="btn btn-light border fw-bold flex-grow-1 flex-sm-grow-0 me-sm-2 mb-2 mb-sm-0 px-4">
                                 View archive
                             </button> */}
-                        </div>
-                        <Highlights userId={user?.id} isLoggedUser={true} />
-                        {posts && posts.length > 0 ?
-                            <Posts posts={posts} setSelectedPost={handleSetSelectedPost} />
-                            :
-                            <>
-                                <EmptyUserPosts isLoggedUser={true} />
-                                <CreatePostModal />
-                            </>
-                        }
-                    </div>
-                    {selectedPost &&
-                        <ExploreModal setPostToUpdate={setPostToUpdate} post={selectedPost} onClose={() => setSelectedPost(null)} username={user?.username}/>
-                    }
-                    {postToUpdate &&
-                        <UpdatePostModal setPostToUpdate={setPostToUpdate} postToUpdate={postToUpdate} onClose={() => setPostToUpdate(null)} username={user?.username}/>
-                    }
-                    <EditProfileModal user={user} setUser={setUser} />
-                </>
-            }
+            </div>
+            <Highlights userId={user?.id} isLoggedUser={true} />
+            {posts && posts.length > 0 ? (
+              <Posts posts={posts} setSelectedPost={handleSetSelectedPost} />
+            ) : (
+              <>
+                <EmptyUserPosts isLoggedUser={true} />
+                <CreatePostModal />
+              </>
+            )}
+          </div>
+          {selectedPost && (
+            <ExploreModal
+              setPostToUpdate={setPostToUpdate}
+              post={selectedPost}
+              onClose={() => setSelectedPost(null)}
+              username={user?.username}
+            />
+          )}
+          {postToUpdate && (
+            <UpdatePostModal
+              setPostToUpdate={setPostToUpdate}
+              postToUpdate={postToUpdate}
+              onClose={() => setPostToUpdate(null)}
+              username={user?.username}
+            />
+          )}
+          <EditProfileModal user={user} setUser={setUser} />
         </>
-    );
-};
-
+      )}
+    </>
+  );
+}

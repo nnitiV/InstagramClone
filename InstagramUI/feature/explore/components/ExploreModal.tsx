@@ -135,6 +135,7 @@ export default function ExploreModal({ post, onClose, username, setPostToUpdate 
     }
 
     const handleSetPostToUpdate = () => {
+        console.log(post);
         setPostToUpdate(post);
         onClose();
     }

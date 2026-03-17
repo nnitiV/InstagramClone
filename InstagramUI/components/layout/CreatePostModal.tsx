@@ -202,6 +202,7 @@ export default function CreatePostModal() {
                       role="button"
                       className="btn btn-primary btn-sm fw-bold m-0 cursor-pointer"
                       htmlFor="post-upload"
+                      onClick={() => setEditIndex(null)}
                     >
                       Add another image
                     </label>
