@@ -2,7 +2,7 @@
 import { getLoggedUserInfo } from "@/feature/auth/services/auth-service";
 import ChatHeader from "@/feature/message/components/ChatHeader";
 import ChatMessages from "@/feature/message/components/ChatMessages";
-import { getChatHistory } from "@/feature/message/services/profile.service";
+import { getChatHistory } from "@/feature/message/services/message.service";
 import { getUserById } from "@/feature/profile/services/profile.service";
 import { useChatStore } from "@/stores/useChatStore";
 import { MessageType, SendMessage } from "@/types/messages";

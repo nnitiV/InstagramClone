@@ -9,7 +9,6 @@ import { checkFollowStatus, followUser, getUserByUsername, getUserPosts, unfollo
 import { Post } from "@/types/feed";
 import { UserProfile } from "@/types/user";
 import { redirect } from 'next/navigation';
-import { NextRequest, NextResponse } from "next/server";
 import { use, useEffect, useState } from "react";
 
 type UserProfileProps = {
@@ -47,10 +46,11 @@ export default function SearchPage({ params }: UserProfileProps) {
     }, []);
 
     useEffect(() => {
-        if (user?.id) { // Só dispara quando o ID do perfil alvo chegar
+        if (user?.id && user?.id > 0) { 
             const checkFollowing = async () => {
                 const userInfo = await getLoggedUserInfo();
                 if (userInfo.id != user.id) {
+                    console.log("Checking follow status for user with id ", user.id)
                     const res = await checkFollowStatus(user.id);
                     setIsFollowing(res ? res.isFollowing : false);
                 }
@@ -102,7 +102,7 @@ export default function SearchPage({ params }: UserProfileProps) {
                         }
                     </div>
                     {selectedPost &&
-                        <ExploreModal post={selectedPost} onClose={() => setSelectedPost(null)} />
+                        <ExploreModal username={username}  post={selectedPost} onClose={() => setSelectedPost(null)} />
                     }
                 </>
             }

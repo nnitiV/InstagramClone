@@ -3,13 +3,13 @@ import EmptyPost from "@/feature/feed/components/post/EmptyPost";
 import EmptyStory from "@/feature/feed/components/story/EmptyStory";
 import Posts from "@/feature/feed/components/post/Posts";
 import Stories from "@/feature/feed/components/story/Stories";
-import { getPosts, getStories } from "@/feature/feed/services/feed.service";
+import { getPostsFeed, getStories } from "@/feature/feed/services/feed.service";
 
 export default async function Home() {
   const [token, stories, posts] = await Promise.all([
     getLoggedUserTokenInfo(),
     getStories(),
-    getPosts()
+    getPostsFeed()
   ]);
   return (
     <>

@@ -1,12 +1,13 @@
 import { uploadFile, updateUserProfile } from "@/feature/auth/services/auth-service";
 import { EditUserProfile, UserProfile } from "@/types/user";
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 
 type EditProfileModalProps = {
     user: UserProfile | null;
+    setUser: Dispatch<SetStateAction<UserProfile | null>>
 }
 
-export default function EditProfileModal({ user }: EditProfileModalProps) {
+export default function EditProfileModal({ user, setUser }: EditProfileModalProps) {
     const [editUser, setEditUser] = useState<EditUserProfile>({
         id: user?.id || 0,
         username: user?.username || "",
@@ -45,6 +46,22 @@ export default function EditProfileModal({ user }: EditProfileModalProps) {
         }
         if (photoUrl.length > 0) userToSave.profilePictureUrl = photoUrl;
         const res = await updateUserProfile(userToSave);
+        if(res) {
+            setUser({
+                id: userToSave.id ?? 0,
+                username: userToSave.username || "",
+                name: userToSave.name || "",
+                email: userToSave.email || "",
+                bio: userToSave.bio || "",
+                profilePictureUrl: userToSave.profilePictureUrl || "",
+                dateOfBirth: userToSave.dateOfBirth || "",
+                age: userToSave.age ?? 0,
+                followersCount: userToSave.followersCount ?? 0,
+                followingCount: userToSave.followingCount ?? 0,
+                postsCount: userToSave.postsCount ?? 0,
+            } as UserProfile);
+            document.getElementById("edit-modal-close")?.click();
+        }
     }
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -59,7 +76,7 @@ export default function EditProfileModal({ user }: EditProfileModalProps) {
                 <div className="modal-content">
                     <div className="modal-header">
                         <h1 className="modal-title fs-5" id="editProfileLabel">Edit profile info</h1>
-                        <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" id="edit-modal-close" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div className="modal-body">
                         <form>

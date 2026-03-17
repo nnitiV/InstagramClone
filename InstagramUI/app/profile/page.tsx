@@ -10,12 +10,16 @@ import { UserProfile } from "@/types/user";
 import EmptyUserPosts from "@/feature/profile/components/EmptyUserPosts";
 import EditProfileModal from "@/feature/profile/components/EditProfileModal";
 import { getUserPosts } from "@/feature/profile/services/profile.service";
+import CreatePostModal from "@/components/layout/CreatePostModal";
+import { usePostStore } from "@/stores/usePostStore";
+import { getPostByid } from "@/feature/feed/services/feed.service";
 
-export default function SearchPage() {
+export default function UserProfilePage() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
     const [user, setUser] = useState<UserProfile | null>(null);
-    const [posts, setPosts] = useState<Post[]>([]);
-    const [userHighlights, setUserHighlights] = useState<[]>([]);
+    const posts = usePostStore(state => state.posts);
+    const setPosts = usePostStore(state => state.setPosts);
+    // const [userHighlights, setUserHighlights] = useState<[]>([]);
     const [selectedPost, setSelectedPost] = useState<Post | null>(null);
     const [isMobile, setIsMobile] = useState<boolean>(false);
     useEffect(() => {
@@ -34,6 +38,13 @@ export default function SearchPage() {
         getProfileInformation();
         setIsLoading(false);
     }, []);
+    const setSelectedPostToSee = async (post: Post) => {
+        let postToSet = post;
+        if(post.authorName == null || post.authorName.length <= 0) {
+            postToSet = await getPostByid(post.id);
+        }
+        setSelectedPost(postToSet);
+    }
     return (
         <>
             {isLoading ?
@@ -45,7 +56,7 @@ export default function SearchPage() {
                 :
                 <>
                     <div className="vh-100 py-5">
-                        <Header isMobile={isMobile} userProfile={user} />
+                        <Header isMobile={isMobile} userProfile={user} postsSize={posts.length}/>
                         <div className={`user-buttons w-75 mx-auto ${isMobile && "d-flex justify-content-between"}`}>
                             <button type="button" className="btn btn-light border fw-bold flex-grow-1 flex-sm-grow-0 me-sm-2 mb-2 mb-sm-0 px-4"
                                 data-bs-toggle="modal" data-bs-target="#editProfile">
@@ -57,15 +68,18 @@ export default function SearchPage() {
                         </div>
                         <Highlights userId={user?.id} isLoggedUser={true} />
                         {posts && posts.length > 0 ?
-                            <Posts posts={posts} setSelectedPost={setSelectedPost} />
+                            <Posts posts={posts} setSelectedPost={setSelectedPostToSee} />
                             :
-                            <EmptyUserPosts isLoggedUser={true}/>
+                            <>
+                                <EmptyUserPosts isLoggedUser={true} />
+                                <CreatePostModal />
+                            </>
                         }
                     </div>
                     {selectedPost &&
                         <ExploreModal post={selectedPost} onClose={() => setSelectedPost(null)} username={user?.username}/>
                     }
-                    <EditProfileModal user={user} />
+                    <EditProfileModal user={user} setUser={setUser} />
                 </>
             }
         </>

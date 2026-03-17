@@ -1,10 +1,13 @@
 "use client";
 
+import { URL } from "@/constants";
 import { getLoggedUserInfo } from "@/feature/auth/services/auth-service";
 import CommentsList from "@/feature/feed/components/comment/CommentList";
 import PostActions from "@/feature/feed/components/post/PostActions";
 import PostMedia from "@/feature/feed/components/post/PostMedia";
 import { addPostComments, getPostComments } from "@/feature/feed/services/feed.service";
+import { deletePost } from "@/services/post.service";
+import { usePostStore } from "@/stores/usePostStore";
 import { Post, PostComment, PostCommentTree } from "@/types/feed";
 import { redirect } from "next/navigation";
 import { useEffect, useState, useCallback } from "react";
@@ -17,6 +20,8 @@ type CommentModalProps = {
 
 export default function ExploreModal({ post, onClose, username }: CommentModalProps) {
     if (!post) return null;
+    const deletePostStore = usePostStore(state => state.deletePost);
+    const [loggedUserId, setLoggedUserId] = useState<number>(0);
     const [comments, setComments] = useState<PostComment[]>([]);
     const [tree, setTree] = useState<PostCommentTree[]>([]);
     const [replyTarget, setReplyTarget] = useState<number | null>(null);
@@ -103,6 +108,8 @@ export default function ExploreModal({ post, onClose, username }: CommentModalPr
     }, [post.id, post.authorProfilePicture, comments, buildCommentTree]);
     useEffect(() => {
         const load = async () => {
+            const userId = (await getLoggedUserInfo()).id;
+            setLoggedUserId(userId);
             try {
                 const apiComments = await getPostComments(post.id);
                 let finalComments: PostComment[] = apiComments;
@@ -115,9 +122,14 @@ export default function ExploreModal({ post, onClose, username }: CommentModalPr
         };
         load();
     }, [post.id, buildCommentTree]);
-
     const goToUser = () => {
         redirect(`/profile/${username}`)
+    }
+    const handlePostDelete = async () => {
+        await deletePost(post.id);
+        deletePostStore(post.id);
+        document.getElementById("close-explore-modal")?.click();
+        onClose();
     }
 
     return (
@@ -137,17 +149,23 @@ export default function ExploreModal({ post, onClose, username }: CommentModalPr
                             <div className="p-3 border-bottom d-flex align-items-center justify-content-between flex-shrink-0">
                                 <div className="d-flex align-items-center" onClick={goToUser}>
                                     <img
-                                        src={post.authorProfilePicture ? "http://localhost:5000/" + post.authorProfilePicture : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                                        src={post.authorProfilePicture ? URL + post.authorProfilePicture : 
+                                            "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                                         className="rounded-circle border me-2 object-fit-cover"
                                         style={{ width: "32px", height: "32px" }}
                                     />
                                     <span className="fw-bold small">{post.authorName}</span>
                                 </div>
-                                <button className="btn-close small" onClick={onClose}></button>
+                                <div>
+                                    {post.userId == loggedUserId &&
+                                        <i role="button" onClick={handlePostDelete} className="bi-trash text-danger me-3"></i>
+                                    }
+                                    <button className="btn-close small" id="close-explore-modal" onClick={onClose}></button>
+                                </div>
                             </div>
                             <div className="flex-grow-1 overflow-auto p-3 no-scrollbar" style={{ minHeight: 0 }}>
                                 <div className="d-flex mb-3" onClick={goToUser}>
-                                    <img src={post.authorProfilePicture ? "http://localhost:5000/" + post.authorProfilePicture : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} className="rounded-circle me-2 object-fit-cover" style={{ width: "32px", height: "32px" }} />
+                                    <img src={post.authorProfilePicture ? URL + post.authorProfilePicture : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} className="rounded-circle me-2 object-fit-cover" style={{ width: "32px", height: "32px" }} />
                                     <p className="small mb-0">
                                         <span className="fw-bold me-2">{post.authorName}</span>
                                         {post.caption}

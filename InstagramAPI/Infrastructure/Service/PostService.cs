@@ -35,7 +35,7 @@ namespace Infrastructure.Service
                 Title = post.Title,
                 Caption = post.Caption,
                 UserId = post.UserId,
-                AuthorName = post.User?.Name ?? "Unknown",
+                AuthorName = post.User?.Username ?? "Unknown",
                 AuthorProfilePicture = post.User?.ProfilePictureUrl ?? string.Empty,
                 LikeCount = post.PostLikes?.Count ?? 0,
                 CommentCount = post.Comments?.Count ?? 0,
@@ -111,7 +111,7 @@ namespace Infrastructure.Service
             }
             return await _postRepository.GetUserPostCountAsync(userId);
         }
-        public async Task<int> AddPostAsync(CreatePostDto createPostDto, int userId)
+        public async Task<CreatedPostDto> AddPostAsync(CreatePostDto createPostDto, int userId)
         {
             if (createPostDto == null)
             {
@@ -159,8 +159,15 @@ namespace Infrastructure.Service
             }
 
             await _postRepository.AddPostAsync(post);
-
-            return post.Id;
+            CreatedPostDto postToReturn = new CreatedPostDto
+            {
+                Id = post.Id,
+            };
+            if(post.Contents != null)
+            {
+                postToReturn.ContentUrl = post.Contents.ElementAt(0).ContentUrl;
+            }
+            return postToReturn;
         }
         public async Task<bool> UpdatePostAsync(UpdatePostDto updatePostDto, int userId)
         {
@@ -232,14 +239,12 @@ namespace Infrastructure.Service
             bool wasDeleted = await _postRepository.DeletePostByIdAsync(postId, userId);
             if (wasDeleted)
             {
-
-                responseUserDto.PostsCount -= 1;
                 await _userService.UpdateUserInternally(new UpdateUserDto
                 {
                     Id = responseUserDto.Id,
                     FollowersCount = responseUserDto.FollowersCount,
                     FollowingCount = responseUserDto.FollowingCount,
-                    PostsCount = responseUserDto.PostsCount,
+                    PostsCount = responseUserDto.PostsCount - 1,
                 });
             }
             return wasDeleted;

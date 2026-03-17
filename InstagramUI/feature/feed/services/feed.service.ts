@@ -23,7 +23,7 @@ export const getStories = async () => {
     return await res.json();
 }
 
-export const getPosts = async () => {
+export const getPostsFeed = async () => {
     const token = await getLoggedUserToken();
     if (!token) return [];
     const res = await fetch(`${BASE_ROUTE_URL}/post/feed`, {
@@ -37,6 +37,21 @@ export const getPosts = async () => {
     if (!res.ok) {
         console.error(res.status);
         return [];
+    }
+    return await res.json();
+}
+
+export const getPostByid = async (postId: number) => {
+    const token = await getLoggedUserToken();
+    if(!token) return null;
+    const res = await fetch(`${BASE_ROUTE_URL}/post/${postId}`, {
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    })
+    if(!res.ok) {
+        console.error(res);
+        return null;
     }
     return await res.json();
 }

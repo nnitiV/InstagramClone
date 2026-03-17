@@ -1,10 +1,12 @@
 import { uploadFile } from "@/feature/auth/services/auth-service";
 import { createPost } from "@/services/post.service";
+import { usePostStore } from "@/stores/usePostStore";
 import { Post } from "@/types/feed";
 import { PostToSave } from "@/types/post";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 export default function CreatePostModal() {
+    const addPost = usePostStore(state => state.addPost);
     const [caption, setCaption] = useState<string>("");
     const [selectedFile, setSelectedFile] = useState<File | null>();
     const [previewUrl, setPreviewUrl] = useState<string>("");
@@ -27,7 +29,14 @@ export default function CreatePostModal() {
                 caption,
                 contentUrls: [url],
             }
-            await createPost(post);
+            const res = await createPost(post);
+            console.log("Res:", res);
+            if(res) {
+                addPost({
+                    id: res.post.id,
+                    contentUrls: [res.post.contentUrl] 
+                } as Post);
+            }
             document.getElementById("discardChanges")?.click();
         }
     }

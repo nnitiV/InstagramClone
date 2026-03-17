@@ -28,8 +28,8 @@ export const useChatStore = create<ChatState>((set, get) => ({
     if (get().connection) return;
 
     const token = await getLoggedUserToken();
-    const idUserLogado = (await getLoggedUserInfo()).id;
     if (!token) return;
+    const idUserLogado = (await getLoggedUserInfo()).id;
 
     const newConnection = new SignalR.HubConnectionBuilder()
       .withUrl("http://localhost:5000/hubs/chat", {

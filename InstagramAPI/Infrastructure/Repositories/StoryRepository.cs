@@ -12,6 +12,19 @@ namespace Infrastructure.Repositories
         {
             _context = context;
         }
+
+        public async Task<Story?> GetStoryByIdAsync(int storyId)
+        {
+            return await _context.Stories.Where(p => p.Id == storyId)
+                .Include(p => p.User)
+                .FirstOrDefaultAsync();
+        }
+
+        public async Task<bool> CheckIfStoryByIdExists(int storyId)
+        {
+            return await _context.Stories.AnyAsync(s => s.Id == storyId);
+        }
+
         public async Task CreateStoryAsync(Story story)
         {
             _context.Stories.Add(story);
