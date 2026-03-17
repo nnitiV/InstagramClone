@@ -5,14 +5,15 @@ import ReactPlayer from "react-player";
 import ExploreModal from "../../feature/explore/components/ExploreModal";
 import { MOCK_EXPLORE_POSTS } from "@/feature/explore/constants/data";
 import ExploreGridItems from "@/feature/explore/components/ExploreGridItems";
-import { getPosts } from "@/feature/feed/services/feed.service";
+import { getPostsFeed } from "@/feature/feed/services/feed.service";
+import EmptyPost from "@/feature/feed/components/post/EmptyPost";
 
 export default function ExplorePage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPost, setSelectedPost] = useState<Post | null>();
 
   useEffect(() => {
-    const fetchPosts = async () => setPosts(await getPosts());
+    const fetchPosts = async () => setPosts(await getPostsFeed());
     fetchPosts();
   }, []);
   const setPostForModal = (id: number) => {
@@ -21,8 +22,12 @@ export default function ExplorePage() {
   };
   return (
     <>
-      <div className="d-flex justify-content-center">
-        <ExploreGridItems posts={posts} setPostForModal={setPostForModal} />
+      <div className="d-flex justify-content-center ">
+        {posts.length > 0 ?
+          <ExploreGridItems posts={posts} setPostForModal={setPostForModal} />
+          :
+          <EmptyPost />
+        }
       </div>
 
       {selectedPost && (

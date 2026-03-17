@@ -22,7 +22,7 @@ export const getStories = async () => {
     return await res.json();
 }
 
-export const getPosts = async () => {
+export const getPostsFeed = async () => {
     const token = await getLoggedUserToken();
     if (!token) return [];
     const res = await fetch(`${BASE_ROUTE_URL}/post/feed`, {
