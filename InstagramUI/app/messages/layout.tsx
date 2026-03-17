@@ -4,7 +4,7 @@ import SwitchAccountModal from "../../feature/message/components/SwitchAccountMo
 import MessageSidebar from "@/feature/message/components/MessageSidebar";
 import { useParams } from "next/navigation";
 import { LastMessageDto } from "@/types/messages";
-import { fetchUserLastMessages } from "@/feature/message/services/profile.service";
+import { fetchUserLastMessages } from "@/feature/message/services/message.service";
 import SendMessageModal from "@/feature/message/components/SendMessageModal";
 import { useChatStore } from "@/stores/useChatStore";
 
