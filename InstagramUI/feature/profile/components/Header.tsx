@@ -2,10 +2,15 @@ import { Follower, UserProfile } from '@/types/user';
 import ListFollowModal from './ListFollowModal';
 import { useEffect, useState } from 'react';
 import { getFollowersList, getFollowingList } from '../services/profile.service';
+import { Post } from '@/types/feed';
 
-type HeaderProps = { isMobile: boolean; userProfile: UserProfile | null }
+type HeaderProps = { 
+    isMobile: boolean; 
+    userProfile: UserProfile | null 
+    postsSize?: number 
+}
 
-export default function Header({ isMobile, userProfile }: HeaderProps) {
+export default function Header({ isMobile, userProfile, postsSize }: HeaderProps) {
     const [users, setUsers] = useState<Follower[]>([]);
     const getUsers = async (isFollowersSearch: boolean) => {
         if (userProfile != null) {
@@ -28,7 +33,8 @@ export default function Header({ isMobile, userProfile }: HeaderProps) {
                     <p className="m-0 p-0 fs-5 fw-bold" style={{ fontSize: ".75rem" }} >{userProfile?.username}</p>
                     <p className="m-0 p-0 mt-1" style={{ fontSize: ".75rem" }} >{userProfile?.name}</p>
                     <div className="user-sub-info d-flex my-2">
-                        <p className="m-0 p-0" style={{ fontSize: ".75rem" }} > <span className="fw-bold m">{userProfile?.postsCount}</span> posts</p>
+                        <p className="m-0 p-0" style={{ fontSize: ".75rem" }} > <span className="fw-bold m">
+                            {postsSize ? postsSize : userProfile?.postsCount}</span> posts</p>
                         <p className="m-0 p-0 mx-3" style={{ fontSize: ".75rem" }}
                             data-bs-toggle="modal" data-bs-target="#listFollowModal" onClick={() => getUsers(true)}>
                             <span className="fw-bold m">{userProfile?.followersCount}</span> followers

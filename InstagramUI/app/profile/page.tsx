@@ -56,7 +56,7 @@ export default function UserProfilePage() {
                 :
                 <>
                     <div className="vh-100 py-5">
-                        <Header isMobile={isMobile} userProfile={user} />
+                        <Header isMobile={isMobile} userProfile={user} postsSize={posts.length}/>
                         <div className={`user-buttons w-75 mx-auto ${isMobile && "d-flex justify-content-between"}`}>
                             <button type="button" className="btn btn-light border fw-bold flex-grow-1 flex-sm-grow-0 me-sm-2 mb-2 mb-sm-0 px-4"
                                 data-bs-toggle="modal" data-bs-target="#editProfile">

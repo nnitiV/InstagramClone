@@ -34,3 +34,18 @@ export const createStory = async (story: StoryToSave) => {
     if(!res.ok) return null;
     return await res.json();
 }
+
+export const deletePost = async (storyId: number) => {
+    const token = await getLoggedUserToken();
+    const res = await fetch(`${BASE_ROUTE_URL}/post/${storyId}`, {
+        method:"DELETE",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    });
+    if(!res.ok) {
+        console.error(res);
+        return null;
+    }
+    return await res.json();
+}

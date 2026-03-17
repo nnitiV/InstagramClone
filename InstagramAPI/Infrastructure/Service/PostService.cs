@@ -239,14 +239,12 @@ namespace Infrastructure.Service
             bool wasDeleted = await _postRepository.DeletePostByIdAsync(postId, userId);
             if (wasDeleted)
             {
-
-                responseUserDto.PostsCount -= 1;
                 await _userService.UpdateUserInternally(new UpdateUserDto
                 {
                     Id = responseUserDto.Id,
                     FollowersCount = responseUserDto.FollowersCount,
                     FollowingCount = responseUserDto.FollowingCount,
-                    PostsCount = responseUserDto.PostsCount,
+                    PostsCount = responseUserDto.PostsCount - 1,
                 });
             }
             return wasDeleted;
