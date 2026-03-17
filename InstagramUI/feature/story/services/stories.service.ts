@@ -10,7 +10,10 @@ export const likeStory = async (id: number) => {
             "Content-Type": "application/json",
         }
     });
-    if (!res.ok) return false;
+    if (!res.ok) {
+        console.error(res);
+        return false;    
+    }
     return true;
 }
 
@@ -22,7 +25,10 @@ export const unlikeStory = async (id: number) => {
             "Authorization": `Bearer ${userToken}`,
         }
     });
-    if (!res.ok) return false;
+    if (!res.ok) {
+        console.error(res);
+        return false;    
+    }
         return true;
 }
 
@@ -34,6 +40,9 @@ export const checkStoryLikeStatus = async (id?: number) => {
             "Content-Type": "application/json",
         }
     });
-    if (!res.ok) return null;
+    if (!res.ok) {
+        console.error(res);
+        return null;    
+    }
     return await res.json();
 }

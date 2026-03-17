@@ -3,6 +3,7 @@ using Application.Dtos;
 using Application.Interfaces;
 using Application.Services;
 using Domain.Entities;
+using Domain.Exceptions;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Infrastructure.Service
@@ -64,19 +65,16 @@ namespace Infrastructure.Service
                 CreatedAt = DateTimeOffset.UtcNow
             };
             await _storyLikeRepository.LikeStoryAsync(postToLikeToAdd);
-            if (storyDto.UserId != null)
+            await _notificationService.AddNotificationAsync(new NotificationDto
             {
-                await _notificationService.AddNotificationAsync(new NotificationDto
-                {
-                    TriggerById = userId,
-                    TriggerByUsername = responseUser.Username,
-                    TriggerByPhoto = responseUser.ProfilePictureUrl,
-                    Type = "StoryLike",
-                    Message = "Curtiu seu story.",
-                    PostId = storyId,
-                    StoryId = null
-                }, storyDto.UserId.Value);
-            }
+                TriggerById = userId,
+                TriggerByUsername = responseUser.Username,
+                TriggerByPhoto = responseUser.ProfilePictureUrl,
+                Type = "StoryLike",
+                Message = "Curtiu seu story.",
+                PostId = storyId,
+                StoryId = null
+            }, storyDto.UserId.Value);
         }
 
         public async Task<bool> UnlikeStoryAsync(int storyId, int userId)

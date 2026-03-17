@@ -51,7 +51,6 @@ export const unfollowUser = async (id: number) => {
 }
 
 export const checkFollowStatus = async (id: number) => {
-    console.log("Id is: ", id);
     const userToken = await getLoggedUserToken();
     const res = await fetch(`${BASE_ROUTE_URL}/followers/${id}/status`, {
         headers: {
