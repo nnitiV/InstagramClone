@@ -1,4 +1,5 @@
 import { MessageType } from "@/types/messages";
+import Link from "next/link";
 import { useEffect, useRef } from "react";
 
 type ChatMessagesProps = {
@@ -21,7 +22,13 @@ export default function ChatMessages({chat, loggedUserId}: ChatMessagesProps) {
                     <div key={msg.id} className={`d-flex mb-2 ${msg.senderId === loggedUserId ? 'justify-content-end' : 'justify-content-start'}`}>
                         <div className={`p-2 rounded-3 ${msg.senderId === loggedUserId ? 'bg-primary text-white' 
                             : 'bg-light border'}`} style={{ maxWidth: '70%' }}>
-                            {msg.content}
+                            {msg.storyId ? <Link className="text-decoration-none text-body" 
+                            href={`/stories/${msg.receiverName}/${msg.storyId}`}>
+                                <span style={{color: "rgba(35,35,35,0.5"}}>{msg.content.substring(0, msg.content.indexOf(":")+1)}</span>
+                                {" "}
+                                {msg.content.substring(msg.content.indexOf(":"))}
+                            </Link>
+                            : msg.content}
                         </div>
                     </div>
                 ))}

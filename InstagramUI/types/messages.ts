@@ -10,12 +10,15 @@ export type MessageType = {
     isOnline: boolean;
     senderId: number | string;
     receiverId: number | string;
+    groupId?: number;
+    storyId?: number;
     content: string;
 }
 
 export type SendMessage = {
     receiverId: number;
     content: string;
+    storyId?: number;
     groupId?: number;
 }
 

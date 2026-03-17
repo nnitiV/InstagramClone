@@ -10,8 +10,10 @@ namespace Domain.Entities
         public int SenderId { get; set; }
         public virtual User Sender { get; set; } = null!;
         public int? ReceiverId { get; set; }
-        public virtual User Receiver { get; set; } 
+        public virtual User? Receiver { get; set; } 
+        public int? StoryId { get; set; }
+        public virtual Story? Story { get; set; }
         public int? GroupId { get; set; }
-        public virtual Group Group { get; set; } 
+        public virtual Group? Group { get; set; } 
     }
 }

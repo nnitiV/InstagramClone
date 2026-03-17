@@ -5,6 +5,8 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { checkStoryLikeStatus, likeStory, unlikeStory } from "../services/stories.service";
+import { getUserByUsername } from "@/feature/profile/services/profile.service";
+import { useChatStore } from "@/stores/useChatStore";
 
 type StoryProps = {
   activeStory: Story | undefined;
@@ -25,8 +27,10 @@ export default function ActiveStory({
   firstPreviousStory: firstPreviousStoryIndex,
   firstAfterStory: firstAfterStoryIndex,
 }: StoryProps) {
+  const [message, setMessage] = useState<string>("");
   const [isLiked, setIsLiked] = useState<boolean>(false);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
+  const sendMessage = useChatStore(state => state.sendMessage);
   useEffect(() => {
     const checkStoryStatus = async () => {
       if (activeStory != null) {
@@ -67,6 +71,26 @@ export default function ActiveStory({
           setTimeout(() => setIsAnimating(false), 300);
         }
       }
+    }
+  }
+
+  const handleSendMessage = async (
+    e: React.KeyboardEvent<HTMLInputElement> | null = null) => {
+    if (e == null || (e != null && e.key == "Enter")) {
+      messageSend();
+    }
+  }
+
+  const messageSend = async () => {
+    const messageToSend = `Respondeu ao seu story: ${message}`;
+    if (activeStory?.username != null) {
+      const userId = (await getUserByUsername(activeStory.username)).user.id;
+      await sendMessage({
+        receiverId: userId,
+        content: messageToSend,
+        storyId: activeStory.id
+      });
+      setMessage("");
     }
   }
 
@@ -147,8 +171,11 @@ export default function ActiveStory({
           <div className="d-flex align-items-center justify-content-around fs-4">
             <input
               type="text"
-              className="form-control bg-transparent transparent-input  text-white rounded-4 w-75"
-              placeholder={`Reply to ${activeStory?.username}...`}
+              className="form-control bg-transparent transparent-input  text-white rounded-4 w-75 text-truncate"
+              placeholder={`Reply to ${activeStory?.username}`}
+              value={message}
+              onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={handleSendMessage}
               aria-label="Username"
               aria-describedby="basic-addon1"
             />
@@ -157,7 +184,7 @@ export default function ActiveStory({
                 transform: isAnimating ? "scale(1.2)" : "scale(1)",
                 transition: "transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)"
               }}></i>
-            <i className="bi bi-send"></i>
+            <i className="bi bi-send" onClick={() => handleSendMessage(null)}></i>
           </div>
         </div>
       </div>

@@ -24,20 +24,26 @@ namespace Infrastructure.Service
             {
                 throw new NotFoundException($"User with ID {otherUserId} not found.");
             }
-            var messages = await _messageRepository.GetChatHistoryAsync(currentUserId, otherUserId);
+            List<Message> messages = await _messageRepository.GetChatHistoryAsync(currentUserId, otherUserId);
 
-            return messages.Select(m => new MessageDto
+            return messages.Select(m =>
             {
-                Id = m.Id,
-                SenderId = m.SenderId,
-                SenderName = m.Sender.Username,
-                SenderPhoto = m.Sender.ProfilePictureUrl,
-                ReceiverName = m.Receiver.Username,
-                ReceiverPhoto = m.Receiver.ProfilePictureUrl,
-                ReceiverId = m.ReceiverId, 
-                Content = m.Content,
-                SentAt = m.SentAt,
-                IsRead = m.IsRead
+                MessageDto messageToReturn = new MessageDto
+                {
+                    Id = m.Id,
+                    SenderId = m.SenderId,
+                    SenderName = m.Sender.Username,
+                    SenderPhoto = m.Sender.ProfilePictureUrl,
+                    ReceiverName = m.Receiver.Username,
+                    ReceiverPhoto = m.Receiver.ProfilePictureUrl,
+                    ReceiverId = m.ReceiverId,
+                    Content = m.Content,
+                    SentAt = m.SentAt,
+                    IsRead = m.IsRead
+                };
+                if (m.StoryId != null) messageToReturn.StoryId = m.StoryId;
+                if (m.GroupId != null) messageToReturn.GroupId = m.GroupId;
+                return messageToReturn;
             }).ToList();
         }
 
@@ -73,8 +79,10 @@ namespace Infrastructure.Service
                 }
                 message.ReceiverId = messageDto.ReceiverId.Value;
             }
-
-
+            if(messageDto.StoryId.HasValue)
+            {
+                message.StoryId = messageDto.StoryId.Value;
+            }
 
             await _messageRepository.AddMessageAsync(message);
             var sender = await _userService.GetById(currentUserId);
@@ -91,6 +99,8 @@ namespace Infrastructure.Service
                 ReceiverName = receive.Username,
                 ReceiverPhoto = receive.ProfilePictureUrl
             };
+            if (message.StoryId.HasValue) messageToReturn.StoryId = message.StoryId;
+            if (message.GroupId.HasValue) messageToReturn.GroupId = message.GroupId;
             return messageToReturn;
         }
         public async Task<Group> CreateGroupAsync(int creatorId, CreateGroupDto groupDto)
@@ -120,7 +130,6 @@ namespace Infrastructure.Service
             }
             return group;
         }
-
         public async Task<List<MessageDto>> GetGroupChatHistoryAsync(int groupId)
         {
             List<Message> messages = await _messageRepository.GetGroupChatHistory(groupId);
@@ -138,7 +147,6 @@ namespace Infrastructure.Service
                 IsRead = m.IsRead
             }).ToList();
         }
-
         public async Task<List<LastMessageDto>> GetLastMessagesSentToUser(int userId)
         {
             if (userId <= 0)
