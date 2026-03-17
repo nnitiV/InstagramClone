@@ -1,13 +1,12 @@
 import { Follower, UserProfile } from '@/types/user';
 import ListFollowModal from './ListFollowModal';
-import { useEffect, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { getFollowersList, getFollowingList } from '../services/profile.service';
-import { Post } from '@/types/feed';
 
 type HeaderProps = { 
     isMobile: boolean; 
     userProfile: UserProfile | null 
-    postsSize?: number 
+    postsSize?: number;
 }
 
 export default function Header({ isMobile, userProfile, postsSize }: HeaderProps) {

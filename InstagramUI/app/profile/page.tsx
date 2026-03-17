@@ -13,6 +13,7 @@ import { getUserPosts } from "@/feature/profile/services/profile.service";
 import CreatePostModal from "@/components/layout/CreatePostModal";
 import { usePostStore } from "@/stores/usePostStore";
 import { getPostByid } from "@/feature/feed/services/feed.service";
+import UpdatePostModal from "@/feature/explore/components/UpdatePostModal";
 
 export default function UserProfilePage() {
     const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -21,6 +22,7 @@ export default function UserProfilePage() {
     const setPosts = usePostStore(state => state.setPosts);
     // const [userHighlights, setUserHighlights] = useState<[]>([]);
     const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+    const [postToUpdate, setPostToUpdate] = useState<Post | null>(null);
     const [isMobile, setIsMobile] = useState<boolean>(false);
     useEffect(() => {
         setIsLoading(true);
@@ -38,7 +40,7 @@ export default function UserProfilePage() {
         getProfileInformation();
         setIsLoading(false);
     }, []);
-    const setSelectedPostToSee = async (post: Post) => {
+    const handleSetSelectedPost = async (post: Post) => {
         let postToSet = post;
         if(post.authorName == null || post.authorName.length <= 0) {
             postToSet = await getPostByid(post.id);
@@ -68,7 +70,7 @@ export default function UserProfilePage() {
                         </div>
                         <Highlights userId={user?.id} isLoggedUser={true} />
                         {posts && posts.length > 0 ?
-                            <Posts posts={posts} setSelectedPost={setSelectedPostToSee} />
+                            <Posts posts={posts} setSelectedPost={handleSetSelectedPost} />
                             :
                             <>
                                 <EmptyUserPosts isLoggedUser={true} />
@@ -77,7 +79,10 @@ export default function UserProfilePage() {
                         }
                     </div>
                     {selectedPost &&
-                        <ExploreModal post={selectedPost} onClose={() => setSelectedPost(null)} username={user?.username}/>
+                        <ExploreModal setPostToUpdate={setPostToUpdate} post={selectedPost} onClose={() => setSelectedPost(null)} username={user?.username}/>
+                    }
+                    {postToUpdate &&
+                        <UpdatePostModal setPostToUpdate={setPostToUpdate} postToUpdate={postToUpdate} onClose={() => setPostToUpdate(null)} username={user?.username}/>
                     }
                     <EditProfileModal user={user} setUser={setUser} />
                 </>

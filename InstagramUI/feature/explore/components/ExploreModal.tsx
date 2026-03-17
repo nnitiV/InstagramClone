@@ -9,16 +9,18 @@ import { addPostComments, getPostComments } from "@/feature/feed/services/feed.s
 import { deletePost } from "@/services/post.service";
 import { usePostStore } from "@/stores/usePostStore";
 import { Post, PostComment, PostCommentTree } from "@/types/feed";
+import { PostToSave } from "@/types/post";
 import { redirect } from "next/navigation";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, SetStateAction, Dispatch } from "react";
 
-type CommentModalProps = {
-    post: Post;
-    onClose: () => void;
-    username: string | undefined;
+type ExploreProps = {
+  post: Post;
+  onClose: () => void;
+  username: string | undefined;
+  setPostToUpdate: Dispatch<SetStateAction<Post | null>>;
 };
 
-export default function ExploreModal({ post, onClose, username }: CommentModalProps) {
+export default function ExploreModal({ post, onClose, username, setPostToUpdate }: ExploreProps) {
     if (!post) return null;
     const deletePostStore = usePostStore(state => state.deletePost);
     const [loggedUserId, setLoggedUserId] = useState<number>(0);
@@ -132,6 +134,11 @@ export default function ExploreModal({ post, onClose, username }: CommentModalPr
         onClose();
     }
 
+    const handleSetPostToUpdate = () => {
+        setPostToUpdate(post);
+        onClose();
+    }
+
     return (
         <div className="modal show d-block" style={{ backgroundColor: "rgba(0,0,0,0.7)" }} onClick={onClose}>
             <div
@@ -158,7 +165,13 @@ export default function ExploreModal({ post, onClose, username }: CommentModalPr
                                 </div>
                                 <div>
                                     {post.userId == loggedUserId &&
+                                    <>
+                                        <i role="button" onClick={() => {
+                                            handleSetPostToUpdate();
+                                            onClose();
+                                        }} className="bi-pencil-square me-3"></i>
                                         <i role="button" onClick={handlePostDelete} className="bi-trash text-danger me-3"></i>
+                                    </>
                                     }
                                     <button className="btn-close small" id="close-explore-modal" onClick={onClose}></button>
                                 </div>

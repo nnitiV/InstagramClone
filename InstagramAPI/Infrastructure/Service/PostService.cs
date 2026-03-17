@@ -171,52 +171,53 @@ namespace Infrastructure.Service
         }
         public async Task<bool> UpdatePostAsync(UpdatePostDto updatePostDto, int userId)
         {
-            if (updatePostDto == null)
-            {
-                throw new ArgumentException("Post can't be empty.");
-            }
+            if (updatePostDto == null) throw new ArgumentException("Post can't be empty.");
+            if (updatePostDto.Id <= 0) throw new ArgumentException("Please, provide a valid post id.");
+            if (userId <= 0) throw new ArgumentException("Please, provide a valid user id.");
 
-            if (updatePostDto.Id <= 0)
-            {
-                throw new ArgumentException("Please, provide a valid post id.");
-            }
-            if (userId <= 0)
-            {
-                throw new ArgumentException("Please, provide a valid user id.");
+            if (string.IsNullOrWhiteSpace(updatePostDto.Caption))
+                throw new ArgumentException("Caption can't be empty.");
 
-            }
-            if (updatePostDto.Title.IsNullOrEmpty())
-            {
-                throw new ArgumentException("Title can't be empty.");
-            }
-            if (updatePostDto.ContentUrls.IsNullOrEmpty())
-            {
+            if (updatePostDto.ContentUrls == null || updatePostDto.ContentUrls.Count == 0)
                 throw new ArgumentException("Contents can't be empty.");
-            }
 
             Post? post = await _postRepository.GetPostByIdAsync(updatePostDto.Id);
-            if (post == null)
-            {
-                return false;
-            }
-            if (post == null || post.UserId != userId)
-            {
-                return false;
-            }
+
+            if (post == null || post.UserId != userId) return false;
 
             post.Title = updatePostDto.Title;
-            post.Caption = updatePostDto.Caption != null ? updatePostDto.Caption : string.Empty;
-            var urlsToRemove = post.Contents.Where(dbContent => !updatePostDto.ContentUrls.Contains(dbContent.ContentUrl)).ToList();
+            post.Caption = updatePostDto.Caption ?? string.Empty;
+
+
+            var urlsToRemove = post.Contents
+                .Where(dbContent => !updatePostDto.ContentUrls.Contains(dbContent.ContentUrl))
+                .ToList();
 
             foreach (var toRemove in urlsToRemove)
             {
                 post.Contents.Remove(toRemove);
             }
 
-            var remainingContents = post.Contents.OrderBy(c => c.OrderIndex).ToList();
-            for (int i = 0; i < remainingContents.Count; i++)
+            var existingUrls = post.Contents.Select(c => c.ContentUrl).ToList();
+            var newUrlsToAdd = updatePostDto.ContentUrls
+                .Where(url => !existingUrls.Contains(url))
+                .ToList();
+
+            int nextOrderIndex = post.Contents.Any() ? post.Contents.Max(c => c.OrderIndex) + 1 : 0;
+
+            foreach (var newUrl in newUrlsToAdd)
             {
-                remainingContents[i].OrderIndex = i;
+                post.Contents.Add(new PostContent // Troque 'PostContent' pro nome exato da sua entidade se for diferente
+                {
+                    ContentUrl = newUrl,
+                    OrderIndex = nextOrderIndex++
+                });
+            }
+
+            var finalContents = post.Contents.OrderBy(c => c.OrderIndex).ToList();
+            for (int i = 0; i < finalContents.Count; i++)
+            {
+                finalContents[i].OrderIndex = i;
             }
 
             return await _postRepository.UpdatePostAsync(post);

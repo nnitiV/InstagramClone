@@ -49,3 +49,20 @@ export const deletePost = async (storyId: number) => {
     }
     return await res.json();
 }
+
+export const updatePost = async (postToUpdate: PostToSave) => {
+    const token = await getLoggedUserToken();
+    const res = await fetch(`${BASE_ROUTE_URL}/post`, {
+        method: "PUT",
+        body: JSON.stringify(postToUpdate),
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json"
+        }
+    });
+    if(!res.ok) {
+        console.error(res);
+        return null;
+    }
+    return await res.json();
+}
