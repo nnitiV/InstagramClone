@@ -25,9 +25,7 @@ export default function MessageUserItem({ message, setSearchText }: MesssageUser
     return (
         <Link href={`/messages/${message.senderId != id ? message.senderId : message.receiverId}`} key={message.id} className="text-decoration-none text-body w-75"
             onClick={() => setSearchText("")}>
-            <div className="d-flex mb-1 cursor-pointer transparent-background-hover w-100 rounded px-2 py-2" data-bs-dismiss="offcanvas"
-                data-mdb-ripple-init
-                data-mdb-ripple-color="light">
+            <div className="d-flex mb-1 cursor-pointer transparent-background-hover w-100 rounded px-2 py-2">
                 <div className="p-1 rounded-circle position-relative me-2">
                     <img
                         src={message.pictureUrl ? BASE_URL+ message.pictureUrl 
