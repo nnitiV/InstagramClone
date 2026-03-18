@@ -17,7 +17,9 @@ export default function UpdatePostModal({ onClose, username, postToUpdate, setPo
     const updatePostStore = usePostStore(state => state.updatePost);
     const [caption, setCaption] = useState<string>(postToUpdate.caption);
     const [editIndex, setEditIndex] = useState<number | null>(null);
-    const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+    const [selectedFiles, setSelectedFiles] = useState<(File | null)[]>(
+      new Array(postToUpdate.contentUrls.length).fill(null),
+    );
     const [previewUrls, setPreviewUrls] = useState<string[]>(postToUpdate.contentUrls);
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0];
@@ -47,10 +49,12 @@ export default function UpdatePostModal({ onClose, username, postToUpdate, setPo
       let uploadedUrls: string[] = [];
       if (selectedFiles && selectedFiles.length > 0) {
         uploadedUrls = await Promise.all(
-          selectedFiles.filter(f => f != null || f != undefined).map(async (selectedFile) => {
-            const url = await uploadFile(selectedFile);
-            return url;
-          }),
+          selectedFiles
+            .filter((f): f is File => f !== null) 
+            .map(async (selectedFile) => {
+              const url = await uploadFile(selectedFile);
+              return url;
+            }),
         );
       }
       const finalContentUrls: string[] = [];
@@ -86,17 +90,18 @@ export default function UpdatePostModal({ onClose, username, postToUpdate, setPo
     };
 
     const discardPost = () => {
-        setCaption("");
-        setPreviewUrls([]);
-        setSelectedFiles([]);
-        setPostToUpdate(null);
+      setCaption("");
+      setPreviewUrls([]);
+      setSelectedFiles([]); // Volte a deixar apenas [] aqui
+      setPostToUpdate(null);
     };
+
     const removeImage = (indexToRemove: number) => {
       setPreviewUrls((prev) =>
         prev.filter((_, index) => index !== indexToRemove),
       );
       setSelectedFiles((prev) =>
-        prev ? prev.filter((_, index) => index !== indexToRemove) : [],
+        prev.filter((_, index) => index !== indexToRemove),
       );
     };
     return (
@@ -153,22 +158,32 @@ export default function UpdatePostModal({ onClose, username, postToUpdate, setPo
                         : previewUrls.length === 2
                           ? "col-6"
                           : "col-4";
-
                     const containerHeight =
                       previewUrls.length === 1 ? "250px" : "150px";
 
+                    const isVideo = selectedFiles[index]?.type.startsWith("video/") || previewUrl.includes("mp4");
                     return (
                       <div
                         key={index}
                         className={`mb-3 position-relative ${colClass}`}
                         style={{ height: containerHeight }}
                       >
-                        <img
-                          src={previewUrl.startsWith("blob:") ? previewUrl : BASE_URL + previewUrl}
-                          alt="Profile Preview"
-                          className="border object-fit-cover rounded"
-                          style={{ width: "100%", height: "100%" }}
-                        />
+                        {isVideo ? (
+                          <video
+                            src={previewUrl.startsWith("blob") ? previewUrl : BASE_URL + previewUrl}
+                            className="border object-fit-cover rounded bg-dark"
+                            style={{ width: "100%", height: "100%" }}
+                            controls
+                          />
+                        ) : (
+                          <img
+                            src={previewUrl.startsWith("blob") ? previewUrl : BASE_URL + previewUrl}
+                            alt="Content Preview"
+                            className="border object-fit-cover rounded"
+                            style={{ width: "100%", height: "100%" }}
+                          />
+                        )}
+
                         <i
                           role="button"
                           className="bi-pencil-square position-absolute"
@@ -180,13 +195,14 @@ export default function UpdatePostModal({ onClose, username, postToUpdate, setPo
                             right: "45px",
                             top: "7px",
                             color: "rgba(155,185,255,1)",
+                            zIndex: 10,
                           }}
                         ></i>
                         <i
                           role="button"
                           className="bi-trash text-danger position-absolute"
                           onClick={() => removeImage(index)}
-                          style={{ right: "20px", top: "7px" }}
+                          style={{ right: "20px", top: "7px", zIndex: 10 }}
                         ></i>
                       </div>
                     );
@@ -208,7 +224,7 @@ export default function UpdatePostModal({ onClose, username, postToUpdate, setPo
                   type="file"
                   id="post-upload"
                   className="d-none"
-                  accept="image/*"
+                  accept="image/*, video/*"
                   key={previewUrls.length}
                   onChange={handleImageChange}
                 />

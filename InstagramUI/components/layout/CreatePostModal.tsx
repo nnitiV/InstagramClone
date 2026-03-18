@@ -136,10 +136,11 @@ export default function CreatePostModal() {
                         : previewUrls.length === 2
                           ? "col-6"
                           : "col-4";
-
-                    // Se for 1 imagem, fica mais altinha (250px como o seu original). Se forem várias, 150px.
                     const containerHeight =
                       previewUrls.length === 1 ? "250px" : "150px";
+
+                    const isVideo =
+                      selectedFiles[index]?.type.startsWith("video/");
 
                     return (
                       <div
@@ -147,12 +148,22 @@ export default function CreatePostModal() {
                         className={`mb-3 position-relative ${colClass}`}
                         style={{ height: containerHeight }}
                       >
-                        <img
-                          src={previewUrl}
-                          alt="Profile Preview"
-                          className="border object-fit-cover rounded"
-                          style={{ width: "100%", height: "100%" }}
-                        />
+                        {isVideo ? (
+                          <video
+                            src={previewUrl}
+                            className="border object-fit-cover rounded bg-dark"
+                            style={{ width: "100%", height: "100%" }}
+                            controls
+                          />
+                        ) : (
+                          <img
+                            src={previewUrl}
+                            alt="Content Preview"
+                            className="border object-fit-cover rounded"
+                            style={{ width: "100%", height: "100%" }}
+                          />
+                        )}
+
                         <i
                           role="button"
                           className="bi-pencil-square position-absolute"
@@ -164,13 +175,14 @@ export default function CreatePostModal() {
                             right: "45px",
                             top: "7px",
                             color: "rgba(155,185,255,1)",
+                            zIndex: 10,
                           }}
                         ></i>
                         <i
                           role="button"
                           className="bi-trash text-danger position-absolute"
                           onClick={() => removeImage(index)}
-                          style={{ right: "20px", top: "7px" }}
+                          style={{ right: "20px", top: "7px", zIndex: 10 }}
                         ></i>
                       </div>
                     );
@@ -192,7 +204,7 @@ export default function CreatePostModal() {
                   type="file"
                   id="post-upload"
                   className="d-none"
-                  accept="image/*"
+                  accept="image/*,video/*"
                   key={previewUrls.length}
                   onChange={handleImageChange}
                 />

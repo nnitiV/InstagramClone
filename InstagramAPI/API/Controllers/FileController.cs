@@ -6,6 +6,8 @@ namespace API.Controllers
 {
     [Authorize]
     [ApiController]
+    [RequestSizeLimit(104857600)]
+    [RequestFormLimits(MultipartBodyLengthLimit = 104857600)]
     [Route("api/files")]
     public class FileController: ControllerBase
     {
