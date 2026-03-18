@@ -161,7 +161,7 @@ export default function UpdatePostModal({ onClose, username, postToUpdate, setPo
                     const containerHeight =
                       previewUrls.length === 1 ? "250px" : "150px";
 
-                    const isVideo = selectedFiles[index]?.type.startsWith("video/") || previewUrl.includes("mp4");
+                    const isVideo = selectedFiles[index]?.type?.startsWith("video/") || previewUrl.includes("mp4");
                     return (
                       <div
                         key={index}
