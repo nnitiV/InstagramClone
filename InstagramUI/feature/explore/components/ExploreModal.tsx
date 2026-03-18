@@ -1,6 +1,6 @@
 "use client";
 
-import { URL } from "@/constants";
+import { BASE_URL } from "@/constants";
 import { getLoggedUserInfo } from "@/feature/auth/services/auth-service";
 import CommentsList from "@/feature/feed/components/comment/CommentList";
 import PostActions from "@/feature/feed/components/post/PostActions";
@@ -157,7 +157,7 @@ export default function ExploreModal({ post, onClose, username, setPostToUpdate 
                             <div className="p-3 border-bottom d-flex align-items-center justify-content-between flex-shrink-0">
                                 <div className="d-flex align-items-center" onClick={goToUser}>
                                     <img
-                                        src={post.authorProfilePicture ? URL + post.authorProfilePicture : 
+                                        src={post.authorProfilePicture ? BASE_URL + post.authorProfilePicture : 
                                             "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                                         className="rounded-circle border me-2 object-fit-cover"
                                         style={{ width: "32px", height: "32px" }}
@@ -179,7 +179,7 @@ export default function ExploreModal({ post, onClose, username, setPostToUpdate 
                             </div>
                             <div className="flex-grow-1 overflow-auto p-3 no-scrollbar" style={{ minHeight: 0 }}>
                                 <div className="d-flex mb-3" onClick={goToUser}>
-                                    <img src={post.authorProfilePicture ? URL + post.authorProfilePicture : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} className="rounded-circle me-2 object-fit-cover" style={{ width: "32px", height: "32px" }} />
+                                    <img src={post.authorProfilePicture ? BASE_URL + post.authorProfilePicture : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} className="rounded-circle me-2 object-fit-cover" style={{ width: "32px", height: "32px" }} />
                                     <p className="small mb-0">
                                         <span className="fw-bold me-2">{post.authorName}</span>
                                         {post.caption}

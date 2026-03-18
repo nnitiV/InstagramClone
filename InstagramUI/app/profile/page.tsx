@@ -61,7 +61,7 @@ export default function UserProfilePage() {
             <Header
               isMobile={isMobile}
               userProfile={user}
-              postsSize={posts.length}
+              postsSize={posts ? posts.length : 0}
             />
             <div
               className={`user-buttons w-75 mx-auto ${isMobile && "d-flex justify-content-between"}`}

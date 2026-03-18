@@ -1,7 +1,5 @@
-import { Dispatch, SetStateAction } from 'react';
-import { USER_PROFILE_MOCK } from '../constants/data'
 import { Post } from '@/types/feed';
-import { URL } from '@/constants';
+import { BASE_URL } from '@/constants';
 
 type PostsProps = {
     posts: Post[];
@@ -14,9 +12,9 @@ export default function Posts({posts, setSelectedPost}: PostsProps) {
             {posts.map((post, _) => (
                 <div key={post.id} onClick={() => setSelectedPost(post)} className="bg-secondary transparent-background-hover-2 p-0 m-0" style={{ width: "250px", height: "350px" }}>
                     {posts && post.contentUrls[0] && post.contentUrls[0].includes("mp4") ?
-                        <video className="w-100 h-100" loop muted src={`${URL + post.contentUrls[0]}#t=0`}></video>
+                        <video className="w-100 h-100" loop muted src={`${BASE_URL + post.contentUrls[0]}#t=0`}></video>
                         :
-                        <img className="w-100 h-100 object-fit-cover" src={URL + post.contentUrls[0]} alt="" />
+                        <img className="w-100 h-100 object-fit-cover" src={BASE_URL + post.contentUrls[0]} alt="" />
                     }
                 </div>
             ))}

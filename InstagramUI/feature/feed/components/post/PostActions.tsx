@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { getPostLikeCount, likePost, unlikePost } from "../../services/feed.service";
-// import { toggleLikePost, toggleSavePost } from "@/feature/feed/services/interaction-service"; // We'll make this later
 
 type PostActionsProps = {
     postId: number;
@@ -69,7 +68,7 @@ export default function PostActions({
                     <i className="bi bi-send fs-4"></i>
                 </div>
                 <div className="ms-auto cursor-pointer" onClick={handleSave}>
-                    <i className={`bi ${isSaved ? "bi-bookmark-fill text-dark" : "bi-bookmark"} fs-4`}></i>
+                    <i className={`bi ${isSaved ? "bi-bookmark-fill" : "bi-bookmark"} fs-4`}></i>
                 </div>
             </div>
         </>

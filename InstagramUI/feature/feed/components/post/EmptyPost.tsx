@@ -6,7 +6,7 @@ export default function EmptyPost() {
     <>
       <div className="d-flex flex-column align-items-center justify-content-center h-100 text-center p-5 w-100">
         <div
-          className="rounded-circle border border-2 border-dark d-flex align-items-center justify-content-center mb-4"
+          className="rounded-circle border border-2 d-flex align-items-center justify-content-center mb-4"
           style={{ width: "100px", height: "100px" }}
         >
           <i className="bi bi-camera fs-1"></i>

@@ -1,4 +1,4 @@
-import { URL as BASE_URL} from "@/constants";
+import { BASE_URL as BASE_URL} from "@/constants";
 import { uploadFile } from "@/feature/auth/services/auth-service";
 import { createPost, updatePost } from "@/services/post.service";
 import { usePostStore } from "@/stores/usePostStore";

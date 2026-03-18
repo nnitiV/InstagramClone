@@ -7,7 +7,7 @@ import { useEffect, useState, useCallback, useRef } from "react";
 import CommentsList from "./CommentList";
 import { addPostComments, getPostComments } from "../../services/feed.service";
 import { getLoggedUserInfo } from "@/feature/auth/services/auth-service";
-import { redirect } from "next/navigation";
+import { BASE_URL } from "@/constants";
 
 type CommentModalProps = {
     post: Post;
@@ -23,7 +23,6 @@ export default function CommentModal({ post, onClose, goToUser }: CommentModalPr
     const [replyTarget, setReplyTarget] = useState<number | null>(null);
     const [replyText, setReplyText] = useState<string>('');
     const [newCommentText, setNewCommentText] = useState<string>('');
-
     const mediaContainerRef = useRef<HTMLDivElement>(null);
 
     const buildCommentTree = useCallback((comments: PostComment[]): PostCommentTree[] => {
@@ -162,7 +161,8 @@ export default function CommentModal({ post, onClose, goToUser }: CommentModalPr
                     className="modal-dialog modal-xl modal-dialog-centered"
                     onClick={(e) => e.stopPropagation()}
                 >
-                    <div className="modal-content overflow-hidden" style={{ height: "100vh", maxHeight: "90vh", borderRadius: "4px" }}>
+                    <div className="modal-content overflow-hidden" style={{ height: "100vh", maxHeight: "90vh", 
+                        borderRadius: "4px" }}>
                         <div className="d-flex flex-column flex-md-row h-100">
                             {/* Left column - media */}
                             <div
@@ -180,7 +180,7 @@ export default function CommentModal({ post, onClose, goToUser }: CommentModalPr
                                 <div className="p-3 border-bottom d-flex align-items-center justify-content-between">
                                     <div className="d-flex align-items-center" onClick={() => goToUser(post.userId)}>
                                         <img
-                                            src={post.authorProfilePicture ? "http://localhost:5000/" + post.authorProfilePicture : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                                            src={post.authorProfilePicture ? BASE_URL + post.authorProfilePicture : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                                             className="rounded-circle border me-2"
                                             style={{ width: "32px", height: "32px", objectFit: "cover" }}
                                         />
@@ -194,7 +194,7 @@ export default function CommentModal({ post, onClose, goToUser }: CommentModalPr
                                     {/* Post caption */}
                                     <div className="d-flex mb-3" onClick={() => goToUser(post.userId)}>
                                         <img
-                                            src={post.authorProfilePicture ? "http://localhost:5000/" + post.authorProfilePicture : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                                            src={post.authorProfilePicture ? BASE_URL + post.authorProfilePicture : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                                             className="rounded-circle me-2"
                                             style={{ width: "32px", height: "32px", objectFit: "cover" }}
                                         />

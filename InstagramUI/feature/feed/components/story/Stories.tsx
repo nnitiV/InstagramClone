@@ -1,16 +1,14 @@
 "use client";
 import { Story } from "@/types/feed";
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import StoryItem from "./StoryItem";
 import { useStoryStore } from "@/feature/story/store/useStoryStore";
 
 type StoriesProps = {
   serverStories: Story[];
-  userPhoto?: string; // Optional: Pass the logged-in user's photo
 };
 
-export default function Stories({ serverStories, userPhoto }: StoriesProps) {
+export default function Stories({ serverStories }: StoriesProps) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [storiesIcon, setStoriesIcons] = useState<Story[]>([]);
   const { setInitialStories } = useStoryStore();
@@ -76,7 +74,8 @@ export default function Stories({ serverStories, userPhoto }: StoriesProps) {
   return (
     <div className="position-relative w-100 border-bottom">
       <button
-        className="btn btn-light rounded-circle shadow-sm position-absolute start-0 top-50 translate-middle-y ms-2 z-1 d-flex align-items-center justify-content-center"
+        className="btn btn-light rounded-circle shadow-sm position-absolute start-0 top-50 translate-middle-y ms-2 z-1 d-flex 
+        align-items-center justify-content-center"
         style={{ width: "30px", height: "30px", border: "1px solid #dbdbdb" }}
         onClick={() => scroll("left")}
       >

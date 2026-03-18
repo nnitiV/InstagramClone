@@ -13,7 +13,7 @@ export const usePostStore = create<PostStore>((set) => ({
     posts: [],
     setPosts: (posts) => set({ posts }),
     addPost: (post) => set((state) => ({ 
-        posts: [post, ...state.posts] // Adiciona no topo
+            posts: [post, ...state.posts] // Adiciona no topo
     })),
     updatePost: (updatedPost) => set((state) => ({
         posts: state.posts.map((p) => 

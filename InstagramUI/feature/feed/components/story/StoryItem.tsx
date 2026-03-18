@@ -1,3 +1,4 @@
+import { BASE_URL } from "@/constants";
 import { Story } from "@/types/feed";
 import Link from "next/link";
 
@@ -14,7 +15,7 @@ export default function StoryItem({story}: StoryItemProps) {
             >
                 <div className="p-1 circle-element rounded-circle rainbow-border position-relative">
                     <img
-                        src={story.profilePictureUrl && story.profilePictureUrl.length > 0 ? "http://localhost:5000/" + story.profilePictureUrl : "https://cdn-icons-png.flaticon.com/512/6522/6522516.png"}
+                        src={story.profilePictureUrl && story.profilePictureUrl.length > 0 ? BASE_URL + story.profilePictureUrl : "https://cdn-icons-png.flaticon.com/512/6522/6522516.png"}
                         alt="Story"
                         className="rounded-circle"
                         style={{ width: "62px", height: "62px", objectFit: "cover", border: "2px solid white" }}

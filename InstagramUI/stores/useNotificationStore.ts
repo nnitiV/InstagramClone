@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { NotificationType } from "@/types/notification"; // Ajuste o caminho
+import { NotificationType } from "@/types/notification"; 
 
 interface NotificationState {
   notifications: NotificationType[];

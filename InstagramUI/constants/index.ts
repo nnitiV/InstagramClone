@@ -1,3 +1,3 @@
 export const tokenName = 'ig_token';
-export const URL = `http://localhost:5000/`;
-export const BASE_ROUTE_URL = URL + 'api';
+export const BASE_URL = `http://localhost:5000/`;
+export const BASE_ROUTE_URL = BASE_URL + 'api';

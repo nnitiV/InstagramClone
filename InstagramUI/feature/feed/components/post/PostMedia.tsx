@@ -1,4 +1,5 @@
 "use client";
+import { BASE_URL } from '@/constants';
 import { useState, useRef, useEffect, useCallback } from 'react';
 
 interface PostMediaProps {
@@ -26,9 +27,7 @@ export default function PostMedia({
   const videoRefs = useRef<(HTMLVideoElement | null)[]>([]);
   const observerRef = useRef<IntersectionObserver | null>(null);
 
-  const carouselId = isModal
-    ? 'postMediaCarousel-modal'
-    : `postMediaCarousel-${postIndex}`;
+  const carouselId = isModal ? 'postMediaCarousel-modal' : `postMediaCarousel-${postIndex}`;
 
   // Load mute setting from localStorage
   useEffect(() => {
@@ -167,7 +166,7 @@ export default function PostMedia({
   }, []);
 
   if (!contentUrls?.length) {
-    return <div className="w-100 h-100 bg-dark d-flex align-items-center justify-content-center text-white fs-6">No media</div>;
+    return <div className="w-100 h-100 d-flex align-items-center justify-content-center fs-6">No media</div>;
   }
 
   const VolumeIcon = () => (
@@ -188,7 +187,7 @@ export default function PostMedia({
   const PlayOverlay = () => {
     if (isPlaying || (!isInViewport && !isModal)) return null;
     return (
-      <div className="position-absolute top-50 start-50 translate-middle text-white shadow" style={{ opacity: 0.8, pointerEvents: 'none', zIndex: 10 }}>
+      <div className="position-absolute top-50 start-50 translate-middle shadow" style={{ opacity: 0.8, pointerEvents: 'none', zIndex: 10 }}>
         <svg width="64" height="64" fill="currentColor" viewBox="0 0 16 16">
           <path d="M10.804 8 5 4.633v6.734L10.804 8zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C4.713 12.69 4 12.345 4 11.692V4.308c0-.653.713-.998 1.233-.696l6.363 3.692z" />
         </svg>
@@ -206,7 +205,7 @@ export default function PostMedia({
             <video
               ref={el => { if (el) videoRefs.current[0] = el; }}
               className="w-100 h-100 object-fit-contain"
-              src={"http://localhost:5000/" + url}
+              src={BASE_URL + url}
               muted={isMuted}
               loop
               playsInline
@@ -216,7 +215,7 @@ export default function PostMedia({
             />
             <PlayOverlay />
             <button
-              className="position-absolute btn p-0 bg-black bg-opacity-75 text-white rounded-circle border-0 shadow-lg"
+              className="position-absolute btn p-0 bg-body bg-opacity-75 rounded-circle border-0 shadow-lg"
               style={{ width: '48px', height: '48px', right: '20px', bottom: '20px', zIndex: 10 }}
               onClick={toggleMute}
               title={isMuted ? "Ativar som" : "Silenciar"}
@@ -225,7 +224,7 @@ export default function PostMedia({
             </button>
           </>
         ) : (
-          <img src={"http://localhost:5000/" + url} className="w-100 h-100 object-fit-contain" alt="Post media" />
+          <img src={BASE_URL + url} className="w-100 h-100 object-fit-contain" alt="Post media" />
         )}
       </div>
     );
@@ -233,9 +232,10 @@ export default function PostMedia({
 
   // Carousel
   return (
-    <div id={carouselId} className="carousel bg-dark slide h-100 w-100 position-relative" data-bs-interval="false" data-bs-wrap="true" ref={carouselRef}>
+    <div id={carouselId} className="carousel slide h-100 w-100 position-relative" data-bs-interval="false" data-bs-wrap="true" 
+    ref={carouselRef}>
       <button
-        className="position-absolute btn p-0 bg-black bg-opacity-75 text-white rounded-circle border-0 shadow-lg"
+        className="position-absolute btn p-0 bg-body bg-opacity-75 rounded-circle border-0 shadow-lg"
         style={{ width: '48px', height: '48px', right: '20px', bottom: '20px', zIndex: 10 }}
         onClick={toggleMute}
         title={isMuted ? "Ativar som" : "Silenciar"}
@@ -258,7 +258,7 @@ export default function PostMedia({
             type="button"
             data-bs-target={`#${carouselId}`}
             data-bs-slide-to={index.toString()}
-            className={`rounded-circle ${index === activeIndex ? 'active bg-white' : 'bg-white bg-opacity-50'}`}
+            className={`rounded-circle ${index === activeIndex ? 'active bg-body' : 'bg-body bg-opacity-50'}`}
             style={{ width: '10px', height: '10px', margin: '0 4px' }}
           />
         ))}
@@ -272,7 +272,7 @@ export default function PostMedia({
               <div className="position-relative w-100 h-100">
                 <video
                   ref={el => { if (el) videoRefs.current[index] = el; }}
-                  src={"http://localhost:5000/" + url}
+                  src={BASE_URL + url}
                   className="object-fit-contain w-100 h-100"
                   muted={isMuted}
                   playsInline
@@ -285,7 +285,7 @@ export default function PostMedia({
               </div>
             ) : (
               <img
-                src={"http://localhost:5000/" + url}
+                src={BASE_URL + url}
                 className="w-100 h-100 object-fit-contain"
                 alt={`Post media ${index + 1}`}
               />
@@ -295,10 +295,10 @@ export default function PostMedia({
       </div>
 
       <button className="carousel-control-prev" type="button" data-bs-target={`#${carouselId}`} data-bs-slide="prev">
-        <span className="carousel-control-prev-icon bg-black bg-opacity-50 rounded-circle" aria-hidden="true"></span>
+        <span className="carousel-control-prev-icon bg-body bg-opacity-50 rounded-circle" aria-hidden="true"></span>
       </button>
       <button className="carousel-control-next" type="button" data-bs-target={`#${carouselId}`} data-bs-slide="next">
-        <span className="carousel-control-next-icon bg-black bg-opacity-50 rounded-circle" aria-hidden="true"></span>
+        <span className="carousel-control-next-icon bg-body bg-opacity-50 rounded-circle" aria-hidden="true"></span>
       </button>
     </div>
   );

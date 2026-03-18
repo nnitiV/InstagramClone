@@ -7,6 +7,7 @@ import * as SignalR from "@microsoft/signalr";
 import { create } from "zustand";
 import { useNotificationStore } from "./useNotificationStore";
 import { NotificationType } from "@/types/notification";
+import { BASE_URL } from "@/constants";
 
 interface ChatState {
   connection: SignalR.HubConnection | null;
@@ -32,7 +33,7 @@ export const useChatStore = create<ChatState>((set, get) => ({
     const idUserLogado = (await getLoggedUserInfo()).id;
 
     const newConnection = new SignalR.HubConnectionBuilder()
-      .withUrl("http://localhost:5000/hubs/chat", {
+      .withUrl(`${BASE_URL}hubs/chat`, {
         accessTokenFactory: () => token || "",
       })
       .withAutomaticReconnect()

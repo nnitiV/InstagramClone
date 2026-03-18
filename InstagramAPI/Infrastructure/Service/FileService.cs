@@ -1,8 +1,9 @@
 ﻿
 using Application.Services;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using System.Runtime.CompilerServices;
+using System.Runtime.Intrinsics.X86;
 
 
 namespace Infrastructure.Service
@@ -21,7 +22,8 @@ namespace Infrastructure.Service
             {
                 throw new ArgumentException("File is empty.");
             }
-            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp", ".jfif", ".mp4" };
+            var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp", ".jfif", ".mp4",
+            ".webm",".ogg",".mov",".avi"};
             var extension = Path.GetExtension(file.FileName).ToLower();
 
             if (!allowedExtensions.Contains(extension))

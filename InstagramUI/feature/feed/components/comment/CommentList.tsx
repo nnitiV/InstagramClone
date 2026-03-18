@@ -1,5 +1,5 @@
 "use client";
-import { PostComment, PostCommentTree } from "@/types/feed";
+import { PostCommentTree } from "@/types/feed";
 import CommentItem from "./CommentItem";
 
 interface CommentsListProps {
@@ -34,7 +34,7 @@ const CommentsList: React.FC<CommentsListProps> = ({
                     onCancelReply={onCancelReply}
                 />
                 {commentTree.replies.length > 0 && (
-                    <div className="border-start border-2 ms-3 ps-3 bg-light rounded">
+                    <div className="border-start border-2 ms-3 ps-3 rounded">
                         <CommentsList
                             comments={commentTree.replies}
                             replyTarget={replyTarget}

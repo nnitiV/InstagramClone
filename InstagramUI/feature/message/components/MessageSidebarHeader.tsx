@@ -1,3 +1,6 @@
+import { getLoggedUserInfo } from "@/feature/auth/services/auth-service";
+import { useEffect, useState } from "react";
+
 type MessageSidebarHeaderProps = {
     searchText: string;
     setSearchText: React.Dispatch<React.SetStateAction<string>>;
@@ -5,10 +8,17 @@ type MessageSidebarHeaderProps = {
 }
 
 export default function MessageSidebarHeader({searchText, setSearchText, shouldHideSidebar}: MessageSidebarHeaderProps) {
+    const [username, setUsername] = useState<string>("");
+    useEffect(() => {
+        const fetchUsername = async () => {
+            setUsername((await getLoggedUserInfo()).username);
+        }
+        fetchUsername()
+    }, [])
     return (
         <div className={`${!shouldHideSidebar && "w-100"}`}>
             <div className="d-flex justify-content-between px-2 ">
-                <p data-bs-toggle="modal" data-bs-target="#switchAccountModal">Username</p>
+                <p data-bs-toggle="modal" data-bs-target="#switchAccountModal">{username ?? "Username"}</p>
                 <i className="bi bi-pencil-square"></i>
             </div>
             <div className="input-group mb-1 px-2">

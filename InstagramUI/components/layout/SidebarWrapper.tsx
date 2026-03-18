@@ -8,12 +8,12 @@ type SidebarProps = {
 }
 export default function SidebarWrapper({ children, picture }: SidebarProps) {
     const path = usePathname();
-    
+
     const hiddenRoutes = ['/login', '/register', '/stories']
 
     const hideSidebar = hiddenRoutes.some(route => path.startsWith(route));
 
-    if(hideSidebar) {
+    if (hideSidebar) {
         return (
             <>{children}</>
         )
