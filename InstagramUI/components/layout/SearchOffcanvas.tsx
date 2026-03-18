@@ -17,7 +17,7 @@ export function useDebounce<T>(value: T, delay: number) {
     return debounceValue;
 }
 
-export default function SearchOffset() {
+export default function SearchOffcanvas() {
     const [searchText, setSearchText] = useState<string>("");
     const [isSearching, setIsSearching] = useState<boolean>(false);
     const [users, setUsers] = useState<UserProfile[]>([]);

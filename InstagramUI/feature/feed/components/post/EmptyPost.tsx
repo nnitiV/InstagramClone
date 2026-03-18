@@ -1,4 +1,4 @@
-import SearchOffset from "@/components/layout/SearchOffset";
+import SearchOffcanvas from "@/components/layout/SearchOffcanvas";
 import Link from "next/link";
 
 export default function EmptyPost() {
@@ -22,7 +22,7 @@ export default function EmptyPost() {
           </Link>
         </div>
       </div>
-      <SearchOffset />
+      <SearchOffcanvas />
     </>
   );
 }

@@ -1,4 +1,4 @@
-import { useDebounce } from "@/components/layout/SearchOffset";
+import { useDebounce } from "@/components/layout/SearchOffcanvas";
 import { Follower, UserProfile } from "@/types/user";
 import { useEffect, useState } from "react";
 import { getFollowersList, getFollowingList } from "../services/profile.service";

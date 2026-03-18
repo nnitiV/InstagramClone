@@ -6,10 +6,11 @@ type SidebarProps = {
     children: React.ReactNode;
     picture: string;
 }
+
+const hiddenRoutes = ['/login', '/register', '/stories']
+
 export default function SidebarWrapper({ children, picture }: SidebarProps) {
     const path = usePathname();
-
-    const hiddenRoutes = ['/login', '/register', '/stories']
 
     const hideSidebar = hiddenRoutes.some(route => path.startsWith(route));
 

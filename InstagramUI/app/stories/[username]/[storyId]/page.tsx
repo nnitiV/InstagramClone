@@ -43,7 +43,7 @@ export default function StoriesPage({ params }: StoriesPageProps) {
         <div className="position-relative text-center d-flex justify-content-center align-items-center vh-100 text-primary"
             style={{ background: "rgba(25,25,25)" }}
         >
-            <InstagramLogo />
+            <InstagramLogo isIcon={false} />
             <Link href="/"><i className="bi bi-x-lg position-absolute fs-3 text-white fw-bold" style={{ top: 25, right: 50 }}></i></Link>
             
             <ActiveStory 

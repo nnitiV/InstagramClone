@@ -1,4 +1,11 @@
-export default function InstagramLogo() {
+type InstagramLogoProps = {
+    isIcon: boolean;
+}
+
+export default function InstagramLogo({isIcon} : InstagramLogoProps) {
+    if(isIcon) return (
+        <i className="bi-instagram"></i>
+    )
     return (
         <i data-visualcompletion="css-img" aria-label="Instagram" className="position-absolute" role="img"
             style={{

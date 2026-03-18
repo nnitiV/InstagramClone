@@ -9,9 +9,7 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [token] = await Promise.all([
-    getLoggedUserTokenInfo(),
-  ]);
+  const token = await getLoggedUserTokenInfo();
   return (
     <html lang="en" data-bs-theme="light" suppressHydrationWarning>
       <head>
@@ -37,7 +35,7 @@ export default async function RootLayout({
       <body>
         <ThemeWatcher />
         <ChatProvider />
-        <SidebarWrapper picture={token != null ? token.picture : ""}>
+        <SidebarWrapper picture={token?.picture || ""}>
           {children}
         </SidebarWrapper>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossOrigin="anonymous"></script>

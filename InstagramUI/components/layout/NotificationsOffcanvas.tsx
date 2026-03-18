@@ -16,7 +16,7 @@ export interface Notification {
   followedUserId: number | null; // ID do usuário se você já o segue, senão null
 }
 
-export default function NotificationsOffset() {
+export default function NotificationsOffcanvas() {
   const notifications = useNotificationStore((state) => state.notifications);
   const setNotifications = useNotificationStore(
     (state) => state.setNotifications,
