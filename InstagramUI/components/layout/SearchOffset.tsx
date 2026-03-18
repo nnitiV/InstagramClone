@@ -49,12 +49,7 @@ export default function SearchOffset() {
             </div>
             <div className="offcanvas-body d-flex flex-column">
                 {searchText.length <= 0 ?
-                    <>
-                        <p style={{ color: "rgba(155,155,155,0.75)" }}>Recent</p>
-                        <div className="d-flex justify-content-center align-items-center flex-grow-1" style={{ color: "rgba(155,155,155,0.75)" }}>
-                            <p>No recent searchs.</p>
-                        </div>
-                    </>
+                    <p>No user yet</p>
                     :
                     isSearching ?
                         <div className="spinner-border" role="status">
