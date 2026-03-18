@@ -14,12 +14,14 @@ import CreatePostModal from "@/components/layout/CreatePostModal";
 import { usePostStore } from "@/stores/usePostStore";
 import { getPostByid } from "@/feature/feed/services/feed.service";
 import UpdatePostModal from "@/feature/explore/components/UpdatePostModal";
+import { useThemeStore } from "@/stores/useThemeStore";
 
 export default function UserProfilePage() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [user, setUser] = useState<UserProfile | null>(null);
   const posts = usePostStore((state) => state.posts);
   const setPosts = usePostStore((state) => state.setPosts);
+  const theme = useThemeStore((state) => state.theme);
   // const [userHighlights, setUserHighlights] = useState<[]>([]);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [postToUpdate, setPostToUpdate] = useState<Post | null>(null);
@@ -68,7 +70,7 @@ export default function UserProfilePage() {
             >
               <button
                 type="button"
-                className="btn btn-light border fw-bold flex-grow-1 flex-sm-grow-0 me-sm-2 mb-2 mb-sm-0 px-4"
+                className={`btn border border-2 fw-bold flex-grow-1 flex-sm-grow-0 me-sm-2 mb-2 mb-sm-0 px-4`}
                 data-bs-toggle="modal"
                 data-bs-target="#editProfile"
               >

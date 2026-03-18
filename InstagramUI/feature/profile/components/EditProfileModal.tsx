@@ -1,3 +1,4 @@
+import { BASE_URL } from "@/constants";
 import { uploadFile, updateUserProfile } from "@/feature/auth/services/auth-service";
 import { EditUserProfile, UserProfile } from "@/types/user";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
@@ -8,6 +9,7 @@ type EditProfileModalProps = {
 }
 
 export default function EditProfileModal({ user, setUser }: EditProfileModalProps) {
+    const [loading, setLoading] = useState<boolean>(false);
     const [editUser, setEditUser] = useState<EditUserProfile>({
         id: user?.id || 0,
         username: user?.username || "",
@@ -33,12 +35,12 @@ export default function EditProfileModal({ user, setUser }: EditProfileModalProp
                 age: user.age,
             });
             if(user.profilePictureUrl) {
-                setPreviewUrl("http://localhost:5000/" + user.profilePictureUrl);
+                setPreviewUrl(BASE_URL + user.profilePictureUrl);
             }
         }
     }, [user]);
     const updateUser = async () => {
-        
+        setLoading(true);
         let userToSave = { ...editUser };
         let photoUrl = "";
         if (selectedFile) {
@@ -62,6 +64,7 @@ export default function EditProfileModal({ user, setUser }: EditProfileModalProp
             } as UserProfile);
             document.getElementById("edit-modal-close")?.click();
         }
+        setLoading(true);
     }
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
@@ -146,7 +149,15 @@ export default function EditProfileModal({ user, setUser }: EditProfileModalProp
                     </div>
                     <div className="modal-footer">
                         <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" className="btn btn-primary" onClick={updateUser}>Save changes</button>
+                         {
+                            loading ?
+                                <button className="btn btn-primary" type="button" disabled>
+                                    <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                                    <span role="status">Loading...</span>
+                                </button>
+                                :
+                                <button type="button" className="btn btn-primary" onClick={updateUser}>Save changes</button>
+                        }
                     </div>
                 </div>
             </div>

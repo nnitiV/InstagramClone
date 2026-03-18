@@ -5,6 +5,7 @@ import { StoryToSave } from "@/types/post";
 import { useState } from "react";
 
 export default function CreateStoryModal() {
+    const [loading, setLoading] = useState<boolean>(false);
     const [selectedFile, setSelectedFile] = useState<File | null>();
     const [previewUrl, setPreviewUrl] = useState<string>("");
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -15,6 +16,7 @@ export default function CreateStoryModal() {
         }
     }
     const handlePostCreation = async () => {
+        setLoading(true);
         if (previewUrl.length <= 0) return;
         if (selectedFile) {
             let story: StoryToSave = {
@@ -24,6 +26,7 @@ export default function CreateStoryModal() {
         }
         discardPost();
         document.getElementById("close")?.click();
+        setLoading(false);
     }
     const discardPost = () => {
         setPreviewUrl("");
@@ -75,7 +78,15 @@ export default function CreateStoryModal() {
                         </div>
                     </div>
                     <div className="modal-footer">
-                        <button type="button" className="btn btn-secondary" id="discardChanges" data-bs-dismiss="modal" onClick={discardPost}>Discard</button>
+                        {
+                            loading ?
+                                <button className="btn btn-primary" type="button" disabled>
+                                    <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                                    <span role="status">Loading...</span>
+                                </button>
+                                :
+                                <button type="button" className="btn btn-secondary" id="discardChanges" data-bs-dismiss="modal" onClick={discardPost}>Discard</button>
+                        }
                         <button type="button" className="btn btn-primary" onClick={handlePostCreation}>Create story</button>
                     </div>
                 </div>

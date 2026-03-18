@@ -7,6 +7,7 @@ import { useState } from "react";
 
 export default function CreatePostModal() {
   const addPost = usePostStore((state) => state.addPost);
+  const [loading, setLoading] = useState<boolean>(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [caption, setCaption] = useState<string>("");
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
@@ -34,6 +35,7 @@ export default function CreatePostModal() {
   };
 
   const handlePostCreation = async () => {
+    setLoading(true);
     if (caption.length <= 0 || previewUrls.length <= 0) return;
     let urls: string[] = [];
     if (selectedFiles && selectedFiles.length > 0) {
@@ -61,6 +63,7 @@ export default function CreatePostModal() {
       }
       document.getElementById("discardChanges")?.click();
     }
+    setLoading(false);
   };
 
   const discardPost = () => {
@@ -249,13 +252,21 @@ export default function CreatePostModal() {
             >
               Discard
             </button>
-            <button
-              type="button"
-              className="btn btn-primary"
-              onClick={handlePostCreation}
-            >
-              Create post
-            </button>
+            {
+              loading ?
+                <button className="btn btn-primary" type="button" disabled>
+                  <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                  <span role="status">Loading...</span>
+                </button>
+                :
+                <button
+                  type="button"
+                  className="btn btn-primary"
+                  onClick={handlePostCreation}
+                >
+                  Create post
+                </button>
+            }
           </div>
         </div>
       </div>
