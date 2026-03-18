@@ -7,5 +7,6 @@ namespace Application.Interfaces
         Task<Story?> GetStoryByIdAsync(int postId);
         Task CreateStoryAsync(Story story);
         Task<IEnumerable<Story>> GetActiveStoriesAsync(int currentUserId);
+        Task<Boolean> CheckIfStoryStillActive(int storyId);
     }
 }

@@ -1,5 +1,6 @@
 import { getLoggedUserInfo } from "@/feature/auth/services/auth-service";
 import { LastMessageDto } from "@/types/messages";
+import { formatShortDate } from "@/utils/date";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import Link from "next/link";
@@ -19,18 +20,6 @@ export default function MessageUserItem({ message, setSearchText }: MesssageUser
         }
         getUserId();
     }, [])
-    const formatShortDate = (date: string) => {
-        return formatDistanceToNow(new Date(date), { locale: ptBR })
-            .replace('aproximadamente ', '')
-            .replace('há ', '')
-            .replace('menos de um minuto', 'agora')
-            .replace(' minutos', 'min')
-            .replace(' minuto', 'min')
-            .replace(' horas', 'h')
-            .replace(' hora', 'h')
-            .replace(' dias', 'd')
-            .replace(' dia', 'd');
-    };
 
     return (
         <Link href={`/messages/${message.senderId != id ? message.senderId : message.receiverId}`} key={message.id} className="text-decoration-none text-body w-75"
@@ -49,7 +38,7 @@ export default function MessageUserItem({ message, setSearchText }: MesssageUser
                 </div>
                 <div className="d-flex flex-column justify-content-center" style={{ fontSize: "14px" }}>
                     <p className="m-0 p-0">{message.name}</p>
-                    <p className="m-0 p-0" style={{ color: "rgba(75,75,75,0.75)" }}>
+                    <p className="m-0 p-0">
                         {message.senderId == id && "You: "}
                         {message.lastMessage} - {formatShortDate(message.lastMessageAt)}
                     </p>

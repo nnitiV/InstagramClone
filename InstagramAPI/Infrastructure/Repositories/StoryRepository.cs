@@ -47,5 +47,10 @@ namespace Infrastructure.Repositories
                 .OrderByDescending(s => s.CreatedAt)
                 .ToListAsync();
         }
+
+        public async Task<Boolean> CheckIfStoryStillActive(int storyId)
+        {
+            return await _context.Stories.AnyAsync(s => s.Id == storyId && s.ExpiresAt > DateTimeOffset.UtcNow);
+        }
     }
 }

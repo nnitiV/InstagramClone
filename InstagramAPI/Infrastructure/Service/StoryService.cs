@@ -97,5 +97,10 @@ namespace Infrastructure.Service
 
             return storyDtos;
         }
+
+        public async Task<Boolean> CheckIfStoryStillActive(int storyId)
+        {
+            return await _storyRepository.CheckIfStoryStillActive(storyId);
+        }
     }
 }

@@ -48,3 +48,17 @@ export const sendMessageService = async (message: SendMessage) => {
 
     return await res.json();
 }
+
+export const checkIfStoryIsACtive = async (storyId: number) => {
+    const token = await getLoggedUserToken();
+    const res = await fetch(`${BASE_ROUTE_URL}/story/${storyId}/status`, {
+        headers: {
+            "Authorization": `Bearer ${token}`,
+        }
+    });
+    if(!res.ok) {
+        console.error(res);
+        return false;
+    }
+    return await res.json();
+}

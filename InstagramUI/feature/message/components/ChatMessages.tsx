@@ -1,16 +1,18 @@
 import { MessageType } from "@/types/messages";
 import Link from "next/link";
 import { useEffect, useRef } from "react";
+import { checkIfStoryIsACtive } from "../services/message.service";
+import ChatMessage from "./ChatMessage";
 
 type ChatMessagesProps = {
     chat: MessageType[];
     loggedUserId: number
 }
 
-export default function ChatMessages({chat, loggedUserId}: ChatMessagesProps) {
+export default function ChatMessages({ chat, loggedUserId }: ChatMessagesProps) {
     const messageEndRef = useRef<HTMLDivElement>(null);
     const scrollToBottom = () => {
-        messageEndRef.current?.scrollIntoView({behavior: "smooth"});
+        messageEndRef.current?.scrollIntoView({ behavior: "smooth" });
     }
     useEffect(() => {
         scrollToBottom();
@@ -18,20 +20,10 @@ export default function ChatMessages({chat, loggedUserId}: ChatMessagesProps) {
     return (
         <div className="d-flex flex-column h-100 overflow-y-auto">
             <div className="flex-grow-1  p-3">
-                {chat.map(msg => (
-                    <div key={msg.id} className={`d-flex mb-2 ${msg.senderId === loggedUserId ? 'justify-content-end' : 'justify-content-start'}`}>
-                        <div className={`p-2 rounded-3 ${msg.senderId === loggedUserId ? 'bg-primary text-white' 
-                            : 'bg-light border'}`} style={{ maxWidth: '70%' }}>
-                            {msg.storyId ? <Link className="text-decoration-none text-body" 
-                            href={`/stories/${msg.receiverName}/${msg.storyId}`}>
-                                <span style={{color: "rgba(35,35,35,0.5"}}>{msg.content.substring(0, msg.content.indexOf(":")+1)}</span>
-                                {" "}
-                                {msg.content.substring(msg.content.indexOf(":"))}
-                            </Link>
-                            : msg.content}
-                        </div>
-                    </div>
-                ))}
+                {chat.map((msg) => (
+                    <ChatMessage key={msg.id} message={msg} loggedUserId={loggedUserId} />
+                )
+                )}
             </div>
             <div ref={messageEndRef}></div>
         </div>

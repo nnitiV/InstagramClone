@@ -32,7 +32,7 @@ export default function ChatHeader({user}: ChatHeaderProps) {
                 </div>
                 <div className="d-flex flex-column justify-content-center" style={{ fontSize: "14px" }}>
                     <p className="m-0 p-0">{user?.name}</p>
-                    <p className="m-0 p-0" style={{ color: "rgba(75,75,75,0.75)" }}>{user?.username}</p>
+                    <p className="m-0 p-0" style={{ color: "rgba(198, 198, 198, 0.75)" }}>{user?.username}</p>
                 </div>
             </div>
             <div className="d-flex justify-content-between px-3 fs-3">

@@ -2,6 +2,7 @@
 import { PostComment, PostCommentTree } from "@/types/feed";
 import { useEffect, useState } from "react";
 import { checkCommentLikeStatus, likeComment, unlikeComment } from "../../services/feed.service";
+import { BASE_URL } from "@/constants";
 
 interface CommentItemProps {
     commentTree: PostCommentTree;
@@ -49,7 +50,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
         <div className="mb-2">
             <div className="d-flex">
                 <img
-                    src={"http://localhost:5000/" + comment.profilePictureUrl || "https://via.placeholder.com/32?text=👤"}
+                    src={comment.profilePictureUrl && comment.profilePictureUrl.length > 0 ? BASE_URL + comment.profilePictureUrl : "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png?20170328184010"}
                     className="rounded-circle me-2"
                     style={{ width: "32px", height: "32px" }}
                     alt={`${comment.username}'s profile`}
@@ -80,7 +81,7 @@ const CommentItem: React.FC<CommentItemProps> = ({
             </div>
 
             {isReplying && (
-                <div className="ms-5 mt-2 p-2 bg-light rounded">
+                <div className="ms-5 mt-2 p-2 rounded border">
                     <input
                         type="text"
                         className="form-control form-control-sm mb-1"

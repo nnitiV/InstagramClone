@@ -38,7 +38,9 @@ export default function SidebarItem({ url, iconName, text, targetModal, isModal,
             data-bs-target={`#${targetModal.length > 0 ? targetModal : ""}`} aria-controls={targetModal}
         >
             <li className="nav-link align-middle px-0 text-body">
-                {picture ? <img className="rounded-circle m-0" style={{width: "30px", height: "30px"}} src={BASE_URL + picture} alt="" /> : <i className={`bi-${iconName}`}></i>}
+                {picture ? 
+                <img className="rounded-circle m-0" style={{width: "30px", height: "30px"}} src={BASE_URL + picture} alt="" /> 
+                : <i className={`bi-${iconName}`}></i>}
                 <span className={`${picture ? "ms-2" : "ms-3"} d-none d-xl-inline`}>{text}</span>
             </li>
         </Link>)

@@ -167,7 +167,7 @@ export default function CommentModal({ post, onClose, goToUser }: CommentModalPr
                             {/* Left column - media */}
                             <div
                                 ref={mediaContainerRef}
-                                className="col-12 col-md-7 bg-black d-flex align-items-center justify-content-center modal-media-col"
+                                className="col-12 col-md-7 d-flex align-items-center justify-content-center modal-media-col"
                             >
                                 <div className="w-100 h-100">
                                     <PostMedia contentUrls={post.contentUrls} isModal={true} hasSelectedPost />
@@ -175,7 +175,7 @@ export default function CommentModal({ post, onClose, goToUser }: CommentModalPr
                             </div>
 
                             {/* Right column - comments - now with flex-grow on small, no h-100 */}
-                            <div className="col-12 col-md-5 d-flex flex-column bg-white flex-grow-1 flex-md-grow-0">
+                            <div className="col-12 col-md-5 d-flex flex-column flex-grow-1 flex-md-grow-0">
                                 {/* Header */}
                                 <div className="p-3 border-bottom d-flex align-items-center justify-content-between">
                                     <div className="d-flex align-items-center" onClick={() => goToUser(post.userId)}>

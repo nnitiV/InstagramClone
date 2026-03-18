@@ -24,6 +24,11 @@ namespace API.Controllers
             List<StoryDto> stories = await _storyService.GetActiveStoriesAsync(userId);
             return Ok(new { stories });
         }
+        [HttpGet("{storyId}/status")]
+        public async Task<IActionResult> CheckIfStoryIsActive(int storyId)
+        {
+            return Ok(await _storyService.CheckIfStoryStillActive(storyId));
+        }
         [HttpPost]
         public async Task<IActionResult> CreateStory([FromForm] CreateStoryDto storyDto)
         {

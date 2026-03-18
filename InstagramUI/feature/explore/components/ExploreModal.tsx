@@ -148,12 +148,12 @@ export default function ExploreModal({ post, onClose, username, setPostToUpdate 
             >
                 <div className="modal-content overflow-hidden border-0" style={{ height: "90vh", borderRadius: "4px" }}>
                     <div className="row g-0 h-100 flex-column flex-md-row">
-                        <div className="col-12 col-md-7 bg-black d-flex align-items-center justify-content-center col-media">
+                        <div className="col-12 col-md-7 d-flex align-items-center justify-content-center col-media">
                             <div className="w-100 h-100 d-flex align-items-center justify-content-center overflow-hidden">
                                 <PostMedia contentUrls={post.contentUrls} />
                             </div>
                         </div>
-                        <div className="col-12 col-md-5 d-flex flex-column bg-white col-comments">
+                        <div className="col-12 col-md-5 d-flex flex-column col-comments">
                             <div className="p-3 border-bottom d-flex align-items-center justify-content-between flex-shrink-0">
                                 <div className="d-flex align-items-center" onClick={goToUser}>
                                     <img

@@ -33,10 +33,9 @@ export default function MessageContentPage({ params }: ChatPageProps) {
     getInfo();
   }, []);
 
-  const handleSendMessage = async (
-    e: React.KeyboardEvent<HTMLInputElement>,
+  const handleSendMessage = async (e: React.KeyboardEvent<HTMLInputElement> | null,
   ) => {
-    if (e.key == "Enter") {
+    if (e == null || (e && e.key == "Enter")) {
       if (message.length > 0) {
         const messageToSend: SendMessage = {
           receiverId: Number(id),
@@ -54,10 +53,10 @@ export default function MessageContentPage({ params }: ChatPageProps) {
     <div className="w-100 h-100 d-flex flex-column">
       <ChatHeader user={user} />
       <ChatMessages chat={fullChat} loggedUserId={loggedUserId} />
-      <div className="p-3 border-top">
+      <div className="p-3 border-top d-flex">
         <input
           type="text"
-          className="form-control rounded-pill"
+          className="form-control rounded-pill col-9"
           placeholder="Message..."
           value={message}
           onChange={(e) => setMessage(e.target.value)}
