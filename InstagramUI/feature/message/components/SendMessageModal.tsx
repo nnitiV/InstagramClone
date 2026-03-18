@@ -1,3 +1,4 @@
+import { BASE_URL } from "@/constants";
 import { getLoggedUserInfo } from "@/feature/auth/services/auth-service";
 import { getFollowingList } from "@/feature/profile/services/profile.service";
 import { Follower } from "@/types/user";
@@ -70,7 +71,7 @@ export default function SendMessageModal() {
                                     data-mdb-ripple-color="light">
                                     <div className="p-1 rounded-circle position-relative me-2">
                                         <img
-                                            src={!following.profilePictureUrl ? "https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg" : "http://localhost:5000/" + following.profilePictureUrl}
+                                            src={!following.profilePictureUrl ? "https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg" : BASE_URL + following.profilePictureUrl}
                                             alt="Story"
                                             className="rounded-circle"
                                             style={{ width: "46px", height: "46px", objectFit: "cover", }}
@@ -96,7 +97,7 @@ export default function SendMessageModal() {
                                                 data-mdb-ripple-color="light">
                                                 <div className="p-1 rounded-circle position-relative me-2">
                                                     <img
-                                                        src={!following.profilePictureUrl ? "https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg" : "http://localhost:5000/" + following.profilePictureUrl}
+                                                        src={!following.profilePictureUrl ? "https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg" : BASE_URL + following.profilePictureUrl}
                                                         alt="Story"
                                                         className="rounded-circle"
                                                         style={{ width: "46px", height: "46px", objectFit: "cover", }}

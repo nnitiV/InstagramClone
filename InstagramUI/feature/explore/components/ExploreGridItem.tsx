@@ -1,3 +1,4 @@
+import { BASE_URL } from "@/constants";
 import { Post } from "@/types/feed";
 
 type ExploreGridItemProps = {
@@ -15,7 +16,7 @@ export default function ExploreGridItem({ post, setPostForModal }: ExploreGridIt
             <video
                 onClick={() => setPostForModal(post.id)}
                 className={mediaClasses}
-                src={`${post.contentUrls[0] ? "http://localhost:5000/" + post.contentUrls[0] : ""}`}
+                src={`${post.contentUrls[0] ? BASE_URL + post.contentUrls[0] : ""}`}
                 preload="metadata"
                 muted
                 playsInline
@@ -24,7 +25,7 @@ export default function ExploreGridItem({ post, setPostForModal }: ExploreGridIt
             <img
                 onClick={() => setPostForModal(post.id)}
                 className={mediaClasses}
-                src={post.contentUrls[0] ? "http://localhost:5000/" + post.contentUrls[0] : ""}
+                src={post.contentUrls[0] ? BASE_URL + post.contentUrls[0] : ""}
                 alt="Explore"
             />
         )}

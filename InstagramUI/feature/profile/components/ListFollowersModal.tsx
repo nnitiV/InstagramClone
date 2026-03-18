@@ -3,6 +3,7 @@ import { Follower, UserProfile } from "@/types/user";
 import { useEffect, useState } from "react";
 import { getFollowersList, getFollowingList } from "../services/profile.service";
 import Link from "next/link";
+import { BASE_URL } from "@/constants";
 
 type ListFollowersModalProps = {
     users: Follower[];
@@ -77,7 +78,7 @@ export default function ListFollowersModal({ users, userId }: ListFollowersModal
                                             data-mdb-ripple-color="light">
                                             <div className="p-1 rounded-circle position-relative me-2">
                                                 <img
-                                                    src={!user.profilePictureUrl ? "https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg" : "http://localhost:5000/" + user.profilePictureUrl}
+                                                    src={!user.profilePictureUrl ? "https://t4.ftcdn.net/jpg/02/15/84/43/360_F_215844325_ttX9YiIIyeaR7Ne6EaLLjMAmy4GvPC69.jpg" : BASE_URL + user.profilePictureUrl}
                                                     alt="Story"
                                                     className="rounded-circle"
                                                     style={{ width: "46px", height: "46px", objectFit: "cover", }}

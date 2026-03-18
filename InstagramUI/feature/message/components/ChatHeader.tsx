@@ -1,3 +1,4 @@
+import { BASE_URL } from '@/constants';
 import { UserProfile } from '@/types/user';
 import { redirect } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
@@ -24,7 +25,7 @@ export default function ChatHeader({user}: ChatHeaderProps) {
                 data-mdb-ripple-color="light" onClick={() => redirect(`/profile/${user?.username}`)}>
                 <div className="p-1 rounded-circle position-relative me-2">
                     <img
-                        src={user?.profilePictureUrl ? "http://localhost:5000/" + user?.profilePictureUrl : "https://cdn-icons-png.flaticon.com/512/6522/6522516.png"}
+                        src={user?.profilePictureUrl ? BASE_URL + user?.profilePictureUrl : "https://cdn-icons-png.flaticon.com/512/6522/6522516.png"}
                         alt="Story"
                         className="rounded-circle"
                         style={{ width: "46px", height: "46px", objectFit: "cover", }}

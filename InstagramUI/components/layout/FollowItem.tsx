@@ -1,3 +1,4 @@
+import { BASE_URL } from "@/constants";
 import {
   checkFollowStatus,
   followUser,
@@ -71,7 +72,7 @@ export default function FollowItem({ follow }: FollowItemProps) {
             <img
               src={
                 follow.triggerByPhoto
-                  ? "http://localhost:5000/" + follow.triggerByPhoto
+                  ? BASE_URL + follow.triggerByPhoto
                   : "https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png"
               }
               alt="Story"

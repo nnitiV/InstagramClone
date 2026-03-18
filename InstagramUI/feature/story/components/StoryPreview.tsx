@@ -1,3 +1,4 @@
+import { BASE_URL } from "@/constants";
 import { Story } from "@/types/feed";
 import { formatDistanceToNow } from "date-fns";
 import { ptBR } from "date-fns/locale";
@@ -69,7 +70,7 @@ export default function StoryPreview({
         ...storyPositionOffset,
         width: "13vw",
         height: "50vh",
-        backgroundImage: `url(${story?.mediaUrl != null ? "http://localhost:5000/" + story.mediaUrl : "https://cdn-icons-png.flaticon.com/512/6522/6522516.png"})`,
+        backgroundImage: `url(${story?.mediaUrl != null ? BASE_URL + story.mediaUrl : "https://cdn-icons-png.flaticon.com/512/6522/6522516.png"})`,
         backgroundRepeat: "no-repeat",
         backgroundSize: "cover",
         backgroundPosition: "center",
@@ -83,7 +84,7 @@ export default function StoryPreview({
         <img
           src={
             story?.profilePictureUrl && story?.profilePictureUrl.length > 0
-              ? "http://localhost:5000/" + story?.profilePictureUrl
+              ? BASE_URL + story?.profilePictureUrl
               : "https://cdn-icons-png.flaticon.com/512/6522/6522516.png"
           }
           alt="Profile picture"

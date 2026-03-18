@@ -7,6 +7,7 @@ import { useEffect, useState } from "react";
 import { checkStoryLikeStatus, likeStory, unlikeStory } from "../services/stories.service";
 import { getUserByUsername } from "@/feature/profile/services/profile.service";
 import { useChatStore } from "@/stores/useChatStore";
+import { BASE_URL } from "@/constants";
 
 type StoryProps = {
   activeStory: Story | undefined;
@@ -113,7 +114,7 @@ export default function ActiveStory({
         style={{
           width: "25vw",
           height: "90vh",
-          backgroundImage: `url(${"http://localhost:5000/" + activeStory?.mediaUrl})`,
+          backgroundImage: `url(${BASE_URL + activeStory?.mediaUrl})`,
           backgroundRepeat: "no-repeat",
           backgroundSize: "cover",
           backgroundPosition: "center",
@@ -140,7 +141,7 @@ export default function ActiveStory({
                   src={
                     activeStory?.profilePictureUrl &&
                       activeStory?.profilePictureUrl.length > 0
-                      ? "http://localhost:5000/" +
+                      ? BASE_URL +
                       activeStory?.profilePictureUrl
                       : "https://cdn-icons-png.flaticon.com/512/6522/6522516.png"
                   }
