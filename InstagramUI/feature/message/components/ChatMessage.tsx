@@ -20,9 +20,9 @@ export default function ChatMessage({ message, loggedUserId }: ChatMessageProps)
     return (
         <div key={message.id} className={`d-flex mb-2 ${message.senderId === loggedUserId ? 'justify-content-end' : 'justify-content-start'}`}>
             <div className={`p-2 rounded-3 ${message.senderId === loggedUserId ? 'bg-primary text-white'
-                : 'bg-light border'}`} style={{ maxWidth: '70%' }}>
+                : 'bg-light border text-dark'}`} style={{ maxWidth: '70%' }}>
                 {message.storyId ?
-                    <Link className="text-decoration-none text-body"
+                    <Link className="text-decoration-none text-dark"
                         href={(isActive ? `/stories/${message.receiverName}/${message.storyId}` : "#")}>
                         <span style={{ color: "rgba(35,35,35,0.8" }}>{message.content.substring(0, message.content.indexOf(":") + 1)}</span>
                         {" "}

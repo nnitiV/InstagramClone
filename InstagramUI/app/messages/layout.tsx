@@ -41,7 +41,9 @@ export default function SearchPage({
           width={isMobile ? "100vw" : "clamp(300px, 40%, 400px)"}
         />
         <div
-          className={`d-flex justify-content-center align-items-center h-100 w-100  ${!isInsideChat && isMobile ? "d-none" : "d-flex"}`}
+          className={`d-flex justify-content-center align-items-center h-100 w-100  
+            ${!isInsideChat && isMobile ? "d-none" : "d-flex"}`
+          }
         >
           {children}
         </div>

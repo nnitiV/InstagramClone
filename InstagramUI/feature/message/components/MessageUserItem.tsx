@@ -1,3 +1,4 @@
+import { BASE_URL } from "@/constants";
 import { getLoggedUserInfo } from "@/feature/auth/services/auth-service";
 import { LastMessageDto } from "@/types/messages";
 import { formatShortDate } from "@/utils/date";
@@ -29,7 +30,7 @@ export default function MessageUserItem({ message, setSearchText }: MesssageUser
                 data-mdb-ripple-color="light">
                 <div className="p-1 rounded-circle position-relative me-2">
                     <img
-                        src={message.pictureUrl ? "http://localhost:5000/" + message.pictureUrl 
+                        src={message.pictureUrl ? BASE_URL+ message.pictureUrl 
                             : "https://cdn-icons-png.flaticon.com/512/6522/6522516.png"}
                         alt="Story"
                         className="rounded-circle"
