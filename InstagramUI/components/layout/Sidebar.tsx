@@ -18,7 +18,7 @@ export default function Sidebar({ children, picture }: { children: ReactNode, pi
   { url: "#", icon: "plus-square", text: "Create", target: "createModal", isModal: true, isDropdown: true,
     dropdownOptions: ["Post", "Story"], dropdownTargets: ["createModal", "createStory"],
     },
-  { url: "/profile", icon: "person-circle", text: "Profile",target: "", isModal: false  },
+  { url: "/profile", icon: "person-circle", text: "Profile",target: "", isModal: false, picture },
 ];
   return (
     <div className="d-flex vh-100 overflow-hidden">
@@ -34,7 +34,7 @@ export default function Sidebar({ children, picture }: { children: ReactNode, pi
           {SIDEBAR_LINKS.map((item, index) => (
             <SidebarItem key={index} url={item.url} iconName={item.icon} text={item.text} 
             targetModal={item.target} isModal={item.isModal} isDropdown={item.isDropdown} dropdownOptions={item.dropdownOptions} 
-            dropdownTargets={item.dropdownTargets}/>
+            dropdownTargets={item.dropdownTargets} picture={item.picture}/>
           ))}
         </ul>
 
