@@ -69,6 +69,12 @@ export default function CreatePostModal() {
     setSelectedFiles([]);
   };
   const removeImage = (indexToRemove: number) => {
+    const urlToDelete = previewUrls[indexToRemove];
+
+    if (urlToDelete.startsWith("blob:")) {
+      URL.revokeObjectURL(urlToDelete);
+    }
+
     setPreviewUrls((prev) =>
       prev.filter((_, index) => index !== indexToRemove),
     );

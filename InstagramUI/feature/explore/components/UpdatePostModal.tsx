@@ -97,6 +97,12 @@ export default function UpdatePostModal({ onClose, username, postToUpdate, setPo
     };
 
     const removeImage = (indexToRemove: number) => {
+      const urlToDelete = previewUrls[indexToRemove];
+
+      if (urlToDelete.startsWith("blob:")) {
+        URL.revokeObjectURL(urlToDelete);
+      }
+
       setPreviewUrls((prev) =>
         prev.filter((_, index) => index !== indexToRemove),
       );
