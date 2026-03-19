@@ -5,6 +5,3 @@ export type PostToSave = {
     contentUrls: string[];
 }
 
-export type StoryToSave = {
-    file: File;
-}

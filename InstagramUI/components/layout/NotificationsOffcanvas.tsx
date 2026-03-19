@@ -1,20 +1,11 @@
 "use client";
-import { checkFollowStatus } from "@/feature/profile/services/profile.service";
 import { fetchNotifications } from "@/services/notification.service";
 import { useNotificationStore } from "@/stores/useNotificationStore";
-import { NotificationType } from "@/types/notification";
-import { formatDistanceToNow } from "date-fns";
-import { ptBR } from "date-fns/locale";
-import Link from "next/link";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo } from "react";
 import FollowItem from "./FollowItem";
-export interface Notification {
-  id: number;
-  username: string;
-  profilePictureUrl: string; // Adicionei pois você precisará para o <img>
-  timestamp: string; // ISO String do C# (ex: "2026-02-24T18:00:00Z")
-  followedUserId: number | null; // ID do usuário se você já o segue, senão null
-}
+import { NotificationType } from "@/types/notification";
+
+// TODO: Sync follow status globally via Zustand
 
 export default function NotificationsOffcanvas() {
   const notifications = useNotificationStore((state) => state.notifications);
@@ -29,29 +20,30 @@ export default function NotificationsOffcanvas() {
     getNotifications();
   }, [setNotifications]);
 
-  const todayFollows = useMemo(() => {
-    const today = new Date().toDateString();
-    return notifications.filter(
-      (n) => new Date(n.createdAt).toDateString() === today,
-    );
-  }, [notifications]);
-  const earlier = useMemo(() => {
-    const today = new Date().toDateString();
-    return notifications.filter(
-      (n) => new Date(n.createdAt).toDateString() !== today,
-    );
-  }, [notifications]);
+  const { today, earlier } = useMemo(() => {
+    const todayDateStr = new Date().toDateString();
+    
+    const grouped = {
+      today: [] as NotificationType[],
+      earlier: [] as NotificationType[],
+    };
 
-  const checkFollow = (followId: number) => {
-    return checkFollowStatus(followId).then((result) => {
-      return result;
+    // Percorremos o array apenas UMA vez
+    notifications.forEach((n) => {
+      if (new Date(n.createdAt).toDateString() === todayDateStr) {
+        grouped.today.push(n);
+      } else {
+        grouped.earlier.push(n);
+      }
     });
-  };
 
+    return grouped;
+  }, [notifications]);
   
   return (
     <div
       className="offcanvas offcanvas-start px-lg-3 p-3 col col-12 col-md-6"
+      style={{ borderRadius: "0 20px 20px 0" }}
       tabIndex={-1}
       id="notificationsOffset"
       aria-labelledby="notificationsOffsetLabel"
@@ -74,10 +66,10 @@ export default function NotificationsOffcanvas() {
           </div>
         ) : (
           <>
-            {todayFollows.length > 0 && (
+            {today.length > 0 && (
               <>
                 <h1 className="mt-4 fw-bold fs-5 p-0 w-100">Today</h1>
-                {todayFollows.map((todayFollow) => (
+                {today.map((todayFollow) => (
                    <FollowItem key={todayFollow.id} follow={todayFollow} />
                 ))}
               </>

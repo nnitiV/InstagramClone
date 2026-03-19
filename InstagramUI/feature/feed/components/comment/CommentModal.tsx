@@ -12,7 +12,7 @@ import { BASE_URL } from "@/constants";
 type CommentModalProps = {
     post: Post;
     onClose: () => void;
-    goToUser: (userId: number) => Promise<never>;
+    goToUser: (userId: number) => Promise<void>
 };
 
 export default function CommentModal({ post, onClose, goToUser }: CommentModalProps) {

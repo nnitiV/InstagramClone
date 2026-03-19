@@ -1,4 +1,3 @@
-import SearchOffcanvas from "@/components/layout/SearchOffcanvas";
 import Link from "next/link";
 
 export default function EmptyPost() {
@@ -13,16 +12,14 @@ export default function EmptyPost() {
         </div>
         <h2 className="fw-light mb-2">Welcome to Instagram</h2>
         <p className="text-muted mb-4" style={{ maxWidth: "350px" }}>
-          When you follow people, you'll see the photos and videos they post
-          here.
+          When you follow people, you will see their photos and videos here.
         </p>
-        <div className="d-grid gap-2 col-10 col-sm-6 col-md-4" style={{ maxWidth: "15vw" }}>
-          <Link href="#" className="btn btn-primary btn-sm fw-semibold" data-bs-target="#searchOffcanvas" data-bs-toggle="offcanvas">
+        <div className="d-grid gap-2 col-10 col-sm-6 col-md-4">
+          <a href="#" className="btn btn-primary btn-sm fw-semibold" data-bs-target="#searchOffcanvas" data-bs-toggle="offcanvas">
             Find People to Follow
-          </Link>
+          </a>
         </div>
       </div>
-      <SearchOffcanvas />
     </>
   );
 }

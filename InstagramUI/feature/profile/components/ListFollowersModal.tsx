@@ -1,9 +1,9 @@
-import { useDebounce } from "@/components/layout/SearchOffcanvas";
 import { Follower, UserProfile } from "@/types/user";
 import { useEffect, useState } from "react";
 import { getFollowersList, getFollowingList } from "../services/profile.service";
 import Link from "next/link";
 import { BASE_URL } from "@/constants";
+import { useDebounce } from "@/hooks/useDebounce";
 
 type ListFollowersModalProps = {
     users: Follower[];

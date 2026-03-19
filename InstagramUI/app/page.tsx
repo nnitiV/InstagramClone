@@ -5,28 +5,19 @@ import Stories from "@/feature/feed/components/story/Stories";
 import { getPostsFeed, getStories } from "@/feature/feed/services/feed.service";
 
 export default async function Home() {
-  const [stories, posts] = await Promise.all([
-    getStories(),
-    getPostsFeed()
-  ]);
+  const [stories, posts] = await Promise.all([getStories(), getPostsFeed()]);
   return (
-    <>
-      <div className="container-fluid mt-3">
-        <div className="row justify-content-center">
-          <div className="col-12 col-md-10 col-lg-8">
-            {stories.stories.length > 0 ? (
-              <Stories serverStories={stories.stories} />
-            ) : (
-              <EmptyStory />
-            )}
-            {posts.length <= 0 ?
-              <EmptyPost />
-              :
-              <Posts posts={posts} />
-            }
-          </div>
+    <div className="container-fluid mt-3">
+      <div className="row justify-content-center">
+        <div className="col-12 col-md-10 col-lg-8" style={{ maxWidth: "730px" }}>
+          {stories.stories.length > 0 ? (
+            <Stories serverStories={stories.stories} />
+          ) : (
+            <EmptyStory />
+          )}
+          {posts.length <= 0 ? <EmptyPost /> : <Posts posts={posts} />}
         </div>
       </div>
-    </>
+    </div>
   );
 }

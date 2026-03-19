@@ -1,9 +1,10 @@
+"use client";
 import { uploadFile } from "@/feature/auth/services/auth-service";
 import { createPost } from "@/services/post.service";
 import { usePostStore } from "@/stores/usePostStore";
 import { Post } from "@/types/feed";
 import { PostToSave } from "@/types/post";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 export default function CreatePostModal() {
   const addPost = usePostStore((state) => state.addPost);
@@ -12,6 +13,10 @@ export default function CreatePostModal() {
   const [caption, setCaption] = useState<string>("");
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const closeBtnRef = useRef<HTMLButtonElement>(null);
+
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -22,6 +27,9 @@ export default function CreatePostModal() {
           return newFiles;
         });
         setPreviewUrls((prev) => {
+          if (prev[editIndex].startsWith("blob:")) {
+            URL.revokeObjectURL(prev[editIndex]);
+          }
           const newUrls = [...prev];
           newUrls[editIndex] = URL.createObjectURL(file);
           return newUrls;
@@ -32,6 +40,7 @@ export default function CreatePostModal() {
         setPreviewUrls((prev) => [...prev, URL.createObjectURL(file)]);
       }
     }
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const handlePostCreation = async () => {
@@ -61,12 +70,16 @@ export default function CreatePostModal() {
           contentUrls: [res.post.contentUrl],
         } as Post);
       }
-      document.getElementById("discardChanges")?.click();
+      handleDiscard();
+      closeBtnRef.current?.click();
     }
     setLoading(false);
   };
 
-  const discardPost = () => {
+  const handleDiscard = () => {
+    previewUrls.forEach(url => {
+        if (url.startsWith("blob:")) URL.revokeObjectURL(url);
+    });
     setCaption("");
     setPreviewUrls([]);
     setSelectedFiles([]);
@@ -126,7 +139,7 @@ export default function CreatePostModal() {
                   style={{ height: "250px" }}
                   onClick={() => {
                     setEditIndex(null);
-                    document.getElementById("upload-image-label")?.click();
+                    fileInputRef.current?.click();
                   }}
                 >
                   <img
@@ -214,6 +227,7 @@ export default function CreatePostModal() {
                   id="post-upload"
                   className="d-none"
                   accept="image/*,video/*"
+                  ref={fileInputRef}
                   key={previewUrls.length}
                   onChange={handleImageChange}
                 />
@@ -247,8 +261,9 @@ export default function CreatePostModal() {
               type="button"
               className="btn btn-secondary"
               id="discardChanges"
+              ref={closeBtnRef}
               data-bs-dismiss="modal"
-              onClick={discardPost}
+              onClick={handleDiscard}
             >
               Discard
             </button>

@@ -1,21 +1,10 @@
 "use client";
 import { BASE_URL } from "@/constants";
+import { useDebounce } from "@/hooks/useDebounce";
 import { searchUsers } from "@/services/search.service";
 import { UserProfile } from "@/types/user";
 import Link from "next/link";
 import { useEffect, useState } from "react";
-
-export function useDebounce<T>(value: T, delay: number) {
-    const [debounceValue, setDebounceValue] = useState<T>(value);
-
-    useEffect(() => {
-        const handler = setTimeout(() => {
-            setDebounceValue(value);
-        }, delay);
-        return () => clearTimeout(handler);
-    }, [value, delay]);
-    return debounceValue;
-}
 
 export default function SearchOffcanvas() {
     const [searchText, setSearchText] = useState<string>("");
@@ -24,15 +13,29 @@ export default function SearchOffcanvas() {
     const debounceSearch = useDebounce(searchText, 500);
 
     useEffect(() => {
+        if (!debounceSearch.trim()) {
+            setUsers([]);
+            setIsSearching(false);
+            return;
+        }
+        let isCurrent = true;
         setIsSearching(true);
         const fetchUserList = async () => {
-            if (debounceSearch) {
+            try {
                 const usersRes = await searchUsers(debounceSearch);
-                setUsers(usersRes.result);
-                setIsSearching(false);
+                if (isCurrent) {
+                    setUsers(usersRes.result || []);
+                }
+            } catch (error) {
+                console.error("Search failed", error);
+            } finally {
+                if (isCurrent) setIsSearching(false);
             }
-        }
+        };
+
         fetchUserList();
+
+        return () => { isCurrent = false; }
     }, [debounceSearch]);
 
     return (

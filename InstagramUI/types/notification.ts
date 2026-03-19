@@ -12,3 +12,11 @@ export interface NotificationType {
   postId?: number; 
   storyId?: number;
 }
+
+export interface AppNotification {
+  id: number;
+  username: string;
+  profilePictureUrl: string;
+  timestamp: string;
+  followedUserId: number | null;
+}

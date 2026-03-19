@@ -1,10 +1,7 @@
 import { BASE_URL } from "@/constants";
-import {
-  checkFollowStatus,
-  followUser,
-  unfollowUser,
-} from "@/feature/profile/services/profile.service";
+import { checkFollowStatus, followUser, unfollowUser } from "@/feature/profile/services/profile.service";
 import { NotificationType } from "@/types/notification";
+import { formatShortDate } from "@/utils/date";
 import { formatDistanceToNow, isValid } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import Link from "next/link";
@@ -15,43 +12,37 @@ type FollowItemProps = {
 };
 
 export default function FollowItem({ follow }: FollowItemProps) {
-  const [isFollowing, setIsFollowing] = useState<boolean | null>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isFollowing, setIsFollowing] = useState<boolean | null>(null);
   useEffect(() => {
+    let isMounted = true; 
+    
     const checkStatus = async () => {
-      const following = await checkFollowStatus(follow.triggerById);
-      setIsFollowing(following ? following.isFollowing : null);
+      try {
+        const following = await checkFollowStatus(follow.triggerById);
+        if (isMounted) setIsFollowing(following ? following.isFollowing : false);
+      } catch (error) {
+        if (isMounted) setIsFollowing(false);
+      }
     };
     checkStatus();
-  }, []);
-  const formatShortDate = (date: string | Date) => {
-    const d = new Date(date);
 
-    if (!date || !isValid(d)) return "agora";
-
-    let distance = formatDistanceToNow(d, { locale: ptBR });
-
-    return distance
-      .replace("aproximadamente ", "")
-      .replace("cerca de ", "")
-      .replace("menos de um minuto", "agora")
-      .replace("há ", "")
-      .replace(/ minutos?/g, "min") 
-      .replace(/ horas?/g, "h")
-      .replace(/ dias?/g, "d")
-      .replace(/ meses?/g, "mes")
-      .replace(/ anos?/g, "an");
-  };
+    return () => { isMounted = false; };
+  }, [follow.triggerById]);
   const triggerFollow = () => {
+    if (isFollowing === null || isLoading) return;
+    setIsLoading(true);
     const doFollow = async () => {
       if (!isFollowing) {
-        await followUser(follow.triggerById);
         setIsFollowing(true);
+        await followUser(follow.triggerById);
       } else {
-        await unfollowUser(follow.triggerById);
         setIsFollowing(false);
+        await unfollowUser(follow.triggerById);
       }
     };
     doFollow();
+    setIsLoading(false);
   };
   return (
     <div
@@ -101,8 +92,9 @@ export default function FollowItem({ follow }: FollowItemProps) {
       {isFollowing != null ? isFollowing ? (
         <button
           type="button"
-          className="btn btn- ms-3"
+          className="btn border ms-3"
           style={{ height: "fit-content", fontSize: ".75em" }}
+          disabled={isLoading}
           onClick={triggerFollow}
         >
           Unfollow
@@ -112,6 +104,7 @@ export default function FollowItem({ follow }: FollowItemProps) {
           type="button"
           className="btn btn-primary ms-1"
           style={{ height: "fit-content", fontSize: ".75em" }}
+          disabled={isLoading}
           onClick={triggerFollow}
         >
           Follow back
