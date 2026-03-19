@@ -1,10 +1,9 @@
 "use client";
-import { FormEvent, useEffect, useState } from "react";
+import { FormEvent, useState } from "react";
 import { handleRegister } from "../services/auth-service";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { RegisterUser } from "../../../types/auth";
-import { register } from "module";
 
 export default function Register() {
     const route = useRouter();
@@ -41,7 +40,7 @@ export default function Register() {
             setIsRegistering(false);
             return;
         }
-        if (registerInfo.password.toLocaleLowerCase() != registerInfo.confirmPassword.toLocaleLowerCase()) {
+        if (registerInfo.password != registerInfo.confirmPassword) {
             setError("Passwords doesn't match!");
             setIsRegistering(false);
             return;
@@ -57,59 +56,62 @@ export default function Register() {
         }
     }
     return (
-        <form className="col-11 col-md-8 col-lg-5 shadow rounded-3 p-5 row g-3 my-4" onSubmit={handleSubmit}>
+        <form className="col-11 col-md-8 col-lg-5 shadow bg-body rounded-3 p-5 row g-3 my-4" onSubmit={handleSubmit}>
             <h1 className="col-12 text-center">Register</h1>
-            {error && <div className="alert alert-danger">{error}</div>}
-            <div className="mb-3 col-12">
+            {error && <div className="col-12 alert alert-danger">{error}</div>}
+            <div className="col-12">
                 <label htmlFor="email" className="form-label">Email</label>
-                <input type="text" className="form-control" id="email" aria-describedby="emailHelp" value={registerInfo.email} onChange={(e) => setRegisterInfo(prev => ({ ...prev, email: e.target.value }))} />
+                <input autoComplete="email" name="email" type="email" className="form-control" id="email" aria-describedby="emailHelp" value={registerInfo.email} onChange={(e) => setRegisterInfo(prev => ({ ...prev, email: e.target.value }))} />
             </div>
-            <div className="mb-3 col-lg-6 col-12">
+            <div className="col-lg-6 col-12">
                 <label className="form-label" htmlFor="autoSizingInputGroup">Username</label>
                 <div className="input-group">
                     <div className="input-group-text">@</div>
-                    <input type="text" className="form-control" id="autoSizingInputGroup" placeholder="Username"
+                    <input autoComplete="username" name="username" type="text" className="form-control" id="autoSizingInputGroup" placeholder="Username"
                         value={registerInfo.username} onChange={(e) => setRegisterInfo(prev => ({ ...prev, username: e.target.value }))}
                     />
                 </div>
             </div>
-            <div className="mb-3 col-lg-6 col-12">
+            <div className="col-lg-6 col-12">
                 <label htmlFor="name" className="form-label">Name</label>
-                <input type="text" className="form-control" id="name" aria-describedby="nameHelp"
+                <input autoComplete="name" name="name" type="text" className="form-control" id="name" aria-describedby="nameHelp"
                     value={registerInfo.name} onChange={(e) => setRegisterInfo(prev => ({ ...prev, name: e.target.value }))}
                 />
             </div>
-            <div className="mb-3 col-lg-6 col-12">
+            <div className="col-lg-6 col-12">
                 <label htmlFor="password" className="form-label">Password</label>
-                <input type="password" className="form-control" id="password"
+                <input autoComplete="password" name="new-password" type="password" className="form-control" id="password"
                     value={registerInfo.password} onChange={(e) => setRegisterInfo(prev => ({ ...prev, password: e.target.value }))}
                 />
             </div>
-            <div className="mb-3 col-lg-6 col-12">
+            <div className="col-lg-6 col-12">
                 <label htmlFor="confirmPassword" className="form-label">Confirm Password</label>
-                <input type="password" className="form-control" id="confirmPassword"
+                <input autoComplete="confirmPassword" name="confirmPassword" type="password" className="form-control" id="confirmPassword"
                     value={registerInfo.confirmPassword} onChange={(e) => setRegisterInfo(prev => ({ ...prev, confirmPassword: e.target.value }))}
                 />
             </div>
-            <div className="mb-3 col-12">
-                <label className="form-label">Select Date</label>
+            <div className="col-12">
+                <label className="form-label" htmlFor="dateOfBirth">Select your birth day</label>
                 {/* The 'form-control' class makes it look like a Bootstrap input */}
-                <input type="date" className="form-control" value={registerInfo.dateOfBirth} onChange={(e) => setRegisterInfo(prev => ({ ...prev, dateOfBirth: e.target.value }))} />
+                <input autoComplete="bday" name="dateOfBirth" id="dateOfBirth" type="date" className="form-control" value={registerInfo.dateOfBirth}
+                onChange={(e) => setRegisterInfo(prev => ({ ...prev, dateOfBirth: e.target.value }))} />
             </div>
-            <div className="col-12 d-flex">
-                {isRegistering ?
-                    <button className="btn btn-primary m-auto pt-2 pb-2" type="button" style={{ "maxWidth": "10vw", "minWidth": "225px" }} disabled>
-                        <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
-                        <span className="visually-hidden" role="status">Loading...</span>
-                    </button>
-                    :
-                    <button type="submit" className="btn btn-primary m-auto pt-2 pb-2" style={{ "maxWidth": "10vw", "minWidth": "225px" }}>Register</button>
-                }
+            <div className="col-10 col-sm-8 col-md-6 mx-auto mt-4">
+                <button className="btn btn-primary m-auto pt-2 pb-2 w-100" type="submit" disabled={isRegistering}>
+                    {isRegistering ?
+                        <>
+                            <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                            <span className="visually-hidden" role="status">Loading...</span>
+                        </>
+                        :
+                        <>Register</>
+                    }
+                </button>
             </div>
             <div className="col-12 d-flex flex-column align-items-center">
                 <hr className="m-auto my-3 w-100" />
                 <p className="text-secondary">Already have an account?</p>
-                <Link href="/login" className="btn btn-secondary m-auto pt-2 pb-2 w-25" style={{ "maxWidth": "10vw", "minWidth": "225px" }}>Login</Link>
+                <Link href="/login" className="btn btn-outline-primary m-auto pt-2 pb-2 w-100" style={{ "maxWidth": "10vw", "minWidth": "225px" }}>Login</Link>
             </div>
         </form>
     )

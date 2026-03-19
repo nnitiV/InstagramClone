@@ -1,6 +1,8 @@
 "use client";
 import { BASE_URL } from '@/constants';
 import { useState, useRef, useEffect, useCallback } from 'react';
+import VolumeIcon from './VolumeIcon';
+import { PlayOverlay } from './PlayOverlay';
 
 interface PostMediaProps {
   contentUrls: string[];
@@ -46,6 +48,7 @@ export default function PostMedia({
     setIsMuted(newMutedState);
     if (typeof window !== 'undefined') {
       localStorage.setItem('globalVideoMute', newMutedState.toString());
+      window.dispatchEvent(new Event("localVideoMuteChanged"));
     }
     videoRefs.current.forEach(video => {
       if (video) video.muted = newMutedState;
@@ -97,7 +100,7 @@ export default function PostMedia({
     if (hasSelectedPost && !isModal) {
       currentVideo.pause();
     } else if (isPlaying) {
-      currentVideo.play().catch(() => {});
+      currentVideo.play().catch(() => { });
     } else {
       currentVideo.pause();
     }
@@ -116,46 +119,30 @@ export default function PostMedia({
       if (e.key === 'globalVideoMute' && typeof window !== 'undefined') {
         const newMuteState = e.newValue !== 'false';
         setIsMuted(newMuteState);
-        videoRefs.current.forEach(video => {
-          if (video) video.muted = newMuteState;
-        });
       }
     };
 
-    const checkStorage = () => {
-      if (typeof window !== 'undefined') {
-        const stored = localStorage.getItem('globalVideoMute');
-        if (stored !== null && stored !== isMuted.toString()) {
-          const muteState = stored !== 'false';
-          setIsMuted(muteState);
-          videoRefs.current.forEach(video => {
-            if (video) video.muted = muteState;
-          });
-        }
-      }
+    const handleLocalChange = () => {
+      const stored = localStorage.getItem("globalVideoMute");
+      if (stored != null) setIsMuted(stored !== 'false');
     };
 
     window.addEventListener('storage', handleStorageChange);
-    const interval = setInterval(checkStorage, 100);
+    window.addEventListener('localVideoMuteChanged', handleLocalChange);
     return () => {
       window.removeEventListener('storage', handleStorageChange);
-      clearInterval(interval);
+      window.removeEventListener('localVideoMuteChanged', handleLocalChange);
     };
-  }, [isMuted]);
+  }, []);
 
   // Track carousel slide changes
   useEffect(() => {
-    const handleSlide = (e: Event) => {
-      const carousel = (window as any).bootstrap?.Carousel?.getInstance(carouselRef.current!);
-      if (carousel && carousel._activeElement) {
-        const newIndex = Array.from(carouselRef.current!.querySelectorAll('.carousel-item')).indexOf(carousel._activeElement);
-        if (newIndex !== -1) {
-          setActiveIndex(newIndex);
-          videoRefs.current.forEach((video, i) => {
-            if (video && i !== newIndex) video.pause();
-          });
-        }
-      }
+    const handleSlide = (e: any) => {
+      const newIndex = e.to;
+      setActiveIndex(newIndex);
+      videoRefs.current.forEach((video, i) => {
+        if (video && i !== newIndex) video.pause();
+      });
     };
 
     const carousel = carouselRef.current;
@@ -168,32 +155,6 @@ export default function PostMedia({
   if (!contentUrls?.length) {
     return <div className="w-100 h-100 d-flex align-items-center justify-content-center fs-6">No media</div>;
   }
-
-  const VolumeIcon = () => (
-    <span className="d-flex align-items-center justify-content-center w-100 h-100">
-      {isMuted ? (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
-          <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02z" />
-          <path d="M4.5 5.5L17.5 18.5M19.5 5.5L6.5 18.5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none" />
-        </svg>
-      ) : (
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
-          <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
-        </svg>
-      )}
-    </span>
-  );
-
-  const PlayOverlay = () => {
-    if (isPlaying || (!isInViewport && !isModal)) return null;
-    return (
-      <div className="position-absolute top-50 start-50 translate-middle shadow" style={{ opacity: 0.8, pointerEvents: 'none', zIndex: 10 }}>
-        <svg width="64" height="64" fill="currentColor" viewBox="0 0 16 16">
-          <path d="M10.804 8 5 4.633v6.734L10.804 8zm.792-.696a.802.802 0 0 1 0 1.392l-6.363 3.692C4.713 12.69 4 12.345 4 11.692V4.308c0-.653.713-.998 1.233-.696l6.363 3.692z" />
-        </svg>
-      </div>
-    );
-  };
 
   // Single media
   if (contentUrls.length === 1) {
@@ -213,14 +174,14 @@ export default function PostMedia({
               onClick={togglePlay}
               style={{ cursor: 'pointer' }}
             />
-            <PlayOverlay />
+            <PlayOverlay isPlaying={isPlaying} isModal={isModal} isInViewport={isInViewport} />
             <button
               className="position-absolute btn p-0 bg-body bg-opacity-75 rounded-circle border-0 shadow-lg"
               style={{ width: '48px', height: '48px', right: '20px', bottom: '20px', zIndex: 10 }}
               onClick={toggleMute}
               title={isMuted ? "Ativar som" : "Silenciar"}
             >
-              <VolumeIcon />
+              <VolumeIcon isMuted={isMuted} />
             </button>
           </>
         ) : (
@@ -232,15 +193,15 @@ export default function PostMedia({
 
   // Carousel
   return (
-    <div id={carouselId} className="carousel slide h-100 w-100 position-relative" data-bs-interval="false" data-bs-wrap="true" 
-    ref={carouselRef}>
+    <div id={carouselId} className="carousel slide h-100 w-100 position-relative" data-bs-interval="false" data-bs-wrap="true"
+      ref={carouselRef}>
       <button
         className="position-absolute btn p-0 bg-body bg-opacity-75 rounded-circle border-0 shadow-lg"
         style={{ width: '48px', height: '48px', right: '20px', bottom: '20px', zIndex: 10 }}
         onClick={toggleMute}
         title={isMuted ? "Ativar som" : "Silenciar"}
       >
-        <VolumeIcon />
+        <VolumeIcon isMuted={isMuted} />
       </button>
 
       {/* Indicators */}
@@ -281,7 +242,7 @@ export default function PostMedia({
                   onClick={togglePlay}
                   style={{ cursor: 'pointer' }}
                 />
-                <PlayOverlay />
+                <PlayOverlay isPlaying={isPlaying} isModal={isModal} isInViewport={isInViewport} />
               </div>
             ) : (
               <img

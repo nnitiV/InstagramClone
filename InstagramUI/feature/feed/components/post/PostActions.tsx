@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getPostLikeCount, likePost, unlikePost } from "../../services/feed.service";
+import { useState } from "react";
+import { likePost, unlikePost } from "../../services/feed.service";
 
 type PostActionsProps = {
     postId: number;
@@ -25,19 +25,28 @@ export default function PostActions({
     const [isAnimating, setIsAnimating] = useState(false);
 
     const handleLike = async () => {
-        if (!isLiked) {
-            const res = await likePost(postId);
-            if (res) {
-                setIsLiked(true);
-                setLikeCount(prev => prev + 1);
+        const previousIsLiked = isLiked;
+        setIsLiked(!previousIsLiked);
+        setLikeCount(prev => previousIsLiked ? prev - 1 : prev + 1);
+
+        if (!previousIsLiked) {
+            setIsAnimating(true);
+            setTimeout(() => setIsAnimating(false), 300);
+        }
+
+        try {
+            if (!previousIsLiked) {
+                await likePost(postId); 
+            } else {
+                await unlikePost(postId);
+            }
+        } catch (error) {
+            setIsLiked(previousIsLiked);
+            setLikeCount(prev => previousIsLiked ? prev + 1 : prev - 1);
+
+            if (previousIsLiked) {
                 setIsAnimating(true);
                 setTimeout(() => setIsAnimating(false), 300);
-            }
-        } else {
-            const res = await unlikePost(postId);
-            if (res) {
-                setIsLiked(false);
-                setLikeCount(prev => prev - 1);
             }
         }
     };
@@ -49,7 +58,7 @@ export default function PostActions({
     return (
         <>
             <div className="d-flex align-items-center mt-2">
-                <div className="d-flex align-items-center me-3 cursor-pointer" onClick={handleLike}>
+                <button className="btn btn-link p-0 border-0 text-body text-decoration-none" onClick={handleLike}>
                     <i
                         className={`bi ${isLiked ? "bi-heart-fill text-danger" : "bi-heart"} fs-4`}
                         style={{
@@ -60,10 +69,10 @@ export default function PostActions({
                     {likeCount > 0 && (
                         <span className="ms-2 fw-semibold">{likeCount}</span>
                     )}
-                </div>
-                <div className="d-flex align-items-center me-3 cursor-pointer" onClick={onCommentClick}>
+                </button>
+                <button className="btn btn-link p-0 border-0 text-body text-decoration-none" onClick={onCommentClick}>
                     <i className="bi bi-chat fs-4"></i>{commentCount > 0 && commentCount}
-                </div>
+                </button>
                 <div className="cursor-pointer">
                     <i className="bi bi-send fs-4"></i>
                 </div>

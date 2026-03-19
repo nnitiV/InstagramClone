@@ -1,14 +1,9 @@
 "use client";
 import { Post } from "@/types/feed";
-import PostMedia from "./PostMedia";
-import PostActions from "./PostActions";
 import { useState } from "react";
 import CommentModal from "../comment/CommentModal";
 import PostPopUp from "./PostPopUp";
 import { getUserById } from "@/feature/profile/services/profile.service";
-import { redirect } from "next/navigation";
-import { formatShortDate } from "@/utils/date";
-import { BASE_URL } from "@/constants";
 import { useRouter } from "next/router";
 import PostItem from "./PostItem";
 

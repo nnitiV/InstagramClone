@@ -59,8 +59,9 @@ export default function CommentModal({ post, onClose, goToUser }: CommentModalPr
 
     const addReply = useCallback(async (parentId: number, text: string) => {
         const userInfo = await getLoggedUserInfo();
+        const tempId = Date.now();
         const newComment: PostComment = {
-            id: Date.now(),
+            id: tempId,
             text,
             postId: post.id,
             userId: userInfo.id,
@@ -69,30 +70,39 @@ export default function CommentModal({ post, onClose, goToUser }: CommentModalPr
             parentCommentId: null,
             createdAt: new Date().toISOString()
         };
-        if (await addPostComments(newComment)) {
-
-
-            const newCommentTree: PostCommentTree = {
-                comment: newComment,
-                replies: []
-            };
-
-            setTree(prevTree => {
-                const newTree = JSON.parse(JSON.stringify(prevTree));
-                insertComment(newTree, parentId, newCommentTree);
-                setComments(prevComments => [...prevComments, newComment]);
-                return newTree;
-            });
-
-            setReplyTarget(null);
-            setReplyText('');
+        const newCommentTree: PostCommentTree = {
+            comment: newComment,
+            replies: []
+        };
+        const previousReplyText = text;
+        const previousReplyTarget = parentId;
+        setTree(prevTree => {
+            const newTree = structuredClone(prevTree);
+            insertComment(newTree, parentId, newCommentTree);
+            setComments(prevComments => [...prevComments, newComment]);
+            return newTree;
+        });
+        setComments(prev => [...prev, newComment]);
+        setReplyTarget(null);
+        setReplyText('');
+        try {
+            await addPostComments(newComment)
+        } catch(error) {
+            setReplyText(previousReplyText);
+            setReplyTarget(previousReplyTarget);
+            setComments(prev => {
+                const cleanedComments = prev.filter(c => c.id != tempId);
+                setTree(buildCommentTree(cleanedComments));
+                return cleanedComments;
+            })
         }
-    }, [post.id, post.authorProfilePicture, insertComment]);
+    }, [post.id, post.authorProfilePicture, insertComment, buildCommentTree]);
 
     const addTopLevelComment = useCallback(async (text: string) => {
         const userInfo = await getLoggedUserInfo();
+        const tempId = Date.now();
         const newComment: PostComment = {
-            id: Date.now(),
+            id: tempId,
             text,
             postId: post.id,
             userId: userInfo.id,
@@ -101,11 +111,15 @@ export default function CommentModal({ post, onClose, goToUser }: CommentModalPr
             parentCommentId: null,
             createdAt: new Date().toISOString()
         };
-        if (await addPostComments(newComment)) {
-
-            setComments(prev => [...prev, newComment]);
-            setTree(buildCommentTree([...comments, newComment]));
-            setNewCommentText('');
+        setComments(prev => [...prev, newComment]);
+        setTree(buildCommentTree([...comments, newComment]));
+        setNewCommentText('');
+        try {
+            await addPostComments(newComment)
+        } catch(error) {
+            setComments(prev => prev.filter(c => c.id != tempId));
+            setTree(buildCommentTree(comments.filter(c => c.id != tempId)));
+            setNewCommentText(text);
         }
     }, [post.id, post.authorProfilePicture, comments, buildCommentTree]);
 
@@ -122,21 +136,6 @@ export default function CommentModal({ post, onClose, goToUser }: CommentModalPr
         };
         load();
     }, [post.id, buildCommentTree]);
-
-    useEffect(() => {
-        if (typeof window !== 'undefined' && mediaContainerRef.current) {
-            const carouselElement = mediaContainerRef.current.querySelector('.carousel');
-            if (carouselElement && !carouselElement.classList.contains('slide')) {
-                const bootstrap = (window as any).bootstrap;
-                if (bootstrap && bootstrap.Carousel) {
-                    new bootstrap.Carousel(carouselElement, {
-                        interval: false,
-                        wrap: true
-                    });
-                }
-            }
-        }
-    }, []);
 
     return (
         <>
@@ -178,23 +177,23 @@ export default function CommentModal({ post, onClose, goToUser }: CommentModalPr
                             <div className="col-12 col-md-5 d-flex flex-column flex-grow-1 flex-md-grow-0">
                                 {/* Header */}
                                 <div className="p-3 border-bottom d-flex align-items-center justify-content-between">
-                                    <div className="d-flex align-items-center" onClick={() => goToUser(post.userId)}>
+                                    <button className="d-flex align-items-center" onClick={() => goToUser(post.userId)}>
                                         <img
                                             src={post.authorProfilePicture ? BASE_URL + post.authorProfilePicture : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                                             className="rounded-circle border me-2"
                                             style={{ width: "32px", height: "32px", objectFit: "cover" }}
                                         />
                                         <span className="fw-bold small">{post.authorName}</span>
-                                    </div>
+                                    </button>
                                     <button className="btn-close small" onClick={onClose}></button>
                                 </div>
 
                                 {/* Scrollable comments area */}
                                 <div className="flex-grow-1 overflow-y-auto p-3">
                                     {/* Post caption */}
-                                    <div className="d-flex mb-3" onClick={() => goToUser(post.userId)}>
+                                    <button className="d-flex mb-3" onClick={() => goToUser(post.userId)}>
                                         <img
-                                            src={post.authorProfilePicture ? BASE_URL + post.authorProfilePicture : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                                            src={BASE_URL + post.authorProfilePicture || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                                             className="rounded-circle me-2"
                                             style={{ width: "32px", height: "32px", objectFit: "cover" }}
                                         />
@@ -202,7 +201,7 @@ export default function CommentModal({ post, onClose, goToUser }: CommentModalPr
                                             <span className="fw-bold me-2">{post.authorName}</span>
                                             {post.caption}
                                         </p>
-                                    </div>
+                                    </button>
 
                                     {/* Comments tree */}
                                     {tree.length > 0 ? (
@@ -238,7 +237,7 @@ export default function CommentModal({ post, onClose, goToUser }: CommentModalPr
                                             placeholder="Add a comment..."
                                             value={newCommentText}
                                             onChange={(e) => setNewCommentText(e.target.value)}
-                                            onKeyPress={(e) => {
+                                            onKeyDown={(e) => {
                                                 if (e.key === 'Enter' && newCommentText.trim()) {
                                                     addTopLevelComment(newCommentText);
                                                 }

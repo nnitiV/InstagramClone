@@ -86,7 +86,7 @@ export const addPostComments = async (newComment: PostComment) => {
     });
     if (!res.ok) {
         console.error(res);
-        return null;
+        throw new Error("Couldn't save your comment.")
     }
     return await res.json();
 }
@@ -111,7 +111,7 @@ export const likePost = async (postId: number) => {
     });
     if(!res.ok) {
         console.error(res.status);
-        return;
+        throw new Error("Couldn't like the post.");
     }
     return await res.json();
 }
@@ -128,7 +128,7 @@ export const unlikePost = async (postId: number) => {
     });
     if(!res.ok) {
         console.error(res.status);
-        return;
+        throw new Error("Couldn't unlike the post.");
     }
     return await res.json();
 }

@@ -1,10 +1,15 @@
 import Login from "@/feature/auth/components/login-form";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Login • Instagram Clone",
+    description: "Signup to see your friends' photos and videos",
+};
 
 export default function LoginPage() {
     return (
-        <div className="vh-100 d-flex justify-content-center align-items-center">
+        <main className="d-flex justify-content-center align-items-center bg-body-tertiary" style={{minHeight: "100dvh"}}>
             <Login />
-        </div>
+        </main>
     )
 };
-

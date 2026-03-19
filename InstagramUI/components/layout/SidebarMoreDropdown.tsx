@@ -37,7 +37,7 @@ export default function SidebarMoreDropdown({
           <hr className="dropdown-divider" />
         </li>
         <li>
-          <button onClick={handleLogout} className="dropdown-item">
+          <button onClick={handleLogout} className="dropdown-item text-danger">
             Sign out
           </button>
         </li>

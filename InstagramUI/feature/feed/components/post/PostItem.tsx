@@ -13,7 +13,8 @@ type PostItemProps = {
   goToUserProfile: (userId: number) => Promise<void>;
 };
 
-export default function PostItem({ post, index, selectedPost, setSelectedPost, goToUserProfile }: PostItemProps) {
+export default function PostItem({ post, index, selectedPost, 
+  setSelectedPost, goToUserProfile }: PostItemProps) {
   return (
     <div className="border-bottom pb-4 my-3">
       <div className="d-flex align-items-center justify-content-between py-2">
@@ -22,10 +23,7 @@ export default function PostItem({ post, index, selectedPost, setSelectedPost, g
           onClick={() => goToUserProfile(post.userId)}
         >
           <img
-            src={
-              post.authorProfilePicture
-                ? BASE_URL + post.authorProfilePicture
-                : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+            src={BASE_URL + post.authorProfilePicture || "https://cdn-icons-png.flaticon.com/512/149/149071.png"
             }
             alt="User"
             className="rounded-circle border me-2"
