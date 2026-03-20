@@ -1,37 +1,47 @@
 import { Follower, UserProfile } from '@/types/user';
-import {  useState } from 'react';
+import { useState } from 'react';
 import { getFollowersList, getFollowingList } from '../services/profile.service';
 import { BASE_URL } from '@/constants';
 import ListFollowingModal from './ListFollowingModal';
 import ListFollowersModal from './ListFollowersModal';
 
-type HeaderProps = { 
-    isMobile: boolean; 
-    userProfile: UserProfile | null 
+type HeaderProps = {
+    isMobile: boolean;
+    userProfile: UserProfile | null
     postsSize?: number;
 }
 
 export default function Header({ isMobile, userProfile, postsSize }: HeaderProps) {
     const [users, setUsers] = useState<Follower[]>([]);
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const getUsers = async (isFollowersSearch: boolean) => {
-        if (userProfile != null) {
-            let res = null;
+        if (!userProfile) return;
+        setIsLoading(true);
+        setUsers([]);
+        let res = null;
+        try {
             if (isFollowersSearch) {
                 res = await getFollowersList(userProfile.id);
                 setUsers(res.followers);
+
             } else {
                 res = await getFollowingList(userProfile.id);
                 setUsers(res.following);
             }
+        } catch (error) {
+            console.error(error);
+            setUsers([]);
+        } finally {
+            setIsLoading(false);
         }
     }
     return (
         <>
             <div className={`profile-header d-flex align-items-center w-75 mx-auto my-3 ${isMobile && "flex-column"}`}>
                 <img className={`transparent-background-hover-2 rounded-circle me-5 object-fit-cover ${isMobile && "mb-3"}`}
-                    style={{ width: "156px", height: "156px" }} src={userProfile?.profilePictureUrl ? 
-                    BASE_URL + userProfile?.profilePictureUrl :
-                    "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png?20170328184010"} alt="" />
+                    style={{ width: "156px", height: "156px" }} src={userProfile?.profilePictureUrl ?
+                        BASE_URL + userProfile?.profilePictureUrl :
+                        "https://upload.wikimedia.org/wikipedia/commons/8/89/Portrait_Placeholder.png?20170328184010"} alt="" />
                 <div className="user-info">
                     <p className="m-0 p-0 fs-5 fw-bold" style={{ fontSize: ".75rem" }} >{userProfile?.username}</p>
                     <p className="m-0 p-0 mt-1" style={{ fontSize: ".75rem" }} >{userProfile?.name}</p>
@@ -52,8 +62,8 @@ export default function Header({ isMobile, userProfile, postsSize }: HeaderProps
                     </p>
                     <p className="m-0 p-0 my-2 fw-bold" style={{ fontSize: ".75rem" }} >@{userProfile?.username}</p>
                 </div>
-                <ListFollowersModal users={users} userId={userProfile?.id} />
-                <ListFollowingModal users={users} userId={userProfile?.id} />
+                <ListFollowersModal isLoading={isLoading} users={users} />
+                <ListFollowingModal isLoading={isLoading} users={users} />
             </div>
         </>
     )

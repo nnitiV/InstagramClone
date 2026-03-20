@@ -1,5 +1,4 @@
 "use client";
-
 import { BASE_URL } from "@/constants";
 import { getLoggedUserInfo } from "@/feature/auth/services/auth-service";
 import CommentsList from "@/feature/feed/components/comment/CommentList";
@@ -9,7 +8,6 @@ import { addPostComments, getPostComments } from "@/feature/feed/services/feed.s
 import { deletePost } from "@/services/post.service";
 import { usePostStore } from "@/stores/usePostStore";
 import { Post, PostComment, PostCommentTree } from "@/types/feed";
-import { PostToSave } from "@/types/post";
 import { redirect } from "next/navigation";
 import { useEffect, useState, useCallback, SetStateAction, Dispatch } from "react";
 
@@ -179,14 +177,15 @@ export default function ExploreModal({ post, onClose, username, setPostToUpdate 
                             </div>
                             <div className="flex-grow-1 overflow-auto p-3 no-scrollbar" style={{ minHeight: 0 }}>
                                 <div className="d-flex mb-3" onClick={goToUser}>
-                                    <img src={post.authorProfilePicture ? BASE_URL + post.authorProfilePicture : "https://cdn-icons-png.flaticon.com/512/149/149071.png"} className="rounded-circle me-2 object-fit-cover" style={{ width: "32px", height: "32px" }} />
+                                    <img src={BASE_URL + post.authorProfilePicture 
+                                        || "https://cdn-icons-png.flaticon.com/512/149/149071.png"} 
+                                        className="rounded-circle me-2 object-fit-cover" style={{ width: "32px", height: "32px" }} />
                                     <p className="small mb-0">
                                         <span className="fw-bold me-2">{post.authorName}</span>
                                         {post.caption}
                                     </p>
                                 </div>
                                 <hr className="my-2" />
-
                                 {tree.length > 0 ? (
                                     <CommentsList
                                         comments={tree}
@@ -218,7 +217,7 @@ export default function ExploreModal({ post, onClose, username, setPostToUpdate 
                                         placeholder="Add a comment..."
                                         value={newCommentText}
                                         onChange={(e) => setNewCommentText(e.target.value)}
-                                        onKeyPress={(e) => {
+                                        onKeyDown={(e) => {
                                             if (e.key === 'Enter' && newCommentText.trim()) {
                                                 addTopLevelComment(newCommentText);
                                             }
@@ -234,7 +233,6 @@ export default function ExploreModal({ post, onClose, username, setPostToUpdate 
                                     </button>
                                 </div>
                             </div>
-
                         </div>
                     </div>
                 </div>

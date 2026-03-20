@@ -1,43 +1,28 @@
-import { Follower, UserProfile } from "@/types/user";
-import { useEffect, useState } from "react";
-import { getFollowersList, getFollowingList } from "../services/profile.service";
+import { Follower } from "@/types/user";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { BASE_URL } from "@/constants";
 import { useDebounce } from "@/hooks/useDebounce";
 
 type ListFollowersModalProps = {
+    isLoading: boolean;
     users: Follower[];
-    userId: number | undefined
 }
 
-export default function ListFollowersModal({ users, userId }: ListFollowersModalProps) {
+export default function ListFollowersModal({ isLoading, users }: ListFollowersModalProps) {
     const [searchText, setSearchText] = useState<string>("");
-    const [usersList, setUsersList] = useState<Follower[]>([]);
-    const [filteredUsers, setFilteredUsers] = useState<Follower[]>([]);
-    const [isSearching, setIsSearching] = useState<boolean>(false);
     const debounceSearch = useDebounce(searchText, 250);
-    useEffect(() => {
-        setUsersList(users);
-        setFilteredUsers(users);
-    }, [users]);
-
-    useEffect(() => {
-        setIsSearching(true);
-        const searchUsers = async () => {
-            if (debounceSearch.length > 0) {
-                setFilteredUsers(usersList.filter(u => u.username.toLocaleLowerCase().includes(debounceSearch.toLocaleLowerCase())))
-            } else {
-                setFilteredUsers(usersList);
-            }
-        }
-        searchUsers();
-        setIsSearching(false);
-    }, [debounceSearch])
+    const isSearching = debounceSearch !== searchText;
+    const filteredUsers = useMemo(() => {
+        if(!debounceSearch) return users;
+        const lowercaseSearch = debounceSearch.toLocaleLowerCase();
+        return users.filter(u => u.username.toLocaleLowerCase().includes(lowercaseSearch));
+    }, [users, debounceSearch])
+    
     const closeModalManually = () => {
-        const modalEl = document.getElementById('myModal');
+        const modalEl = document.getElementById('listFollowersModal');
         if (modalEl != null) {
             modalEl.classList.remove('show');
-
             modalEl.style.display = 'none';
         }
 
@@ -60,7 +45,14 @@ export default function ListFollowersModal({ users, userId }: ListFollowersModal
                         <button type="button" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div className="modal-body">
-                        {filteredUsers.length <= 0
+                        {isLoading || isSearching ? 
+                            <div className=" w-100 d-flex justify-content-center align-items-center">
+                                <div className="spinner-border" role="status">
+                                    <span className="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                            :
+                        filteredUsers.length <= 0
                             ?
                             <p>No users yet.</p>
                             :

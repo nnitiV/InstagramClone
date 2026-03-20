@@ -14,14 +14,12 @@ import CreatePostModal from "@/components/layout/CreatePostModal";
 import { usePostStore } from "@/stores/usePostStore";
 import { getPostByid } from "@/feature/feed/services/feed.service";
 import UpdatePostModal from "@/feature/explore/components/UpdatePostModal";
-import { useThemeStore } from "@/stores/useThemeStore";
 
 export default function UserProfilePage() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [user, setUser] = useState<UserProfile | null>(null);
   const posts = usePostStore((state) => state.posts);
   const setPosts = usePostStore((state) => state.setPosts);
-  const theme = useThemeStore((state) => state.theme);
   // const [userHighlights, setUserHighlights] = useState<[]>([]);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [postToUpdate, setPostToUpdate] = useState<Post | null>(null);
@@ -30,6 +28,7 @@ export default function UserProfilePage() {
     setIsLoading(true);
     const checkWidth = () => setIsMobile(window.innerWidth <= 768);
     checkWidth();
+    window.addEventListener("resize", checkWidth);
 
     const getProfileInformation = async () => {
       let userInfo = await getLoggedUserInfo();
@@ -38,9 +37,10 @@ export default function UserProfilePage() {
         let userPosts = await getUserPosts(userInfo.id);
         setPosts(userPosts.items);
       }
+      setIsLoading(false);
     };
     getProfileInformation();
-    setIsLoading(false);
+    return () => window.removeEventListener("resize", checkWidth);
   }, []);
   const handleSetSelectedPost = async (post: Post) => {
     let postToSet = post;
@@ -80,7 +80,7 @@ export default function UserProfilePage() {
                                 View archive
                             </button> */}
             </div>
-            <Highlights userId={user?.id} isLoggedUser={true} />
+            <Highlights isLoggedUser={true} />
             {posts && posts.length > 0 ? (
               <Posts posts={posts} setSelectedPost={handleSetSelectedPost} />
             ) : (

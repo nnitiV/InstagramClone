@@ -71,7 +71,10 @@ export const getFollowersList = async (userId: number) => {
             "Content-Type": "application/json",
         }
     })
-    if(!res.ok) return [];
+    if(!res.ok) {
+        console.error(res);
+        throw new Error("Couldn't fetch followers list");
+    };
     return await res.json();
 };
 
@@ -83,7 +86,10 @@ export const getFollowingList = async (userId: number) => {
             "Content-Type": "application/json",
         }
     })
-    if(!res.ok) return [];
+    if(!res.ok) {
+        console.error(res);
+        throw new Error("Couldn't fetch following list");
+    };
     return await res.json();
 };
 
