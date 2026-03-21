@@ -1,12 +1,11 @@
 "use client";
-import { useEffect, useState } from "react";
-import SwitchAccountModal from "../../feature/message/components/SwitchAccountModal";
 import MessageSidebar from "@/feature/message/components/MessageSidebar";
-import { useParams } from "next/navigation";
-import { LastMessageDto } from "@/types/messages";
-import { fetchUserLastMessages } from "@/feature/message/services/message.service";
 import SendMessageModal from "@/feature/message/components/SendMessageModal";
 import { useChatStore } from "@/stores/useChatStore";
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import SwitchAccountModal from "../../feature/message/components/SwitchAccountModal";
+import { fetchUserLastMessages } from "@/services/message.service";
 
 export default function SearchPage({
   children,

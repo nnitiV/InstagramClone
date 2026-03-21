@@ -1,13 +1,11 @@
-import {
-  getLoggedUserInfo,
-  getLoggedUserToken,
-} from "@/services/auth.service";
+import { getLoggedUserToken } from "@/services/auth.service";
 import { LastMessageDto, MessageType, SendMessage } from "@/types/messages";
 import * as SignalR from "@microsoft/signalr";
 import { create } from "zustand";
 import { useNotificationStore } from "./useNotificationStore";
 import { NotificationType } from "@/types/notification";
 import { BASE_URL } from "@/constants";
+import { getLoggedUserInfo } from "@/services/user.service";
 
 interface ChatState {
   connection: SignalR.HubConnection | null;
@@ -38,14 +36,19 @@ export const useChatStore = create<ChatState>((set, get) => ({
       })
       .withAutomaticReconnect()
       .build();
-      
-    newConnection.on("ReceiveNotification",(notification: NotificationType) => {
+
+    newConnection.on(
+      "ReceiveNotification",
+      (notification: NotificationType) => {
         useNotificationStore.getState().addRealTimeNotification(notification);
       },
     );
-    newConnection.on("RemoveNotification", (triggerById: number, type: string) => {
-      useNotificationStore.getState().removeNotification(triggerById, type);
-  });
+    newConnection.on(
+      "RemoveNotification",
+      (triggerById: number, type: string) => {
+        useNotificationStore.getState().removeNotification(triggerById, type);
+      },
+    );
 
     newConnection.on("ReceiveMessage", async (message: MessageType) => {
       set((state: ChatState) => {
