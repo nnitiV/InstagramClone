@@ -4,20 +4,7 @@ import { StoryToSave } from "@/types/story";
 
 const route = "/story"
 
-export const createStory = async (story: StoryToSave) => {
-    const token = await getLoggedUserToken();
-    const formData = new FormData();
-    formData.append("File", story.file);
-    const res = await fetch(`${BASE_ROUTE_URL}${route}`, {
-        method: "POST",
-        body: formData,
-        headers: {
-            "Authorization": `Bearer ${token}`,
-        }
-    });
-    if(!res.ok) return null;
-    return await res.json();
-}
+// --- GET / READ / LOGIC ---
 
 export const getUserFirstStory = async (username: string) => {
     const token = await getLoggedUserToken();
@@ -66,5 +53,22 @@ export const checkIfStoryIsActive = async (storyId: number) => {
         console.error(res);
         return false;
     }
+    return await res.json();
+}
+
+// --- POST / WRITE / ACTIONS ---
+
+export const createStory = async (story: StoryToSave) => {
+    const token = await getLoggedUserToken();
+    const formData = new FormData();
+    formData.append("File", story.file);
+    const res = await fetch(`${BASE_ROUTE_URL}${route}`, {
+        method: "POST",
+        body: formData,
+        headers: {
+            "Authorization": `Bearer ${token}`,
+        }
+    });
+    if(!res.ok) return null;
     return await res.json();
 }

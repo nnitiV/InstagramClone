@@ -1,8 +1,11 @@
+"use server";
 import { BASE_ROUTE_URL } from "@/constants";
 import { getLoggedUserToken } from "@/services/auth.service";
 import { SendMessage } from "@/types/messages";
 
 const route = "/messages"
+
+// --- GET / READ / LOGIC ---
 
 export const fetchUserLastMessages = async () => {
     const token = await getLoggedUserToken();   
@@ -32,6 +35,8 @@ export const getChatHistory = async (chatId: number) => {
     }
     return await res.json();
 }
+
+// --- POST / WRITE / ACTIONS ---
 
 export const sendMessageService = async (message: SendMessage) => {
     const token = await getLoggedUserToken();

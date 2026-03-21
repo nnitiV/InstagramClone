@@ -4,6 +4,8 @@ import { EditUserProfile } from "@/types/user";
 
 const route = "/user";
 
+// --- GET / READ / LOGIC ---
+
 export const getUserByUsername = async (username: string) => {
     const userToken = await getLoggedUserToken();
     const res = await fetch(`${BASE_ROUTE_URL}${route}/${username}`, {
@@ -33,6 +35,20 @@ export const getLoggedUserInfo = async () => {
     return data;
 }
 
+export const getUserById = async (id: number) => {
+    const userToken = await getLoggedUserToken();
+    const res = await fetch(`${BASE_ROUTE_URL}${route}/${id}`, {
+        headers: {
+            "Authorization": `Bearer ${userToken}`,
+            "Content-Type": "application/json",
+        }
+    });
+    if (!res.ok) return null;
+    return await res.json();
+}
+
+// --- PUT / WRITE / ACTIONS ---
+
 export const updateUserProfile = async (editUser: EditUserProfile) => {
     const userToken = await getLoggedUserToken();
     const res = await fetch(`${BASE_ROUTE_URL}${route}`,
@@ -50,16 +66,3 @@ export const updateUserProfile = async (editUser: EditUserProfile) => {
 
     return true;
 }
-
-export const getUserById = async (id: number) => {
-    const userToken = await getLoggedUserToken();
-    const res = await fetch(`${BASE_ROUTE_URL}${route}/${id}`, {
-        headers: {
-            "Authorization": `Bearer ${userToken}`,
-            "Content-Type": "application/json",
-        }
-    });
-    if (!res.ok) return null;
-    return await res.json();
-}
-

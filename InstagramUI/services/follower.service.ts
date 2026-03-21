@@ -4,30 +4,7 @@ import { getLoggedUserInfo } from "./user.service";
 
 const route = "/followers";
 
-export const followUser = async (id: number) => {
-    const userToken = await getLoggedUserToken();
-    const res = await fetch(`${BASE_ROUTE_URL}${route}/${id}`, {
-        method: "POST",
-        headers: {
-            "Authorization": `Bearer ${userToken}`,
-            "Content-Type": "application/json",
-        }
-    });
-    if (!res.ok) return false;
-    return true;
-}
-
-export const unfollowUser = async (id: number) => {
-    const userToken = await getLoggedUserToken();
-    const res = await fetch(`${BASE_ROUTE_URL}${route}/${id}`, {
-        method: "DELETE",
-        headers: {
-            "Authorization": `Bearer ${userToken}`,
-        }
-    });
-    if (!res.ok) return false;
-        return true;
-}
+// --- GET / READ / LOGIC ---
 
 export const checkFollowStatus = async (id: number) => {
     const userToken = await getLoggedUserToken();
@@ -71,3 +48,30 @@ export const getFollowingList = async (userId: number) => {
     };
     return await res.json();
 };
+
+// --- POST / DELETE / WRITE / ACTIONS ---
+
+export const followUser = async (id: number) => {
+    const userToken = await getLoggedUserToken();
+    const res = await fetch(`${BASE_ROUTE_URL}${route}/${id}`, {
+        method: "POST",
+        headers: {
+            "Authorization": `Bearer ${userToken}`,
+            "Content-Type": "application/json",
+        }
+    });
+    if (!res.ok) return false;
+    return true;
+}
+
+export const unfollowUser = async (id: number) => {
+    const userToken = await getLoggedUserToken();
+    const res = await fetch(`${BASE_ROUTE_URL}${route}/${id}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${userToken}`,
+        }
+    });
+    if (!res.ok) return false;
+        return true;
+}

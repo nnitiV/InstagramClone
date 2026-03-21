@@ -4,6 +4,7 @@ import { PostToSave  } from "@/types/post";
 
 const route = "/post";
 
+// --- GET / READ / LOGIC ---
 
 export const getPostByid = async (postId: number) => {
     const token = await getLoggedUserToken();
@@ -38,6 +39,19 @@ export const getPostsFeed = async () => {
     return await res.json();
 }
 
+export const getUserPosts = async (userId: number) => {
+    const token = await getLoggedUserToken();
+    const res = await fetch(`${BASE_ROUTE_URL}${route}/user/${userId}`, {
+        headers: {
+            "Authorization": `Bearer ${token}`,
+            "Content-Type": "application/json",
+        }
+    })
+    if(!res.ok) return [];
+    return await res.json();
+}
+
+// --- POST / PUT / DELETE / WRITE / ACTIONS ---
 
 export const createPost = async (post: PostToSave) => {
     const token = await getLoggedUserToken();
@@ -50,21 +64,6 @@ export const createPost = async (post: PostToSave) => {
         }
     });
     console.log(res);
-    if(!res.ok) {
-        console.error(res);
-        return null;
-    }
-    return await res.json();
-}
-
-export const deletePost = async (postId: number) => {
-    const token = await getLoggedUserToken();
-    const res = await fetch(`${BASE_ROUTE_URL}${route}/${postId}`, {
-        method:"DELETE",
-        headers: {
-            "Authorization": `Bearer ${token}`
-        }
-    });
     if(!res.ok) {
         console.error(res);
         return null;
@@ -89,14 +88,17 @@ export const updatePost = async (postToUpdate: PostToSave) => {
     return await res.json();
 }
 
-export const getUserPosts = async (userId: number) => {
+export const deletePost = async (postId: number) => {
     const token = await getLoggedUserToken();
-    const res = await fetch(`${BASE_ROUTE_URL}${route}/user/${userId}`, {
+    const res = await fetch(`${BASE_ROUTE_URL}${route}/${postId}`, {
+        method:"DELETE",
         headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
         }
-    })
-    if(!res.ok) return [];
+    });
+    if(!res.ok) {
+        console.error(res);
+        return null;
+    }
     return await res.json();
 }

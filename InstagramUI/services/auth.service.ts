@@ -7,6 +7,34 @@ import { redirect } from "next/navigation";
 
 const route = "/auth"
 
+// --- GET / READ / LOGIC ---
+
+export const isAuthenticated = async () => {
+    const cookieStore = await cookies();
+    const cookie = cookieStore.get(tokenName);
+    const token = cookie?.value;
+    return !!token;
+}
+
+export const getLoggedUserToken = async () => {
+    const cookieStore = await cookies();
+    const token = cookieStore.get(tokenName)?.value;
+    return token || null;
+}
+
+export const getLoggedUserTokenInfo = async () => {
+    const cookieStore = await cookies();
+    const cookie = cookieStore.get(tokenName);
+    const token = cookie?.value;
+    if (token == null) {
+        throw new Error("Not logged in!!");
+    }
+    const decode = jwtDecode<TokenPayload>(token);
+    return decode;
+}
+
+// --- POST / WRITE / ACTIONS ---
+
 export const handleLogin = async (login: string, password: string, rememberMe: boolean) => {
     const cookieStore = await cookies();
     const res = await fetch(`${BASE_ROUTE_URL}${route}/login`, {
@@ -62,29 +90,4 @@ export const handleLogout = async () => {
     const cookieStore = await cookies();
     cookieStore.delete(tokenName);
     redirect("/login");
-}
-
-export const isAuthenticated = async () => {
-    const cookieStore = await cookies();
-    const cookie = cookieStore.get(tokenName);
-    const token = cookie?.value;
-    return !!token;
-}
-
-export const getLoggedUserToken = async () => {
-    const cookieStore = await cookies();
-    const token = cookieStore.get(tokenName)?.value;
-    return token || null;
-}
-
-export const getLoggedUserTokenInfo = async () => {
-    const cookieStore = await cookies();
-    const cookie = cookieStore.get(tokenName);
-    const token = cookie?.value;
-    if (token == null) {
-        throw new Error("Not logged in!!");
-        // return null;
-    }
-    const decode = jwtDecode<TokenPayload>(token);
-    return decode;
 }

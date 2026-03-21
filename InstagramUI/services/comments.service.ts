@@ -1,40 +1,52 @@
 import { BASE_ROUTE_URL } from "@/constants";
 import { getLoggedUserToken } from "@/services/auth.service";
-import { PostComment } from "@/types/feed";
 
-const route = "/comment"
+const route = "/commentLike";
 
-export const getPostComments = async (postId: number) => {
+// --- GET / READ / LOGIC ---
+
+export const checkCommentLikeStatus = async (commentId: number) => {
     const token = await getLoggedUserToken();
-
-    const res = await fetch(`${BASE_ROUTE_URL}${route}/allComments/${postId}`, {
-        method: "GET",
+    const res = await fetch(`${BASE_ROUTE_URL}${route}/${commentId}/status`, {
         headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`,
-        },
-        cache: "no-store"
+            "Authorization": `Bearer ${token}`
+        }
     });
-    if (!res.ok) {
-        console.error(res.status);
-        return [];
+    if(!res.ok) {
+        console.error(res);
+        return null;
     }
     return await res.json();
 }
 
-export const addPostComments = async (newComment: PostComment) => {
+// --- POST / DELETE / WRITE / ACTIONS ---
+
+export const likeComment = async (commentId: number) => {
     const token = await getLoggedUserToken();
-    const res = await fetch(`${BASE_ROUTE_URL}${route}`, {
+    const res = await fetch(`${BASE_ROUTE_URL}${route}/${commentId}`, {
         method: "POST",
-        body: JSON.stringify(newComment),
         headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "Application/Json",
+            "Authorization": `Bearer ${token}`
         }
     });
-    if (!res.ok) {
+    if(!res.ok) {
         console.error(res);
-        throw new Error("Couldn't save your comment.")
+        return null;
+    }
+    return await res.json();
+}
+
+export const unlikeComment = async (commentId: number) => {
+    const token = await getLoggedUserToken();
+    const res = await fetch(`${BASE_ROUTE_URL}${route}/${commentId}`, {
+        method: "DELETE",
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    });
+    if(!res.ok) {
+        console.error(res);
+        return null;
     }
     return await res.json();
 }

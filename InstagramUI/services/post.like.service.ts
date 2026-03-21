@@ -3,6 +3,8 @@ import { getLoggedUserToken } from "@/services/auth.service";
 
 const route = "/postLike"
 
+// --- GET / READ / LOGIC ---
+
 export const getPostLikeCount = async (postId: number) => {
     const res = await fetch(`${BASE_ROUTE_URL}${route}/${postId}/count`);
     if(!res.ok) {
@@ -11,6 +13,8 @@ export const getPostLikeCount = async (postId: number) => {
     }
     return await res.json();
 }
+
+// --- POST / DELETE / WRITE / ACTIONS ---
 
 export const likePost = async (postId: number) => {
     const token = await getLoggedUserToken();
@@ -27,7 +31,6 @@ export const likePost = async (postId: number) => {
     }
     return await res.json();
 }
-
 
 export const unlikePost = async (postId: number) => {
     const token = await getLoggedUserToken();
