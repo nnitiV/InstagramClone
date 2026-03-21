@@ -5,8 +5,6 @@ import { useEffect, useMemo } from "react";
 import FollowItem from "./FollowItem";
 import { NotificationType } from "@/types/notification";
 
-// TODO: Sync follow status globally via Zustand
-
 export default function NotificationsOffcanvas() {
   const notifications = useNotificationStore((state) => state.notifications);
   const setNotifications = useNotificationStore(

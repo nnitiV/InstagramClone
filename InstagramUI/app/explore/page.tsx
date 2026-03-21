@@ -1,19 +1,21 @@
 "use client";
 import { Post } from "@/types/feed";
 import { useEffect, useState } from "react";
-import ReactPlayer from "react-player";
 import ExploreModal from "../../feature/explore/components/ExploreModal";
-import { MOCK_EXPLORE_POSTS } from "@/feature/explore/constants/data";
 import ExploreGridItems from "@/feature/explore/components/ExploreGridItems";
-import { getPostsFeed } from "@/feature/feed/services/feed.service";
 import EmptyPost from "@/feature/feed/components/post/EmptyPost";
+import { getPostsFeed } from "@/services/post.service";
 
 export default function ExplorePage() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [selectedPost, setSelectedPost] = useState<Post | null>();
 
   useEffect(() => {
-    const fetchPosts = async () => setPosts(await getPostsFeed());
+    const fetchPosts = async () => {
+      const feedPosts =await getPostsFeed()
+      console.log(feedPosts);
+      setPosts(feedPosts);
+    }
     fetchPosts();
   }, []);
   const setPostForModal = (id: number) => {
@@ -34,6 +36,7 @@ export default function ExplorePage() {
         <ExploreModal
           username=""
           post={selectedPost}
+
           onClose={() => setSelectedPost(null)}
         />
       )}

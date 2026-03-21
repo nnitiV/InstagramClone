@@ -1,5 +1,5 @@
 "use client";
-import { uploadFile } from "@/feature/auth/services/auth-service";
+import { uploadFile } from "@/services/file.service";
 import { createPost } from "@/services/post.service";
 import { usePostStore } from "@/stores/usePostStore";
 import { Post } from "@/types/feed";

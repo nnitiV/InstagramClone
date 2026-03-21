@@ -1,4 +1,4 @@
-import { getLoggedUserInfo } from "@/feature/auth/services/auth-service";
+import { getLoggedUserInfo } from "@/services/user.service";
 import { useEffect, useState } from "react";
 
 type MessageSidebarHeaderProps = {

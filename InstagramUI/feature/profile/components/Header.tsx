@@ -1,9 +1,9 @@
 import { Follower, UserProfile } from '@/types/user';
 import { useState } from 'react';
-import { getFollowersList, getFollowingList } from '../services/profile.service';
 import { BASE_URL } from '@/constants';
 import ListFollowingModal from './ListFollowingModal';
 import ListFollowersModal from './ListFollowersModal';
+import { getFollowersList, getFollowingList } from '@/services/follower.service';
 
 type HeaderProps = {
     isMobile: boolean;

@@ -1,33 +1,12 @@
-import { BASE_ROUTE_URL } from "@/constants"
-import { getLoggedUserInfo, getLoggedUserToken } from "@/feature/auth/services/auth-service";
+import { BASE_ROUTE_URL } from "@/constants";
+import { getLoggedUserToken } from "@/services/auth.service";
+import { getLoggedUserInfo } from "./user.service";
 
-export const getUserByUsername = async (username: string) => {
-    const userToken = await getLoggedUserToken();
-    const res = await fetch(`${BASE_ROUTE_URL}/user/${username}`, {
-        headers: {
-            "Authorization": `Bearer ${userToken}`,
-            "Content-Type": "application/json",
-        }
-    });
-    if (!res.ok) return null;
-    return await res.json();
-}
-
-export const getUserById = async (id: number) => {
-    const userToken = await getLoggedUserToken();
-    const res = await fetch(`${BASE_ROUTE_URL}/user/${id}`, {
-        headers: {
-            "Authorization": `Bearer ${userToken}`,
-            "Content-Type": "application/json",
-        }
-    });
-    if (!res.ok) return null;
-    return await res.json();
-}
+const route = "/followers";
 
 export const followUser = async (id: number) => {
     const userToken = await getLoggedUserToken();
-    const res = await fetch(`${BASE_ROUTE_URL}/followers/${id}`, {
+    const res = await fetch(`${BASE_ROUTE_URL}${route}/${id}`, {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${userToken}`,
@@ -40,7 +19,7 @@ export const followUser = async (id: number) => {
 
 export const unfollowUser = async (id: number) => {
     const userToken = await getLoggedUserToken();
-    const res = await fetch(`${BASE_ROUTE_URL}/followers/${id}`, {
+    const res = await fetch(`${BASE_ROUTE_URL}${route}/${id}`, {
         method: "DELETE",
         headers: {
             "Authorization": `Bearer ${userToken}`,
@@ -53,7 +32,7 @@ export const unfollowUser = async (id: number) => {
 export const checkFollowStatus = async (id: number) => {
     const userToken = await getLoggedUserToken();
     if((await getLoggedUserInfo()).id == id) return;
-    const res = await fetch(`${BASE_ROUTE_URL}/followers/${id}/status`, {
+    const res = await fetch(`${BASE_ROUTE_URL}${route}/${id}/status`, {
         headers: {
             "Authorization": `Bearer ${userToken}`,
             "Content-Type": "application/json",
@@ -65,7 +44,7 @@ export const checkFollowStatus = async (id: number) => {
 
 export const getFollowersList = async (userId: number) => {
     const userToken = await getLoggedUserToken();
-    const res = await fetch(`${BASE_ROUTE_URL}/followers/${userId}/followers`, {
+    const res = await fetch(`${BASE_ROUTE_URL}${route}/${userId}${route}`, {
         headers: {
             "Authorization": `Bearer ${userToken}`,
             "Content-Type": "application/json",
@@ -80,7 +59,7 @@ export const getFollowersList = async (userId: number) => {
 
 export const getFollowingList = async (userId: number) => {
     const userToken = await getLoggedUserToken();
-    const res = await fetch(`${BASE_ROUTE_URL}/followers/${userId}/following`, {
+    const res = await fetch(`${BASE_ROUTE_URL}${route}/${userId}/following`, {
         headers: {
             "Authorization": `Bearer ${userToken}`,
             "Content-Type": "application/json",
@@ -92,15 +71,3 @@ export const getFollowingList = async (userId: number) => {
     };
     return await res.json();
 };
-
-export const getUserPosts = async (userId: number) => {
-    const token = await getLoggedUserToken();
-    const res = await fetch(`${BASE_ROUTE_URL}/post/user/${userId}`, {
-        headers: {
-            "Authorization": `Bearer ${token}`,
-            "Content-Type": "application/json",
-        }
-    })
-    if(!res.ok) return [];
-    return await res.json();
-}

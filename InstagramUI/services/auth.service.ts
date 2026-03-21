@@ -1,10 +1,9 @@
 "use server";
 import { BASE_ROUTE_URL, tokenName } from "@/constants";
 import { cookies } from "next/headers"
-import { RegisterUser, TokenPayload } from "../../../types/auth";
+import { RegisterUser, TokenPayload } from "../types/auth";
 import { jwtDecode } from "jwt-decode";
 import { redirect } from "next/navigation";
-import { EditUserProfile } from "@/types/user";
 
 const route = "/auth"
 
@@ -83,60 +82,9 @@ export const getLoggedUserTokenInfo = async () => {
     const cookie = cookieStore.get(tokenName);
     const token = cookie?.value;
     if (token == null) {
-        // throw new Error("Not logged in!!");
-        return null;
+        throw new Error("Not logged in!!");
+        // return null;
     }
     const decode = jwtDecode<TokenPayload>(token);
     return decode;
-}
-
-export const getLoggedUserInfo = async () => {
-    const userId = (await getLoggedUserTokenInfo())?.sub;
-
-    const res = await fetch(`${BASE_ROUTE_URL}/user/${userId}`, {
-        method: "GET",
-        headers: {
-            'content-type': 'application/json'
-        }
-    })
-    if (!res.ok) {
-        return;
-    }
-
-    const data = await res.json();
-    return data;
-}
-
-export const updateUserProfile = async (editUser: EditUserProfile) => {
-    const userToken = await getLoggedUserToken();
-    const res = await fetch(`${BASE_ROUTE_URL}/user`,
-        {
-            method: "PUT",
-            body: JSON.stringify(editUser),
-            headers: {
-                'authorization': `Bearer ${userToken}`,
-                'content-type': 'application/json',
-            }
-        });
-    if (!res.ok) {
-        return false;
-    }
-
-    return true;
-}
-
-export const uploadFile = async (selectedFile: File) => {
-    const formData = new FormData();
-    formData.append('file', selectedFile);
-
-    const res = await fetch(`${BASE_ROUTE_URL}/files/upload`, {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${await getLoggedUserToken()}`
-        },
-        body: formData
-    });
-    if(!res.ok) return "";
-    const data = await res.json();
-    return data.url;
 }

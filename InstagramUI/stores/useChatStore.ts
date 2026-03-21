@@ -1,7 +1,7 @@
 import {
   getLoggedUserInfo,
   getLoggedUserToken,
-} from "@/feature/auth/services/auth-service";
+} from "@/services/auth.service";
 import { LastMessageDto, MessageType, SendMessage } from "@/types/messages";
 import * as SignalR from "@microsoft/signalr";
 import { create } from "zustand";

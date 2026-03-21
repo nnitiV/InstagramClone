@@ -5,15 +5,14 @@ import ExploreModal from "../../feature/explore/components/ExploreModal";
 import Header from "@/feature/profile/components/Header";
 import Highlights from "@/feature/profile/components/Highlights";
 import Posts from "@/feature/profile/components/Posts";
-import { getLoggedUserInfo } from "@/feature/auth/services/auth-service";
 import { UserProfile } from "@/types/user";
 import EmptyUserPosts from "@/feature/profile/components/EmptyUserPosts";
 import EditProfileModal from "@/feature/profile/components/EditProfileModal";
-import { getUserPosts } from "@/feature/profile/services/profile.service";
 import CreatePostModal from "@/components/layout/CreatePostModal";
 import { usePostStore } from "@/stores/usePostStore";
-import { getPostByid } from "@/feature/feed/services/feed.service";
 import UpdatePostModal from "@/feature/explore/components/UpdatePostModal";
+import { getLoggedUserInfo } from "@/services/user.service";
+import { getPostByid, getUserPosts } from "@/services/post.service";
 
 export default function UserProfilePage() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
@@ -103,7 +102,6 @@ export default function UserProfilePage() {
               setPostToUpdate={setPostToUpdate}
               postToUpdate={postToUpdate}
               onClose={() => setPostToUpdate(null)}
-              username={user?.username}
             />
           )}
           <EditProfileModal user={user} setUser={setUser} />

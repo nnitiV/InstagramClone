@@ -1,6 +1,6 @@
 'use client';
 import { FormEvent, useState } from "react";
-import { handleLogin } from "../services/auth-service";
+import { handleLogin } from "../../../services/auth.service";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 

@@ -1,7 +1,6 @@
 "use client";
-
+import { likePost, unlikePost } from "@/services/post.like.service";
 import { useState } from "react";
-import { likePost, unlikePost } from "../../services/feed.service";
 
 type PostActionsProps = {
     postId: number;
@@ -57,7 +56,7 @@ export default function PostActions({
 
     return (
         <>
-            <div className="d-flex align-items-center mt-2">
+            <div className="d-flex mt-2">
                 <button className="btn btn-link p-0 border-0 text-body text-decoration-none" onClick={handleLike}>
                     <i
                         className={`bi ${isLiked ? "bi-heart-fill text-danger" : "bi-heart"} fs-4`}
@@ -70,10 +69,10 @@ export default function PostActions({
                         <span className="ms-2 fw-semibold">{likeCount}</span>
                     )}
                 </button>
-                <button className="btn btn-link p-0 border-0 text-body text-decoration-none" onClick={onCommentClick}>
+                <button className="btn btn-link border-0 text-body text-decoration-none p-0 mx-2 mb-1" onClick={onCommentClick}>
                     <i className="bi bi-chat fs-4"></i>{commentCount > 0 && commentCount}
                 </button>
-                <div className="cursor-pointer">
+                <div className="cursor-pointer" style={{marginTop: '2.5px'}}>
                     <i className="bi bi-send fs-4"></i>
                 </div>
                 <div className="ms-auto cursor-pointer" onClick={handleSave}>

@@ -20,6 +20,18 @@ namespace Infrastructure.Repositories
                 .FirstOrDefaultAsync();
         }
 
+        public async Task<Story?> GetStoryByUsernameAsync(string username)
+        {
+            DateTime yesterday = DateTime.UtcNow.AddHours(-24);
+
+            return await _context.Stories
+                .Include(s => s.User)
+                .Where(s => s.User.Username == username)
+                .Where(s => s.CreatedAt >= yesterday)
+                .OrderBy(s => s.CreatedAt)
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<bool> CheckIfStoryByIdExists(int storyId)
         {
             return await _context.Stories.AnyAsync(s => s.Id == storyId);

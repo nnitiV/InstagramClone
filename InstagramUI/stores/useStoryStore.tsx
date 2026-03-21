@@ -1,4 +1,4 @@
-import { getStories } from "@/feature/feed/services/feed.service";
+import { getStories } from "@/services/story.service";
 import { Story } from "@/types/feed";
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";

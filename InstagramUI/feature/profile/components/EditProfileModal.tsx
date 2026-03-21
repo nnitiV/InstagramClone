@@ -1,7 +1,8 @@
 import { BASE_URL } from "@/constants";
-import { uploadFile, updateUserProfile } from "@/feature/auth/services/auth-service";
+import { uploadFile } from "@/services/file.service";
+import { updateUserProfile } from "@/services/user.service";
 import { EditUserProfile, UserProfile } from "@/types/user";
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useRef, useState } from "react";
 
 type EditProfileModalProps = {
     user: UserProfile | null;
@@ -22,6 +23,7 @@ export default function EditProfileModal({ user, setUser }: EditProfileModalProp
     });
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string>(editUser.profilePictureUrl || "");
+    const editBtnClose = useRef<HTMLButtonElement>(null);
     useEffect(() => {
         if (user) {
             setEditUser({
@@ -47,6 +49,7 @@ export default function EditProfileModal({ user, setUser }: EditProfileModalProp
             photoUrl = await uploadFile(selectedFile);
         }
         if (photoUrl.length > 0) userToSave.profilePictureUrl = photoUrl;
+        try{
         const res = await updateUserProfile(userToSave);
         if(res) {
             setUser({
@@ -62,15 +65,42 @@ export default function EditProfileModal({ user, setUser }: EditProfileModalProp
                 followingCount: userToSave.followingCount ?? 0,
                 postsCount: userToSave.postsCount ?? 0,
             } as UserProfile);
-            document.getElementById("edit-modal-close")?.click();
+            editBtnClose.current?.click();
         }
-        setLoading(true);
+        } catch(error) {
+            console.log(error);
+        } finally {
+            setLoading(false);
+        }
     }
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            setSelectedFile(file); // Guarda o arquivo para a hora de salvar
-            setPreviewUrl(URL.createObjectURL(file)); // Gera um link falso só pro browser mostrar a foto
+            if (previewUrl.startsWith("blob:")) {
+                URL.revokeObjectURL(previewUrl);
+            }
+            setSelectedFile(file); 
+            setPreviewUrl(URL.createObjectURL(file));  
+        }
+    };
+    const handleDiscard = () => {
+        if (user) {
+            setEditUser({
+                id: user.id,
+                username: user.username,
+                name: user.name || "",
+                email: user.email,
+                bio: user.bio || "",
+                profilePictureUrl: user.profilePictureUrl || "",
+                dateOfBirth: user.dateOfBirth,
+                age: user.age,
+            });
+            
+            setPreviewUrl((prev) => {
+                if (prev.startsWith("blob:")) URL.revokeObjectURL(prev);
+                return user.profilePictureUrl ? BASE_URL + user.profilePictureUrl : "";
+            });
+            setSelectedFile(null);
         }
     };
     return (
@@ -79,7 +109,7 @@ export default function EditProfileModal({ user, setUser }: EditProfileModalProp
                 <div className="modal-content">
                     <div className="modal-header">
                         <h1 className="modal-title fs-5" id="editProfileLabel">Edit profile info</h1>
-                        <button type="button" id="edit-modal-close" className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" id="edit-modal-close" ref={editBtnClose} onClick={handleDiscard} className="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div className="modal-body">
                         <form>
@@ -110,7 +140,7 @@ export default function EditProfileModal({ user, setUser }: EditProfileModalProp
                                             className="btn btn-outline-danger btn-sm fw-bold"
                                             onClick={() => {
                                                 setSelectedFile(null);
-                                                setPreviewUrl(user?.profilePictureUrl || "");
+                                                setPreviewUrl(user?.profilePictureUrl ? BASE_URL + user?.profilePictureUrl : "");
                                             }}
                                         >
                                             Remove
@@ -119,7 +149,7 @@ export default function EditProfileModal({ user, setUser }: EditProfileModalProp
                                 </div>
                             </div>
                             <div className="row">
-                                <div className="mb-3 col">
+                                <div className="mb-3 col-12 col-md-6">
                                     <label htmlFor="username" className="form-label">Username</label>
                                     <input type="text" className="form-control" id="username"
                                         value={editUser.username} onChange={(e) => setEditUser(prev => ({
@@ -128,7 +158,7 @@ export default function EditProfileModal({ user, setUser }: EditProfileModalProp
                                         }))}
                                     />
                                 </div>
-                                <div className="mb-3 col">
+                                <div className="mb-3 col-12 col-md-6">
                                     <label htmlFor="name" className="form-label">Name</label>
                                     <input type="text" className="form-control" id="name"
                                         value={editUser.name} onChange={(e) => setEditUser(prev => ({
@@ -137,7 +167,7 @@ export default function EditProfileModal({ user, setUser }: EditProfileModalProp
                                         }))} />
                                 </div>
                             </div>
-                            <div className="mb-3">
+                            <div className="mb-3 col-12 col-md-6">
                                 <label htmlFor="bio" className="form-label">Bio</label>
                                 <textarea className="form-control" id="bio" rows={3}
                                     value={editUser.bio} onChange={(e) => setEditUser(prev => ({
@@ -148,7 +178,7 @@ export default function EditProfileModal({ user, setUser }: EditProfileModalProp
                         </form>
                     </div>
                     <div className="modal-footer">
-                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" className="btn btn-secondary" data-bs-dismiss="modal" onClick={handleDiscard}>Close</button>
                          {
                             loading ?
                                 <button className="btn btn-primary" type="button" disabled>

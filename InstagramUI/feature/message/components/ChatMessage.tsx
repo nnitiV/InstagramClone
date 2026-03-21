@@ -1,7 +1,7 @@
+import { checkIfStoryIsActive } from "@/services/story.service";
 import { MessageType } from "@/types/messages"
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { checkIfStoryIsACtive } from "../services/message.service";
 
 type ChatMessageProps = {
     message: MessageType;
@@ -12,7 +12,7 @@ export default function ChatMessage({ message, loggedUserId }: ChatMessageProps)
     const [isActive, setIsActive] = useState<boolean>(false);
     useEffect(() => {
         const checkActive = async () => {
-            if(message.storyId) setIsActive(await checkIfStoryIsACtive(message.storyId ))
+            if(message.storyId) setIsActive(await checkIfStoryIsActive(message.storyId ))
             else setIsActive(false);
         }
         checkActive();

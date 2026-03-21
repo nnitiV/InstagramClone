@@ -1,12 +1,11 @@
 "use client";
 import { use, useMemo } from "react";
-import Link from "next/link";
-import { useStoryStore } from "@/feature/story/store/useStoryStore";
+import { useStoryStore } from "@/stores/useStoryStore";
 import ActiveStory from "@/feature/story/components/ActiveStory";
 import StoryPreview from "@/feature/story/components/StoryPreview";
-import { STORIES_MOCK } from "@/feature/story/constants/data";
 import InstagramLogo from "@/components/ui/InstagramLogo";
-import { getSecondAfterStory, getSecondPreviousStory, useStoryNavigation } from "@/feature/story/hooks/useStoryNavigation";
+import { getSecondAfterStory, getSecondPreviousStory, useStoryNavigation } from "@/hooks/useStoryNavigation";
+import { useRouter } from "next/navigation";
 
 type StoriesPageProps = {
     params: Promise<{ username: string, storyId: number }>;
@@ -14,6 +13,7 @@ type StoriesPageProps = {
 
 export default function StoriesPage({ params }: StoriesPageProps) {
     const { storyId } = use(params);
+    const router = useRouter();
     const stories = useStoryStore(state => state.stories);
 
     const nav = useStoryNavigation(stories, storyId);
@@ -40,26 +40,53 @@ export default function StoriesPage({ params }: StoriesPageProps) {
     } = nav;
 
     return (
-        <div className="position-relative text-center d-flex justify-content-center align-items-center vh-100 text-primary"
-            style={{ background: "rgba(25,25,25)" }}
+      <div
+        className="position-relative text-center d-flex justify-content-center align-items-center vh-100 text-primary"
+        style={{ background: "rgba(25,25,25)" }}
+      >
+        <InstagramLogo isIcon={false} />
+        <button 
+            className="p-3 position-absolute bg-transparent border-0 z-3 bg-danger" 
+            onClick={() => router.back()} 
+            style={{ top: 25, right: 50 }}
+            aria-label="Close story"
         >
-            <InstagramLogo isIcon={false} />
-            <Link href="/"><i className="bi bi-x-lg position-absolute fs-3 text-white fw-bold" style={{ top: 25, right: 50 }}></i></Link>
-            
-            <ActiveStory 
-                activeStory={activeStory} 
-                activeStoryPosition={activeStoryPosition} 
-                amountOfActiveStory={storiesFiltered.length} 
-                thereBefore={activeStoryIndex > 0} 
-                thereAfter={activeStoryIndex + 1 < stories.length}
-                firstPreviousStory={activeStoryIndex > 0 ? { id: stories[activeStoryIndex - 1].id, username: stories[activeStoryIndex - 1].username } : { id: -1, username: "" }}
-                firstAfterStory={activeStoryIndex + 1 < stories.length ? { id: stories[activeStoryIndex + 1].id, username: stories[activeStoryIndex + 1].username } : { id: -1, username: "" }} 
-            />
+          <i className="bi bi-x-lg fs-3 text-white fw-bold"></i>
+        </button>
 
-            {secondPreviousStory && <StoryPreview story={secondPreviousStory} storyPosition={-2} />}
-            {firstPrev && <StoryPreview story={firstPrev} storyPosition={-1} />}
-            {firstAfter && <StoryPreview story={firstAfter} storyPosition={1} />}
-            {secondAfterStory && <StoryPreview story={secondAfterStory} storyPosition={2} />}
-        </div>
-    )
+        <ActiveStory
+          key={activeStory.id}
+          activeStory={activeStory}
+          activeStoryPosition={activeStoryPosition}
+          amountOfActiveStory={storiesFiltered.length}
+          thereBefore={activeStoryIndex > 0}
+          thereAfter={activeStoryIndex + 1 < stories.length}
+          firstPreviousStory={
+            activeStoryIndex > 0
+              ? {
+                  id: stories[activeStoryIndex - 1].id,
+                  username: stories[activeStoryIndex - 1].username,
+                }
+              : { id: -1, username: "" }
+          }
+          firstAfterStory={
+            activeStoryIndex + 1 < stories.length
+              ? {
+                  id: stories[activeStoryIndex + 1].id,
+                  username: stories[activeStoryIndex + 1].username,
+                }
+              : { id: -1, username: "" }
+          }
+        />
+
+        {secondPreviousStory && (
+          <StoryPreview story={secondPreviousStory} storyPosition={-2} />
+        )}
+        {firstPrev && <StoryPreview story={firstPrev} storyPosition={-1} />}
+        {firstAfter && <StoryPreview story={firstAfter} storyPosition={1} />}
+        {secondAfterStory && (
+          <StoryPreview story={secondAfterStory} storyPosition={2} />
+        )}
+      </div>
+    );
 }

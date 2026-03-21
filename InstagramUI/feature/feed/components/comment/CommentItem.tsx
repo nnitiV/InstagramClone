@@ -1,8 +1,8 @@
 "use client";
-import { PostComment, PostCommentTree } from "@/types/feed";
+import { PostCommentTree } from "@/types/feed";
 import { useEffect, useState } from "react";
-import { checkCommentLikeStatus, likeComment, unlikeComment } from "../../services/feed.service";
 import { BASE_URL } from "@/constants";
+import { checkCommentLikeStatus, likeComment, unlikeComment } from "@/services/comment.like.service";
 
 interface CommentItemProps {
     commentTree: PostCommentTree;

@@ -1,5 +1,5 @@
 import "./global.css";
-import { getLoggedUserTokenInfo } from "@/feature/auth/services/auth-service";
+import { getLoggedUserTokenInfo } from "@/services/auth.service";
 import SidebarWrapper from "../components/layout/SidebarWrapper";
 import ChatProvider from "@/components/layout/ChatProvider";
 import ThemeWatcher from "@/components/layout/ThemeWatcher";

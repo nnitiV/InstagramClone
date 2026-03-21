@@ -1,7 +1,6 @@
 import { Story } from "@/types/feed";
 import { useMemo } from "react";
 
-// Funções utilitárias puras (fora do Hook)
 export const getSecondPreviousStory = (
     startIndex: number, 
     firstPrev: Story | null, 

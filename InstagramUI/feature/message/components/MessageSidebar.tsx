@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import { MOCK_MESSAGES } from '../constants/data'
 import MessageUserItem from './MessageUserItem';
 import MessageSidebarHeader from './MessageSidebarHeader';
 import { LastMessageDto } from '@/types/messages';

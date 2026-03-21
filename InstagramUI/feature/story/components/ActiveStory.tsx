@@ -1,13 +1,11 @@
 import { Story } from "@/types/feed";
-import { formatDistanceToNow } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import Link from "next/link";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { checkStoryLikeStatus, likeStory, unlikeStory } from "../services/stories.service";
-import { getUserByUsername } from "@/feature/profile/services/profile.service";
 import { useChatStore } from "@/stores/useChatStore";
 import { BASE_URL } from "@/constants";
+import { formatShortDate } from "@/utils/date";
+import { checkStoryLikeStatus, likeStory, unlikeStory } from "@/services/story.like.service";
 
 type StoryProps = {
   activeStory: Story | undefined;
@@ -28,6 +26,8 @@ export default function ActiveStory({
   firstPreviousStory: firstPreviousStoryIndex,
   firstAfterStory: firstAfterStoryIndex,
 }: StoryProps) {
+  console.log(activeStory);
+  const router = useRouter();
   const [message, setMessage] = useState<string>("");
   const [isLiked, setIsLiked] = useState<boolean>(false);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
@@ -39,22 +39,10 @@ export default function ActiveStory({
       }
     }
     checkStoryStatus();
-  }, [])
-  const formatShortDate = (date: string) => {
-    return formatDistanceToNow(new Date(date), { locale: ptBR })
-      .replace("aproximadamente ", "")
-      .replace("há ", "")
-      .replace("menos de um minuto", "agora")
-      .replace(" minutos", "min")
-      .replace(" minuto", "min")
-      .replace(" horas", "h")
-      .replace(" hora", "h")
-      .replace(" dias", "d")
-      .replace(" dia", "d");
-  };
+  }, [activeStory?.id])
 
   const goTouser = () => {
-    redirect(`/profile/${activeStory?.username}`);
+    router.push(`/profile/${activeStory?.username}`);
   };
 
   const toggleLikeStory = async () => {
@@ -83,11 +71,11 @@ export default function ActiveStory({
   }
 
   const messageSend = async () => {
+    if(message.trim()) return;
     const messageToSend = `Respondeu ao seu story: ${message}`;
     if (activeStory?.username != null) {
-      const userId = (await getUserByUsername(activeStory.username)).user.id;
       await sendMessage({
-        receiverId: userId,
+        receiverId: activeStory.userId,
         content: messageToSend,
         storyId: activeStory.id
       });
@@ -98,13 +86,13 @@ export default function ActiveStory({
   return (
     <>
       {thereBefore && (
-        <div className="h-100 d-flex align-items-center m-3">
+        <div className="h-100 d-none d-md-flex align-items-center m-3">
           <Link
             href={`/stories/${firstPreviousStoryIndex.username}/${firstPreviousStoryIndex.id}`}
           >
             <i
               className="bi bi-arrow-left-circle-fill fs-4"
-              style={{ color: "rgba(235,235,235,0.75" }}
+              style={{ color: "rgba(235,235,235,0.75)" }}
             ></i>
           </Link>
         </div>
@@ -112,7 +100,7 @@ export default function ActiveStory({
       <div
         className="card p-0 m-0 border-0"
         style={{
-          width: "25vw",
+          width: "100%", maxWidth: "400px",
           height: "90vh",
           backgroundImage: `url(${BASE_URL + activeStory?.mediaUrl})`,
           backgroundRepeat: "no-repeat",
@@ -150,53 +138,53 @@ export default function ActiveStory({
                   style={{ width: "48px", height: "48px", objectFit: "cover" }}
                 />
                 <div className="text-start">
-                  <p className="card-title m-0 p-0 fs-">
+                  <p className="card-title m-0 p-0 fs-4 fw-bold">
                     {activeStory?.username}
                   </p>
                   <span className="text-secondary">
                     {formatShortDate(
                       activeStory?.createdAt != null
                         ? activeStory?.createdAt.toString()
-                        : "",
+                        : ""
                     )}
                   </span>
                 </div>
               </div>
               <div className="fs-4 w-25 d-flex justify-content-between">
-                <i className="bi bi-volume-up"></i>
-                <i className="bi bi-play"></i>
-                <i className="bi bi-three-dots"></i>
+                <i className="bi bi-volume-up cursor-pointer"></i>
+                <i className="bi bi-play cursor-pointer"></i>
+                <i className="bi bi-three-dots cursor-pointer"></i>
               </div>
             </div>
           </div>
           <div className="d-flex align-items-center justify-content-around fs-4">
             <input
               type="text"
-              className="form-control bg-transparent transparent-input  text-white rounded-4 w-75 text-truncate"
+              style={{background: "rgba(25,25,25, .25)"}}
+              className="form-control transparent-input border-0 text-white rounded-4 w-75 text-truncate"
               placeholder={`Reply to ${activeStory?.username}`}
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               onKeyDown={handleSendMessage}
-              aria-label="Username"
-              aria-describedby="basic-addon1"
+              aria-label="Send message to user"
             />
-            <i onClick={toggleLikeStory} className={isLiked ? "bi-heart-fill text-danger" : "bi-heart"}
+            <i onClick={toggleLikeStory} className={isLiked ?  "cursor-pointer bi-heart-fill text-danger" :  "cursor-pointer bi-heart"}
               style={{
                 transform: isAnimating ? "scale(1.2)" : "scale(1)",
                 transition: "transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275)"
               }}></i>
-            <i className="bi bi-send" onClick={() => handleSendMessage(null)}></i>
+            <i className="bi cursor-pointer bi-send" onClick={() => handleSendMessage(null)}></i>
           </div>
         </div>
       </div>
       {thereAfter && (
-        <div className="h-100 d-flex align-items-center m-3">
+        <div className="h-100 d-none d-md-flex align-items-center m-3">
           <Link
             href={`/stories/${firstAfterStoryIndex.username}/${firstAfterStoryIndex.id}`}
           >
             <i
               className="bi bi-arrow-right-circle-fill fs-4"
-              style={{ color: "rgba(235,235,235,0.75" }}
+              style={{ color: "rgba(235,235,235,0.75)" }}
             ></i>
           </Link>
         </div>

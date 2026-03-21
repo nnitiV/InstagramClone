@@ -10,7 +10,7 @@ type PostItemProps = {
   index: number;
   selectedPost: Post | null;
   setSelectedPost: Dispatch<SetStateAction<Post | null>>;
-  goToUserProfile: (userId: number) => Promise<void>;
+  goToUserProfile: (username: string) => Promise<void>
 };
 
 export default function PostItem({ post, index, selectedPost, 
@@ -20,10 +20,10 @@ export default function PostItem({ post, index, selectedPost,
       <div className="d-flex align-items-center justify-content-between py-2">
         <div
           className="d-flex align-items-center cursor-pointer"
-          onClick={() => goToUserProfile(post.userId)}
+          onClick={() => goToUserProfile(post.authorName)}
         >
           <img
-            src={BASE_URL + post.authorProfilePicture || "https://cdn-icons-png.flaticon.com/512/149/149071.png"
+            src={post.authorProfilePicture ? BASE_URL + post.authorProfilePicture : "https://cdn-icons-png.flaticon.com/512/149/149071.png"
             }
             alt="User"
             className="rounded-circle border me-2"

@@ -1,9 +1,7 @@
 import { BASE_URL } from "@/constants";
-import { getLoggedUserInfo } from "@/feature/auth/services/auth-service";
+import { getLoggedUserInfo } from "@/services/user.service";
 import { LastMessageDto } from "@/types/messages";
 import { formatShortDate } from "@/utils/date";
-import { formatDistanceToNow } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 

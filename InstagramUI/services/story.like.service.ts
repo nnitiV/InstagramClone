@@ -1,9 +1,11 @@
 import { BASE_ROUTE_URL } from "@/constants";
-import { getLoggedUserToken } from "@/feature/auth/services/auth-service";
+import { getLoggedUserToken } from "@/services/auth.service";
+
+const route = "/storyLike";
 
 export const likeStory = async (id: number) => {
     const userToken = await getLoggedUserToken();
-    const res = await fetch(`${BASE_ROUTE_URL}/storyLike/${id}`, {
+    const res = await fetch(`${BASE_ROUTE_URL}${route}/${id}`, {
         method: "POST",
         headers: {
             "Authorization": `Bearer ${userToken}`,
@@ -19,7 +21,7 @@ export const likeStory = async (id: number) => {
 
 export const unlikeStory = async (id: number) => {
     const userToken = await getLoggedUserToken();
-    const res = await fetch(`${BASE_ROUTE_URL}/storyLike/${id}`, {
+    const res = await fetch(`${BASE_ROUTE_URL}${route}/${id}`, {
         method: "DELETE",
         headers: {
             "Authorization": `Bearer ${userToken}`,
@@ -34,7 +36,7 @@ export const unlikeStory = async (id: number) => {
 
 export const checkStoryLikeStatus = async (id?: number) => {
     const userToken = await getLoggedUserToken();
-    const res = await fetch(`${BASE_ROUTE_URL}/storyLike/${id}/status`, {
+    const res = await fetch(`${BASE_ROUTE_URL}${route}/${id}/status`, {
         headers: {
             "Authorization": `Bearer ${userToken}`,
             "Content-Type": "application/json",

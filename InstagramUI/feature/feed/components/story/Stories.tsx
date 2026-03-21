@@ -2,7 +2,7 @@
 import { Story } from "@/types/feed";
 import { UIEvent, useEffect, useMemo, useRef, useState } from "react";
 import StoryItem from "./StoryItem";
-import { useStoryStore } from "@/feature/story/store/useStoryStore";
+import { useStoryStore } from "@/stores/useStoryStore";
 
 type StoriesProps = {
   serverStories: Story[];

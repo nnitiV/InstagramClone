@@ -1,7 +1,5 @@
 import { MessageType } from "@/types/messages";
-import Link from "next/link";
 import { useEffect, useRef } from "react";
-import { checkIfStoryIsACtive } from "../services/message.service";
 import ChatMessage from "./ChatMessage";
 
 type ChatMessagesProps = {

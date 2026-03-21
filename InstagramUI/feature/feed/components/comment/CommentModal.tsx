@@ -5,17 +5,17 @@ import PostActions from "../post/PostActions";
 import { Post, PostComment, PostCommentTree } from "@/types/feed";
 import { useEffect, useState, useCallback, useRef } from "react";
 import CommentsList from "./CommentList";
-import { addPostComments, getPostComments } from "../../services/feed.service";
-import { getLoggedUserInfo } from "@/feature/auth/services/auth-service";
 import { BASE_URL } from "@/constants";
+import { addPostComments, getPostComments } from "@/services/comments.service";
+import { getLoggedUserInfo } from "@/services/user.service";
 
 type CommentModalProps = {
     post: Post;
     onClose: () => void;
-    goToUser: (userId: number) => Promise<void>
+    goToUserProfile: (username: string) => Promise<void>
 };
 
-export default function CommentModal({ post, onClose, goToUser }: CommentModalProps) {
+export default function CommentModal({ post, onClose, goToUserProfile }: CommentModalProps) {
     if (!post) return null;
 
     const [comments, setComments] = useState<PostComment[]>([]);
@@ -177,7 +177,7 @@ export default function CommentModal({ post, onClose, goToUser }: CommentModalPr
                             <div className="col-12 col-md-5 d-flex flex-column flex-grow-1 flex-md-grow-0">
                                 {/* Header */}
                                 <div className="p-3 border-bottom d-flex align-items-center justify-content-between">
-                                    <button className="d-flex align-items-center" onClick={() => goToUser(post.userId)}>
+                                    <button className="d-flex align-items-center bg-transparent border-0" onClick={() => goToUserProfile(post.authorName)}>
                                         <img
                                             src={post.authorProfilePicture ? BASE_URL + post.authorProfilePicture : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                                             className="rounded-circle border me-2"
@@ -191,9 +191,9 @@ export default function CommentModal({ post, onClose, goToUser }: CommentModalPr
                                 {/* Scrollable comments area */}
                                 <div className="flex-grow-1 overflow-y-auto p-3">
                                     {/* Post caption */}
-                                    <button className="d-flex mb-3" onClick={() => goToUser(post.userId)}>
+                                    <button className="d-flex mb-3 bg-transparent border-0" onClick={() => goToUserProfile(post.authorName)}>
                                         <img
-                                            src={BASE_URL + post.authorProfilePicture || "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
+                                            src={post.authorProfilePicture ? BASE_URL + post.authorProfilePicture : "https://cdn-icons-png.flaticon.com/512/149/149071.png"}
                                             className="rounded-circle me-2"
                                             style={{ width: "32px", height: "32px", objectFit: "cover" }}
                                         />

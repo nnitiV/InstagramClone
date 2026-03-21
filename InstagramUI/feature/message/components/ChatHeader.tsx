@@ -1,7 +1,7 @@
 import { BASE_URL } from '@/constants';
 import { UserProfile } from '@/types/user';
 import { redirect } from 'next/navigation';
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 type ChatHeaderProps = {
     user: UserProfile | undefined

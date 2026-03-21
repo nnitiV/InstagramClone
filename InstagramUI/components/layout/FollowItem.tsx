@@ -1,9 +1,7 @@
 import { BASE_URL } from "@/constants";
-import { checkFollowStatus, followUser, unfollowUser } from "@/feature/profile/services/profile.service";
+import { checkFollowStatus, followUser, unfollowUser } from "@/services/follower.service";
 import { NotificationType } from "@/types/notification";
 import { formatShortDate } from "@/utils/date";
-import { formatDistanceToNow, isValid } from "date-fns";
-import { ptBR } from "date-fns/locale";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 

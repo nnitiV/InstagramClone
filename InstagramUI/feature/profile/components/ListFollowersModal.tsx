@@ -1,5 +1,5 @@
 import { Follower } from "@/types/user";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import Link from "next/link";
 import { BASE_URL } from "@/constants";
 import { useDebounce } from "@/hooks/useDebounce";

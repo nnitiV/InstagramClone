@@ -1,8 +1,6 @@
-import React from 'react'
-
 type RenderCommentsProps = {
   comments: any[];
-  level?: number; // Transformei em opcional para facilitar a primeira chamada
+  level?: number;
   reel: {
     id: number;
     username: string;

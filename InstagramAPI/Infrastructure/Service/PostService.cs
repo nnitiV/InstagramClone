@@ -67,7 +67,7 @@ namespace Infrastructure.Service
                 Id = post.Id,
                 Title = post.Title,
                 Caption = post.Caption,
-                AuthorName = post.User?.Name ?? "Unknown",
+                AuthorName = post.User?.Username ?? "Unknown",
                 AuthorProfilePicture = post.User?.ProfilePictureUrl ?? string.Empty,
                 LikeCount = post.PostLikes?.Count ?? 0,
                 CommentCount = post.Comments?.Count ?? 0,
@@ -88,20 +88,20 @@ namespace Infrastructure.Service
         public async Task<List<ResponsePostDto>> GetUserFeedAsync(int currentUserId, DateTime? cursor, int pageSize)
         {
             var posts = await _postRepository.GetUserFeedAsync(currentUserId, cursor, pageSize);
-            return posts.Select(p => new ResponsePostDto
+            return [.. posts.Select(p => new ResponsePostDto
             {
                 Id = p.Id,
                 CreatedAt = p.CreatedAt,
                 Title = p.Title,
                 Caption = p.Caption,
                 UserId = p.UserId,
-                AuthorName = p.User.Name,
+                AuthorName = p.User.Username,
                 AuthorProfilePicture = p.User.ProfilePictureUrl,
                 ContentUrls = p.Contents.Select(c => c.ContentUrl).ToList(),
                 LikeCount = p.PostLikes.Count,
                 CommentCount = p.Comments.Count,
                 IsLiked = p.PostLikes.Any(pl => pl.UserId == currentUserId)
-            }).ToList();
+            })];
         }
         public async Task<int> GetUserPostCount(int userId)
         {

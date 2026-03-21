@@ -3,8 +3,7 @@ import { Post } from "@/types/feed";
 import { useState } from "react";
 import CommentModal from "../comment/CommentModal";
 import PostPopUp from "./PostPopUp";
-import { getUserById } from "@/feature/profile/services/profile.service";
-import { useRouter } from "next/router";
+import { useRouter } from 'next/navigation';
 import PostItem from "./PostItem";
 
 type PostsProps = {
@@ -14,10 +13,8 @@ type PostsProps = {
 export default function Posts({ posts }: PostsProps) {
   const router = useRouter();
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  // TODO: Put username with the post returned
-  const goToUserProfile = async (userId: number) => {
-    const user = await getUserById(userId);
-    router.push(`/profile/${user.username}`);
+  const goToUserProfile = async (username: string) => {
+    router.push(`/profile/${username}`);
   };
 
   return (
@@ -42,7 +39,7 @@ export default function Posts({ posts }: PostsProps) {
           <CommentModal
             post={selectedPost}
             onClose={() => setSelectedPost(null)}
-            goToUser={goToUserProfile}
+            goToUserProfile={goToUserProfile}
           />
         )}
       </div>

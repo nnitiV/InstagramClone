@@ -1,4 +1,3 @@
-import CreatePostModal from "@/components/layout/CreatePostModal";
 import Link from "next/link";
 
 type EmptyUserPosts = {

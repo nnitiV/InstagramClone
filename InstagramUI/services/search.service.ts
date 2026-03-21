@@ -1,5 +1,5 @@
 import { BASE_ROUTE_URL } from "@/constants";
-import { getLoggedUserToken } from "@/feature/auth/services/auth-service";
+import { getLoggedUserToken } from "@/services/auth.service";
 
 export const searchUsers = async (searchTerm: string) => {
     const token = await getLoggedUserToken();

@@ -3,8 +3,6 @@ using Application.Interfaces;
 using Application.Services;
 using Domain.Entities;
 using Domain.Exceptions;
-using Infrastructure.Repositories;
-using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Infrastructure.Service
 {
@@ -27,6 +25,31 @@ namespace Infrastructure.Service
                 throw new ArgumentException("Please, provide a valid post id.");
             }
             Story? story = await _storyRepository.GetStoryByIdAsync(storyId);
+            if (story == null)
+            {
+                return null;
+            }
+            Console.WriteLine("Story id: " + story.User?.Id);
+            StoryDto storyToReturn = new StoryDto
+            {
+                Id = story.Id,
+                Username = story.User?.Username ?? "",
+                UserId = story.User?.Id,
+                ExpiresAt = story.ExpiresAt,
+                MediaUrl = story.MediaUrl,
+                ProfilePictureUrl = story.User?.ProfilePictureUrl ?? "",
+                CreatedAt = story.CreatedAt
+            };
+            return storyToReturn;
+        }
+
+        public async Task<StoryDto?> GetStoryByUsernameAsync(int currentUserId, string username)
+        {
+            if (string.IsNullOrEmpty(username))
+            {
+                throw new ArgumentException("Please, provide a valid username");
+            }
+            Story? story = await _storyRepository.GetStoryByUsernameAsync(username);
             if (story == null)
             {
                 return null;
@@ -75,6 +98,7 @@ namespace Infrastructure.Service
                 Id = story.Id,
                 Username = user.Username,
                 MediaUrl = fileUrl,
+                UserId = user.Id,
                 ProfilePictureUrl = user.ProfilePictureUrl,
                 CreatedAt = story.CreatedAt,
                 ExpiresAt = story.ExpiresAt,
@@ -90,6 +114,7 @@ namespace Infrastructure.Service
                 Id = story.Id,
                 MediaUrl = story.MediaUrl,
                 CreatedAt = story.CreatedAt,
+                UserId = story.User?.Id,
                 ExpiresAt = story.ExpiresAt,
                 Username = story.User?.Username ?? "Unknown",
                 ProfilePictureUrl = story.User?.ProfilePictureUrl

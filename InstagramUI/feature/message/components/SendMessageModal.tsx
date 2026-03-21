@@ -1,6 +1,6 @@
 import { BASE_URL } from "@/constants";
-import { getLoggedUserInfo } from "@/feature/auth/services/auth-service";
-import { getFollowingList } from "@/feature/profile/services/profile.service";
+import { getFollowingList } from "@/services/follower.service";
+import { getLoggedUserInfo } from "@/services/user.service";
 import { Follower } from "@/types/user";
 import Link from "next/link";
 import { redirect } from "next/navigation";

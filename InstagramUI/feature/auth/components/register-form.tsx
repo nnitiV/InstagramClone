@@ -1,6 +1,6 @@
 "use client";
 import { FormEvent, useState } from "react";
-import { handleRegister } from "../services/auth-service";
+import { handleRegister } from "../../../services/auth.service";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { RegisterUser } from "../../../types/auth";

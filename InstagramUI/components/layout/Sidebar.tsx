@@ -1,4 +1,4 @@
-import { handleLogout } from "@/feature/auth/services/auth-service";
+import { handleLogout } from "@/services/auth.service";
 import Link from "next/link";
 import { ReactNode } from "react";
 import SearchOffcanvas from "./SearchOffcanvas";

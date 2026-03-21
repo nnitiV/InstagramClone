@@ -1,82 +1,94 @@
-import { BASE_URL as BASE_URL} from "@/constants";
-import { uploadFile } from "@/feature/auth/services/auth-service";
-import { createPost, updatePost } from "@/services/post.service";
+import { BASE_URL as BASE_URL } from "@/constants";
+import { uploadFile } from "@/services/file.service";
+import { updatePost } from "@/services/post.service";
 import { usePostStore } from "@/stores/usePostStore";
 import { Post } from "@/types/feed";
 import { PostToSave } from "@/types/post";
-import {  Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
 
 type UpdatePostModalProps = {
   onClose: () => void;
-  username: string | undefined;
+  username?: string | undefined;
   postToUpdate: Post;
   setPostToUpdate: Dispatch<SetStateAction<Post | null>>;
 };
 
-export default function UpdatePostModal({ onClose, username, postToUpdate, setPostToUpdate }: UpdatePostModalProps) {
-    const updatePostStore = usePostStore(state => state.updatePost);
-    const [caption, setCaption] = useState<string>(postToUpdate.caption);
-    const [editIndex, setEditIndex] = useState<number | null>(null);
-    const [selectedFiles, setSelectedFiles] = useState<(File | null)[]>(
-      new Array(postToUpdate.contentUrls.length).fill(null),
-    );
-    const [previewUrls, setPreviewUrls] = useState<string[]>(postToUpdate.contentUrls);
-    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0];
-      if (file) {
-        if (editIndex !== null) {
-          setSelectedFiles((prev) => {
-            const newFiles = [...prev];
-            newFiles[editIndex] = file;
-            return newFiles;
-          });
-          setPreviewUrls((prev) => {
-            const newUrls = [...prev];
-            newUrls[editIndex] = URL.createObjectURL(file);
-            return newUrls;
-          });
-          setEditIndex(null);
-        } else {
-          setSelectedFiles((prev) => [...prev, file]);
-          setPreviewUrls((prev) => [...prev, URL.createObjectURL(file)]);
+export default function UpdatePostModal({
+  onClose,
+  postToUpdate,
+  setPostToUpdate,
+}: UpdatePostModalProps) {
+  const updatePostStore = usePostStore((state) => state.updatePost);
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
+  const [caption, setCaption] = useState<string>(postToUpdate.caption);
+  const [editIndex, setEditIndex] = useState<number | null>(null);
+  const discardBtnRef = useRef<HTMLButtonElement>(null);
+  const [selectedFiles, setSelectedFiles] = useState<(File | null)[]>(
+    new Array(postToUpdate.contentUrls.length).fill(null),
+  );
+  const [previewUrls, setPreviewUrls] = useState<string[]>(
+    postToUpdate.contentUrls,
+  );
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (editIndex !== null) {
+        if (previewUrls[editIndex]?.startsWith("blob:")) {
+          URL.revokeObjectURL(previewUrls[editIndex]);
         }
+
+        setSelectedFiles((prev) => {
+          const newFiles = [...prev];
+          newFiles[editIndex] = file;
+          return newFiles;
+        });
+        setPreviewUrls((prev) => {
+          const newUrls = [...prev];
+          newUrls[editIndex] = URL.createObjectURL(file);
+          return newUrls;
+        });
+        setEditIndex(null);
+      } else {
+        setSelectedFiles((prev) => [...prev, file]);
+        setPreviewUrls((prev) => [...prev, URL.createObjectURL(file)]);
       }
+    }
+  };
+
+  const handlePostUpdate = async () => {
+    if (caption.length <= 0 || previewUrls.length <= 0) return;
+    setIsUpdating(true);
+    let uploadedUrls: string[] = [];
+    if (selectedFiles && selectedFiles.length > 0) {
+      uploadedUrls = await Promise.all(
+        selectedFiles
+          .filter((f): f is File => f !== null)
+          .map(async (selectedFile) => {
+            const url = await uploadFile(selectedFile);
+            return url;
+          }),
+      );
+    }
+    const finalContentUrls: string[] = [];
+    let uploadIndex = 0;
+
+    for (const previewUrl of previewUrls) {
+      if (previewUrl.startsWith("blob:")) {
+        finalContentUrls.push(uploadedUrls[uploadIndex]);
+        uploadIndex++;
+      } else {
+        finalContentUrls.push(previewUrl);
+      }
+    }
+    let post: PostToSave = {
+      id: postToUpdate.id,
+      title: "",
+      caption,
+      contentUrls: finalContentUrls,
     };
-   
-    const handlePostUpdate = async () => {
-      if (caption.length <= 0 || previewUrls.length <= 0) return;
-      
-      let uploadedUrls: string[] = [];
-      if (selectedFiles && selectedFiles.length > 0) {
-        uploadedUrls = await Promise.all(
-          selectedFiles
-            .filter((f): f is File => f !== null) 
-            .map(async (selectedFile) => {
-              const url = await uploadFile(selectedFile);
-              return url;
-            }),
-        );
-      }
-      const finalContentUrls: string[] = [];
-      let uploadIndex = 0; 
-
-      for (const previewUrl of previewUrls) {
-          if (previewUrl.startsWith("blob:")) {
-          finalContentUrls.push(uploadedUrls[uploadIndex]);
-          uploadIndex++;
-        } else {
-          finalContentUrls.push(previewUrl);
-        }
-      }
-      let post: PostToSave = {
-        id: postToUpdate.id,
-        title: "",
-        caption,
-        contentUrls: finalContentUrls,
-      };
-
+    try{
       const res = await updatePost(post);
-
+      
       if (res) {
         updatePostStore({
           id: postToUpdate.id,
@@ -84,34 +96,45 @@ export default function UpdatePostModal({ onClose, username, postToUpdate, setPo
           contentUrls: finalContentUrls,
         } as Post);
       }
-
-      document.getElementById("discardChanges")?.click();
+      discardBtnRef.current?.click();
       discardPost();
-    };
+    } catch(e) {
+      console.error(e);
+    } finally {
+      setIsUpdating(false);
+    }
+  };
 
-    const discardPost = () => {
-      setCaption("");
-      setPreviewUrls([]);
-      setSelectedFiles([]); // Volte a deixar apenas [] aqui
-      setPostToUpdate(null);
-    };
+  const discardPost = () => {
+    previewUrls.forEach(url => {
+          if (url.startsWith("blob:")) URL.revokeObjectURL(url);
+      });
+    setCaption("");
+    setPreviewUrls([]);
+    setSelectedFiles([]);
+    setPostToUpdate(null);
+  };
 
-    const removeImage = (indexToRemove: number) => {
-      const urlToDelete = previewUrls[indexToRemove];
+  const removeImage = (indexToRemove: number) => {
+    const urlToDelete = previewUrls[indexToRemove];
 
-      if (urlToDelete.startsWith("blob:")) {
-        URL.revokeObjectURL(urlToDelete);
-      }
+    if (urlToDelete.startsWith("blob:")) {
+      URL.revokeObjectURL(urlToDelete);
+    }
 
-      setPreviewUrls((prev) =>
-        prev.filter((_, index) => index !== indexToRemove),
-      );
-      setSelectedFiles((prev) =>
-        prev.filter((_, index) => index !== indexToRemove),
-      );
-    };
-    return (
-        <div className="modal show d-block" style={{ backgroundColor: "rgba(0,0,0,0.7)" }} onClick={onClose}>
+    setPreviewUrls((prev) =>
+      prev.filter((_, index) => index !== indexToRemove),
+    );
+    setSelectedFiles((prev) =>
+      prev.filter((_, index) => index !== indexToRemove),
+    );
+  };
+  return (
+    <div
+      className="modal show d-block"
+      style={{ backgroundColor: "rgba(0,0,0,0.7)" }}
+      onClick={onClose}
+    >
       <div className="modal-dialog" onClick={(e) => e.stopPropagation()}>
         <div className="modal-content">
           <div className="modal-header">
@@ -167,7 +190,9 @@ export default function UpdatePostModal({ onClose, username, postToUpdate, setPo
                     const containerHeight =
                       previewUrls.length === 1 ? "250px" : "150px";
 
-                    const isVideo = selectedFiles[index]?.type?.startsWith("video/") || previewUrl.includes("mp4");
+                    const isVideo =
+                      selectedFiles[index]?.type?.startsWith("video/") ||
+                      previewUrl.includes("mp4");
                     return (
                       <div
                         key={index}
@@ -176,14 +201,22 @@ export default function UpdatePostModal({ onClose, username, postToUpdate, setPo
                       >
                         {isVideo ? (
                           <video
-                            src={previewUrl.startsWith("blob") ? previewUrl : BASE_URL + previewUrl}
+                            src={
+                              previewUrl.startsWith("blob")
+                                ? previewUrl
+                                : BASE_URL + previewUrl
+                            }
                             className="border object-fit-cover rounded bg-dark"
                             style={{ width: "100%", height: "100%" }}
                             controls
                           />
                         ) : (
                           <img
-                            src={previewUrl.startsWith("blob") ? previewUrl : BASE_URL + previewUrl}
+                            src={
+                              previewUrl.startsWith("blob")
+                                ? previewUrl
+                                : BASE_URL + previewUrl
+                            }
                             alt="Content Preview"
                             className="border object-fit-cover rounded"
                             style={{ width: "100%", height: "100%" }}
@@ -265,6 +298,7 @@ export default function UpdatePostModal({ onClose, username, postToUpdate, setPo
               className="btn btn-secondary"
               id="discardChanges"
               data-bs-dismiss="modal"
+              ref={discardBtnRef}
               onClick={discardPost}
             >
               Discard
@@ -273,12 +307,13 @@ export default function UpdatePostModal({ onClose, username, postToUpdate, setPo
               type="button"
               className="btn btn-primary"
               onClick={handlePostUpdate}
+              disabled={isUpdating}
             >
-              Update post
+              {!isUpdating ? <>Update post</> : <>Updating...</>}
             </button>
           </div>
         </div>
       </div>
     </div>
-    )
+  );
 }
