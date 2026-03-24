@@ -30,10 +30,9 @@ namespace Infrastructure.Repositories
             var rowsChanged = await _context.Comments.Where(c => c.Id == commentId && c.UserId == userId).ExecuteDeleteAsync();
             return rowsChanged > 0;
         }
-        public async Task<bool> UpdateCommentAsync()
+        public async Task UpdateCommentAsync()
         {
-            var rowsChanged = await _context.SaveChangesAsync();
-            return rowsChanged > 0;
+             await _context.SaveChangesAsync();
         }
     }
 }

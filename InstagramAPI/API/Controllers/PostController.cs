@@ -26,7 +26,7 @@ namespace API.Controllers
             {
                 return NotFound(new { message = $"Couldn't find post with id {postId}" });
             }
-            return Ok(post);
+            return Ok(new { post });
         }
         [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetAllUserPostsByUserId(int userId, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
@@ -37,14 +37,14 @@ namespace API.Controllers
             {
                 return NotFound(new { message = $"Couldn't find posts from user with id {userId}" });
             }
-            return Ok(posts);
+            return Ok(new { posts });
         }
         [HttpGet("feed")]
         public async Task<IActionResult> GetUserFeed([FromQuery] DateTime? cursor = null, [FromQuery] int pageSize = 10)
         {
             int userId = User.GetUserId();
             var feed = await _postService.GetUserFeedAsync(userId, cursor, pageSize);
-            return Ok(feed);
+            return Ok(new { feed });
         }
         [HttpPost]
         public async Task<IActionResult> AddPost(CreatePostDto post)
@@ -58,11 +58,7 @@ namespace API.Controllers
         public async Task<IActionResult> UpdatePost(UpdatePostDto post)
         {
             int userId = User.GetUserId();
-            var wasUpdated = await _postService.UpdatePostAsync(post, userId);
-            if (!wasUpdated)
-            {
-                return NotFound(new { message = "Post not found or you are not the owner." });
-            }
+            await _postService.UpdatePostAsync(post, userId);
             return Ok(new { message = "Post updated successfully!", id = post.Id });
         }
         [HttpDelete("{postId}")]
@@ -73,11 +69,7 @@ namespace API.Controllers
                 return BadRequest(new { message = "Please, provide a valid post id." });
             }
             int userId = User.GetUserId();
-            var wasDeleted = await _postService.DeletePostByIdAsync(postId, userId);
-            if (!wasDeleted)
-            {
-                return NotFound(new { message = "Post not found or you are not the owner." });
-            }
+            await _postService.DeletePostByIdAsync(postId, userId);
             return Ok(new { message = "Post deleted succcessfully!", id = postId });
         }
     }

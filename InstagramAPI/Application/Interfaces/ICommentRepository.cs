@@ -7,7 +7,7 @@ namespace Application.Interfaces
         Task<List<Comment>> GetAllCommentsFromPostAsync(int postId);
         Task<Comment?> GetCommentByIdAsync(int commentId);
         Task AddCommentAsync(Comment comment);
+        Task UpdateCommentAsync();
         Task<bool> DeleteCommentByIdAsync(int commentId, int userId);
-        Task<bool> UpdateCommentAsync();
     }
 }

@@ -6,12 +6,12 @@ namespace Application.Interfaces
     {
         Task AddMessageAsync(Message message);
         Task<List<Message>> GetChatHistoryAsync(int userId, int otherUserId);
-        Task<List<Message>> GetGroupChatHistory(int groupid);
+        Task<List<Message>> GetGroupChatHistoryAsync(int groupId);
         Task CreateGroupAsync(Group group);
         Task AddMemberToGroupAsync(GroupMember groupMember);
         Task<Group?> GetGroupWithMembersAsync(int groupid);
 
-        Task<List<Message>> GetLastMessagesSentToUser(int userId);
-        Task<List<Message>> GetGroupLastMessagesSentToUser(int userId);
+        Task<List<Message>> GetLastMessagesSentToUserAsync(int userId);
+        Task<List<Message>> GetGroupLastMessagesSentToUserAsync(int userId);
     }
 }

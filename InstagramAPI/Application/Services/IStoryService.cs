@@ -8,6 +8,6 @@ namespace Application.Services
         Task<StoryDto?> GetStoryByUsernameAsync(int currentUserId, string username);
         Task<StoryDto> CreateStoryAsync(int userId, CreateStoryDto dto);
         Task<List<StoryDto>> GetActiveStoriesAsync(int currentUserId);
-        Task<Boolean> CheckIfStoryStillActive(int storyId);
+        Task<bool> CheckIfStoryStillActive(int storyId);
     }
 }

@@ -13,7 +13,7 @@ namespace Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task FollowUserAsync(Follower follower)
+        public async Task AddFollowAsync(Follower follower)
         {
             await _context.Followers.AddAsync(follower);
             await _context.SaveChangesAsync();
@@ -44,7 +44,7 @@ namespace Infrastructure.Repositories
             return await _context.Followers.AnyAsync(f => f.UserIdFollowing == currentUserId && f.UserIdFollowed == targetId);
         }
 
-        public async Task<bool> UnfollowUserAsync(int currentUserId, int targetUserId)
+        public async Task<bool> DeleteFollowerAsync(int currentUserId, int targetUserId)
         {
             return await _context.Followers.Where(f => f.UserIdFollowing == currentUserId && f.UserIdFollowed == targetUserId).ExecuteDeleteAsync() > 0;
         }

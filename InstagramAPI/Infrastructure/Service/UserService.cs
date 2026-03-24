@@ -163,14 +163,14 @@ namespace Infrastructure.Service
             return user.Id;
         }
 
-        public async Task<bool> DeleteUserById(int userId)
+        public async Task DeleteUserById(int userId)
         {
             if(userId <= 0)
             {
                 throw new ArgumentException("Please, provide a valid id.");
             }
 
-            return await _userRepository.DeleteUserById(userId);
+            await _userRepository.DeleteUserById(userId);
         }
 
         public async Task<bool> UpdateUser(UpdateUserDto userDto, int userId)

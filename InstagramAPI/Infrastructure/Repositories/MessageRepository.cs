@@ -40,7 +40,7 @@ namespace Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<List<Message>> GetGroupChatHistory(int groupid)
+        public async Task<List<Message>> GetGroupChatHistoryAsync(int groupId)
         {
             return await _context.Messages.Include(m => m.Sender).Where(m => m.GroupId == groupid).OrderBy(m => m.SentAt).ToListAsync();
         }
@@ -53,7 +53,7 @@ namespace Infrastructure.Repositories
                 .FirstOrDefaultAsync(g => g.Id == groupId);
         }
 
-        public async Task<List<Message>> GetLastMessagesSentToUser(int userId)
+        public async Task<List<Message>> GetLastMessagesSentToUserAsync(int userId)
         {
             var lastMessagesIds = await _context.Messages
         .Where(m => (m.ReceiverId == userId || m.SenderId == userId) && m.GroupId == null)
@@ -70,7 +70,7 @@ namespace Infrastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<List<Message>> GetGroupLastMessagesSentToUser(int userId)
+        public async Task<List<Message>> GetGroupLastMessagesSentToUserAsync(int userId)
         {
             var groupIds = await _context.GroupMembers
         .Where(gm => gm.UserId == userId)

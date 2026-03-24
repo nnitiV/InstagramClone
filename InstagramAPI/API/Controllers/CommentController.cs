@@ -44,14 +44,14 @@ namespace API.Controllers
         public async Task<IActionResult> UpdateComment(CommentDto updateCommentDto)
         {
             int userId = User.GetUserId();
-            var wasUpdated = await _commentService.UpdateCommentAsync(updateCommentDto, userId);
+            await _commentService.UpdateCommentAsync(updateCommentDto, userId);
             return Ok(new { message = "Comment updated successfully" });
         }
         [HttpDelete("{commentId}")]
         public async Task<IActionResult> DeleteComment(int commentId)
         {
             int userId = User.GetUserId();
-            var wasUpdated = await _commentService.DeleteCommentByIdAsync(commentId, userId);
+            await _commentService.DeleteCommentByIdAsync(commentId, userId);
             return Ok(new { message = "Comment deleted successfully" });
         }
     }

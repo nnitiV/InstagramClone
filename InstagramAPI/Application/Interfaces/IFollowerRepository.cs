@@ -8,8 +8,8 @@ namespace Application.Interfaces
         Task<int> GetTotalFollowingAsync(int userId);
         Task<List<Follower>> GetListOfFollowersAsync(int userId);
         Task<List<Follower>> GetListOfFollowingAsync(int userId);
-        Task FollowUserAsync(Follower follower);
-        Task<bool> UnfollowUserAsync(int followingUserId, int followedUserId);
+        Task AddFollowAsync(Follower follower);
+        Task<bool> DeleteFollowerAsync(int followingUserId, int followedUserId);
         Task<bool> IsFollowingAsync(int followingUserId, int followedUserId);
     }
 }

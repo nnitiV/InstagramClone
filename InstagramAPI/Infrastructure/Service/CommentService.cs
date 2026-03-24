@@ -2,6 +2,7 @@
 using Application.Interfaces;
 using Application.Services;
 using Domain.Entities;
+using Domain.Exceptions;
 
 namespace Infrastructure.Service
 {
@@ -116,7 +117,7 @@ namespace Infrastructure.Service
             await _commentRepository.AddCommentAsync(commentToSave);
             return commentToSave.Id;
         }
-        public async Task<bool> UpdateCommentAsync(CommentDto commentToUpdate, int userId)
+        public async Task UpdateCommentAsync(CommentDto commentToUpdate, int userId)
         {
             if (commentToUpdate == null)
             {
@@ -127,18 +128,15 @@ namespace Infrastructure.Service
                 throw new ArgumentException("Comment id can't be null.");
             }
             Comment? comment = await _commentRepository.GetCommentByIdAsync(commentToUpdate.Id);
-            if (comment == null)
-            {
-                return false;
-            }
+             
             if (comment.UserId != userId)
             {
                 throw new UnauthorizedAccessException("You can only edit your own comments.");
             }
             comment.Text = commentToUpdate.Text;
-            return await _commentRepository.UpdateCommentAsync();
+            await _commentRepository.UpdateCommentAsync();
         }
-        public async Task<bool> DeleteCommentByIdAsync(int commentId, int userId)
+        public async Task DeleteCommentByIdAsync(int commentId, int userId)
         {
             if (commentId <= 0)
             {
@@ -149,11 +147,12 @@ namespace Infrastructure.Service
                 throw new ArgumentException("User id is invalid.");
             }
             ResponseUserDto? userDto = await _userService.GetById(userId);
-            if (userDto == null)
+             
+            bool deletedIt = await _commentRepository.DeleteCommentByIdAsync(commentId, userId);
+            if(!deletedIt)
             {
-                return false;
+                throw new NotFoundException("Comment not found or you don't have permission to delete it.");
             }
-            return await _commentRepository.DeleteCommentByIdAsync(commentId, userId);
         }
     }
 }

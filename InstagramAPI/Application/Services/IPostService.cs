@@ -1,5 +1,4 @@
 ﻿using Application.Dtos;
-using Domain.Entities;
 
 namespace Application.Services
 {
@@ -7,10 +6,10 @@ namespace Application.Services
     {
         Task<ResponsePostDto?> GetPostByIdAsync(int currentUserId, int postId);
         Task<PagedResult<ResponsePostDto>> GetAllUserPostsAsync(int currentUserId, int userId, int page, int pageSize);
-        Task<int> GetUserPostCount(int userId);
+        Task<int> GetUserPostCountAsync(int userId);
         Task<List<ResponsePostDto>> GetUserFeedAsync(int currentUserId, DateTime? cursor, int pageSize);
         Task<CreatedPostDto> AddPostAsync(CreatePostDto createPostDto, int userId);
-        Task<bool> UpdatePostAsync(UpdatePostDto updatePostDto, int userId);
-        Task<bool> DeletePostByIdAsync(int postId, int userId);
+        Task UpdatePostAsync(UpdatePostDto updatePostDto, int userId);
+        Task DeletePostByIdAsync(int postId, int userId);
     }
 }

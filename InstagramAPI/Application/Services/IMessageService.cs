@@ -1,5 +1,4 @@
 ﻿using Application.Dtos;
-using Domain.Entities;
 
 namespace Application.Services
 {
@@ -7,7 +6,7 @@ namespace Application.Services
     {
         Task<MessageDto> SendMessageAsync(int currentUserId, SendMessageDto messageDto);
         Task<List<MessageDto>> GetChatHistoryAsync(int currentUserId, int otherUserid);
-        Task<Group> CreateGroupAsync(int creatorId, CreateGroupDto groupDto);
+        Task<GroupDto> CreateGroupAsync(int creatorId, CreateGroupDto groupDto);
         Task<List<MessageDto>> GetGroupChatHistoryAsync(int groupId);
 
         Task<List<LastMessageDto>> GetLastMessagesSentToUser(int userId);

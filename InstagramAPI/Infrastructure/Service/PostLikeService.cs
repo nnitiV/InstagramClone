@@ -85,7 +85,7 @@ namespace Infrastructure.Service
             }, responsePost.UserId);
         }
 
-        public async Task<bool> UnlikePostAsync(int postId, int userId)
+        public async Task UnlikePostAsync(int postId, int userId)
         {
             if (postId <= 0)
             {
@@ -97,7 +97,7 @@ namespace Infrastructure.Service
             }
 
             var wasUnliked = await _postLikeRepository.UnlikePostAsync(postId, userId);
-            if (!wasUnliked) return false;
+            if (!wasUnliked) return;
 
             ResponsePostDto responsePost = await _postService.GetPostByIdAsync(userId, postId);
             if (responsePost == null)
@@ -105,9 +105,7 @@ namespace Infrastructure.Service
                 throw new ArgumentException("Couldn't find post by id " + postId);
             }
 
-            await _notificationService.DeleteNotification(responsePost.UserId, userId, "PostLike");
-
-            return true;
+            await _notificationService.DeleteNotificationAsync(responsePost.UserId, userId, "PostLike");
         }
     }
 }

@@ -132,7 +132,7 @@ namespace Infrastructure.Service
         }
         public async Task<List<MessageDto>> GetGroupChatHistoryAsync(int groupId)
         {
-            List<Message> messages = await _messageRepository.GetGroupChatHistory(groupId);
+            List<Message> messages = await _messageRepository.GetGroupChatHistoryAsync(groupId);
             return messages.Select(m => new MessageDto
             {
                 Id = m.Id,
@@ -153,8 +153,8 @@ namespace Infrastructure.Service
             {
                 throw new ArgumentException("Please, provide a valid user id.");
             }
-            List<Message> messages = await _messageRepository.GetLastMessagesSentToUser(userId);
-            List<Message> groupMessages = await _messageRepository.GetGroupLastMessagesSentToUser(userId);
+            List<Message> messages = await _messageRepository.GetLastMessagesSentToUserAsync(userId);
+            List<Message> groupMessages = await _messageRepository.GetGroupLastMessagesSentToUserAsync(userId);
 
             List<LastMessageDto> result = new();
             foreach (var m in messages)

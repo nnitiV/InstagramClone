@@ -70,7 +70,7 @@ namespace Infrastructure.Service
 
             return true;
         }
-        public async Task<string> Login(LoginDto loginDto)
+        public async Task<string> LoginAsync(LoginDto loginDto)
         {
             if (string.IsNullOrEmpty(loginDto.Login) || string.IsNullOrEmpty(loginDto.Password))
             {

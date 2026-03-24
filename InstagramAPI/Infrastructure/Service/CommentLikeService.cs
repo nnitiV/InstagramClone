@@ -53,7 +53,7 @@ namespace Infrastructure.Service
             await _commentLikeRepository.LikeCommentAsync(commentLikeToAdd);
         }
 
-        public async Task<bool> UnlikeCommentAsync(int commentId, int userId)
+        public async Task UnlikeCommentAsync(int commentId, int userId)
         {
             if (commentId <= 0)
             {
@@ -63,7 +63,6 @@ namespace Infrastructure.Service
             {
                 throw new ArgumentException("Please, provide a valid user id.");
             }
-            return await _commentLikeRepository.UnlikeCommentAsync(commentId, userId);
         }
     }
 }

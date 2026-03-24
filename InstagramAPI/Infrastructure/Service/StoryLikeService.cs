@@ -77,7 +77,7 @@ namespace Infrastructure.Service
             }, storyDto.UserId.Value);
         }
 
-        public async Task<bool> UnlikeStoryAsync(int storyId, int userId)
+        public async Task UnlikeStoryAsync(int storyId, int userId)
         {
             if (storyId <= 0)
             {
@@ -89,7 +89,7 @@ namespace Infrastructure.Service
             }
 
             var wasUnliked = await _storyLikeRepository.UnlikeStoryAsync(storyId, userId);
-            if (!wasUnliked) return false;
+            if (!wasUnliked) return;
 
             StoryDto storyDto = await _storyService.GetStoryById(storyId);
             if (storyDto == null)
@@ -97,9 +97,7 @@ namespace Infrastructure.Service
                 throw new ArgumentException("Couldn't find post by id " + storyId);
             }
 
-            await _notificationService.DeleteNotification(storyDto.UserId.Value, userId, "StoryLike");
-
-            return true;
+            await _notificationService.DeleteNotificationAsync(storyDto.UserId.Value, userId, "StoryLike");
         }
     }
 }

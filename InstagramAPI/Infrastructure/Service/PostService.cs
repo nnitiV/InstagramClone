@@ -103,7 +103,7 @@ namespace Infrastructure.Service
                 IsLiked = p.PostLikes.Any(pl => pl.UserId == currentUserId)
             })];
         }
-        public async Task<int> GetUserPostCount(int userId)
+        public async Task<int> GetUserPostCountAsync(int userId)
         {
             if (userId <= 0)
             {
@@ -169,7 +169,7 @@ namespace Infrastructure.Service
             }
             return postToReturn;
         }
-        public async Task<bool> UpdatePostAsync(UpdatePostDto updatePostDto, int userId)
+        public async Task UpdatePostAsync(UpdatePostDto updatePostDto, int userId)
         {
             if (updatePostDto == null) throw new ArgumentException("Post can't be empty.");
             if (updatePostDto.Id <= 0) throw new ArgumentException("Please, provide a valid post id.");
@@ -220,9 +220,9 @@ namespace Infrastructure.Service
                 finalContents[i].OrderIndex = i;
             }
 
-            return await _postRepository.UpdatePostAsync(post);
+            await _postRepository.UpdatePostAsync(post);
         }
-        public async Task<bool> DeletePostByIdAsync(int postId, int userId)
+        public async Task DeletePostByIdAsync(int postId, int userId)
         {
             if (postId <= 0)
             {
@@ -248,7 +248,6 @@ namespace Infrastructure.Service
                     PostsCount = responseUserDto.PostsCount - 1,
                 });
             }
-            return wasDeleted;
         }
 
     }
