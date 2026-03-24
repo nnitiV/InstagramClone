@@ -45,15 +45,7 @@ namespace API.Controllers
         public async Task<IActionResult> FollowUser(int targetUserId)
         {
             int currentUserId = User.GetUserId();
-
-            Follower follower = new Follower
-            {
-                UserIdFollowing = currentUserId,
-                UserIdFollowed = targetUserId,
-                CreatedAt = DateTimeOffset.UtcNow
-            };
-
-            await _followerService.FollowUserAsync(follower);
+            await _followerService.FollowUserAsync(currentUserId, targetUserId);
             return Ok(new { message = "User followed successfully!" });
         }
 

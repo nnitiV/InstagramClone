@@ -97,17 +97,16 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 
 var app = builder.Build();
 
-app.UseCors("CorsPolicy");
-
-app.MapHub<ChatHub>("/hubs/chat");
-
 app.UseMiddleware<API.Middleware.ExceptionMiddleware>();
+
+app.UseStaticFiles(); 
+
+app.UseCors("CorsPolicy");
 
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
-app.UseStaticFiles(); 
+app.MapHub<ChatHub>("/hubs/chat");
 
 app.Run();

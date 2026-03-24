@@ -2,6 +2,7 @@
 using Application.Dtos;
 using Application.Services;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
@@ -34,14 +35,14 @@ namespace API.Controllers
         [HttpGet("{storyId}/status")]
         public async Task<IActionResult> CheckIfStoryIsActive(int storyId)
         {
-            return Ok(await _storyService.CheckIfStoryStillActive(storyId));
+            return Ok(new { isActive = await _storyService.CheckIfStoryStillActive(storyId) });
         }
         [HttpPost]
         public async Task<IActionResult> CreateStory([FromForm] CreateStoryDto storyDto)
         {
             int userId = User.GetUserId();
             var createdStory = await _storyService.CreateStoryAsync(userId, storyDto);
-            return CreatedAtAction(nameof(GetActiveStories), new { id = createdStory.Id }, createdStory);
+            return Ok(new { message = "Story created successfully", story = createdStory });
         }
     }
 }

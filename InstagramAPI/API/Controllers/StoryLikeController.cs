@@ -10,13 +10,13 @@ namespace API.Controllers
     public class StoryLikeController : ControllerBase
     {
         private readonly IStoryLikeService _storyLikeService;
-        public StoryLikeController(IStoryLikeService _storyLikeService)
+        public StoryLikeController(IStoryLikeService storyLikeService)
         {
-            this._storyLikeService = _storyLikeService;
+            this._storyLikeService = storyLikeService;
         }
         [Authorize]
         [HttpPost("{storyId}")]
-        public async Task<IActionResult> LikePost(int storyId)
+        public async Task<IActionResult> LikeStory(int storyId)
         {
             int userId = User.GetUserId();
             await _storyLikeService.LikeStoryAsync(storyId, userId);
@@ -24,7 +24,7 @@ namespace API.Controllers
         }
         [Authorize]
         [HttpDelete("{storyId}")]
-        public async Task<IActionResult> UnlikePost(int storyId)
+        public async Task<IActionResult> UnlikeStory(int storyId)
         {
             int userId = User.GetUserId();
             await _storyLikeService.UnlikeStoryAsync(storyId, userId);

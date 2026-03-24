@@ -6,9 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/post")]
-    public class PostController: ControllerBase
+    public class PostController : ControllerBase
     {
         private readonly IPostService _postService;
 
@@ -21,7 +22,7 @@ namespace API.Controllers
         {
             int currentUserId = User.GetUserId();
             ResponsePostDto? post = await _postService.GetPostByIdAsync(currentUserId, postId);
-            if(post == null)
+            if (post == null)
             {
                 return NotFound(new { message = $"Couldn't find post with id {postId}" });
             }
@@ -38,49 +39,36 @@ namespace API.Controllers
             }
             return Ok(posts);
         }
-        [Authorize]
         [HttpGet("feed")]
-        public async Task<IActionResult> GetUserFeed([FromQuery] DateTime? cursor = null, [FromQuery] int pageSize = 10) 
+        public async Task<IActionResult> GetUserFeed([FromQuery] DateTime? cursor = null, [FromQuery] int pageSize = 10)
         {
             int userId = User.GetUserId();
             var feed = await _postService.GetUserFeedAsync(userId, cursor, pageSize);
             return Ok(feed);
         }
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddPost(CreatePostDto post)
         {
             int userId = User.GetUserId();
-            if (post == null)
-            {
-                return BadRequest(new { message = "Post can't be null." });
-            }
             CreatedPostDto postToReturn = await _postService.AddPostAsync(post, userId);
-            var response = new { message = "Added post with success!", post = postToReturn};
-            return CreatedAtAction(nameof(GetPostById), new { postId= postToReturn.Id }, response);
+            var response = new { message = "Added post with success!", post = postToReturn };
+            return CreatedAtAction(nameof(GetPostById), new { postId = postToReturn.Id }, response);
         }
-        [Authorize]
         [HttpPut]
         public async Task<IActionResult> UpdatePost(UpdatePostDto post)
         {
-            if (post == null)
-            {
-                return BadRequest(new { message = "Post can't be null." });
-            }
             int userId = User.GetUserId();
             var wasUpdated = await _postService.UpdatePostAsync(post, userId);
-            if(!wasUpdated)
+            if (!wasUpdated)
             {
                 return NotFound(new { message = "Post not found or you are not the owner." });
             }
-
             return Ok(new { message = "Post updated successfully!", id = post.Id });
         }
-        [Authorize]
         [HttpDelete("{postId}")]
         public async Task<IActionResult> DeletePost(int postId)
         {
-            if(postId <= 0)
+            if (postId <= 0)
             {
                 return BadRequest(new { message = "Please, provide a valid post id." });
             }
@@ -90,7 +78,6 @@ namespace API.Controllers
             {
                 return NotFound(new { message = "Post not found or you are not the owner." });
             }
-
             return Ok(new { message = "Post deleted succcessfully!", id = postId });
         }
     }

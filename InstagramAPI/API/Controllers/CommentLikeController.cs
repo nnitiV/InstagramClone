@@ -37,10 +37,10 @@ namespace API.Controllers
         }
         [Authorize]
         [HttpGet("{commentId}/status")]
-        public async Task<IActionResult> HasUserLikedIt(int postId)
+        public async Task<IActionResult> HasUserLikedIt(int commentId)
         {
             int userId = User.GetUserId();
-            return Ok(await _commentLikeService.HasUserLikedItAsync(postId, userId));
+            return Ok(await _commentLikeService.HasUserLikedItAsync(commentId, userId));
         }
     }
 }

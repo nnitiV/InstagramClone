@@ -11,7 +11,7 @@ namespace API.Extensions
             {
                 return id;
             }
-            throw new Exception("User ID claim missing or invalid.");
+            throw new UnauthorizedAccessException("User ID claim missing or invalid.");
         }
     }
 }

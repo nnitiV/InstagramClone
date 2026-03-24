@@ -18,24 +18,32 @@ namespace Infrastructure.Service
             _notificationService = notificationService;
         }
 
-        public async Task FollowUserAsync(Follower follower)
+        public async Task FollowUserAsync(int followingUserId, int followedUserId)
         {
-            if (follower == null || follower.UserIdFollowed <= 0 || follower.UserIdFollowing <= 0)
+            if (followedUserId <= 0 || followingUserId <= 0)
                 throw new ArgumentException("Please, provide valid values.");
 
-            if (follower.UserIdFollowing == follower.UserIdFollowed)
+            if (followingUserId  == followedUserId)
                 throw new ArgumentException("You cannot follow yourself.");
 
-            if (await IsFollowingAsync(follower.UserIdFollowing, follower.UserIdFollowed))
+            if (await IsFollowingAsync(followingUserId, followedUserId))
                 throw new ArgumentException("You are already following this user.");
 
-            ResponseUserDto followedUser = await _userService.GetById(follower.UserIdFollowed);
-            ResponseUserDto followingUser = await _userService.GetById(follower.UserIdFollowing);
+            
+            ResponseUserDto followedUser = await _userService.GetById(followedUserId);
+            ResponseUserDto followingUser = await _userService.GetById(followingUserId);
 
             if (followedUser == null || followingUser == null)
             {
                 throw new ArgumentException("One or both users do not exist.");
             }
+
+            Follower follower = new Follower
+            {
+                UserIdFollowing = followingUserId,
+                UserIdFollowed = followedUserId,
+                CreatedAt = DateTimeOffset.UtcNow
+            };
 
             await _followerRepository.FollowUserAsync(follower);
 

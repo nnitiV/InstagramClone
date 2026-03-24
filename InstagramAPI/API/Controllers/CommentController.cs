@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/comment")]
     public class CommentController : ControllerBase
@@ -20,7 +21,7 @@ namespace API.Controllers
         {
             var currentUserId = User.GetUserId();
             var comments = await _commentService.GetAllCommentsFromPostAsync(currentUserId, postId);
-            return Ok(comments);
+            return Ok(new { comments });
         }
         [HttpGet("comment/{commentId}")]
         public async Task<IActionResult> GetCommentById(int commentId)
@@ -30,21 +31,15 @@ namespace API.Controllers
             {
                 return NotFound(new { message = $"Couldn't find comment with id {commentId}" });
             }
-            return Ok(comment);
+            return Ok(new { comment });
         }
-        [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddComment(CreateCommentDto createCommentDto)
         {
             int userId = User.GetUserId();
-            if (createCommentDto == null)
-            {
-                return BadRequest(new { message = "Comment can't be null." });
-            }
             int createdCommentId = await _commentService.AddCommentAsync(createCommentDto, userId);
             return CreatedAtAction(nameof(GetCommentById), new { commentId = createdCommentId }, new { message = "Comment created successfully", id = createdCommentId });
         }
-        [Authorize]
         [HttpPut]
         public async Task<IActionResult> UpdateComment(CommentDto updateCommentDto)
         {
@@ -52,7 +47,6 @@ namespace API.Controllers
             var wasUpdated = await _commentService.UpdateCommentAsync(updateCommentDto, userId);
             return Ok(new { message = "Comment updated successfully" });
         }
-        [Authorize]
         [HttpDelete("{commentId}")]
         public async Task<IActionResult> DeleteComment(int commentId)
         {

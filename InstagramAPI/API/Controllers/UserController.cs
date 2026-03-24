@@ -19,21 +19,20 @@ namespace API.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetUserById(int id)
         {
-            ResponseUserDto? responseUserDto = null;
-            responseUserDto = await _userService.GetById(id);
-            if (responseUserDto == null)
+            ResponseUserDto? user = null;
+            user = await _userService.GetById(id);
+            if (user == null)
             {
                 return NotFound(new { message = $"User with id {id} not found." });
             }
 
-            return Ok(responseUserDto);
+            return Ok(new { user });
         }
         [HttpGet("{username}")]
         public async Task<IActionResult> GetUserByUsername(string username)
         {
             if (string.IsNullOrWhiteSpace(username))
                 return BadRequest(new { message = "Username cannot be empty." });
-            Console.WriteLine("Username: " + username);
             ResponseUserDto user = await _userService.GetUserByUsername(username);
             if (user == null) return NotFound(new { message = "User not found." });
             return Ok(new { user });
@@ -68,6 +67,7 @@ namespace API.Controllers
             }
             return Ok(new { message = "User updated successfully" });
         }
+        [Authorize]
         [HttpGet("search")]
         public async Task<IActionResult> Search([FromQuery] string search)
         {

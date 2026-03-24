@@ -23,10 +23,7 @@ namespace API.Controllers
         public async Task<IActionResult> GetUserNotifications()
         {
             int userId = User.GetUserId();
-            Console.WriteLine($"Getting notifications for user ${userId}");
-
             var notifications = await _notificationService.GetUserNotificationsAsync(userId);
-
             return Ok(new {notifications});
         }
     }

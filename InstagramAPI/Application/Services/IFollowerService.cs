@@ -10,7 +10,7 @@ namespace Application.Services
         Task<int> GetTotalFollowingAsync(int userId);
         Task<List<FollowerDto>> GetListOfFollowersAsync(int userId);
         Task<List<FollowerDto>> GetListOfFollowingAsync(int userId);
-        Task FollowUserAsync(Follower follower);
+        Task FollowUserAsync(int followingUserId, int followedUserId);
         Task<bool> UnfollowUserAsync(int followingUserId, int followedUserId);
         Task<bool> IsFollowingAsync(int followingUserId, int followedUserId);
     }

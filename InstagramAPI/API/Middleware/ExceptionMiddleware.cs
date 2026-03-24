@@ -54,8 +54,7 @@ namespace API.Middleware
                     message = ex.Message;
                     break;
                 default:
-                    statusCode = (int)HttpStatusCode.InternalServerError; // 404
-                    message = ex.Message;
+                    statusCode = (int)HttpStatusCode.InternalServerError; // 500
                     break;
             }
             context.Response.StatusCode = statusCode;
@@ -64,7 +63,7 @@ namespace API.Middleware
             {
                 StatusCode = statusCode,
                 Message = message,
-                Details = ex.StackTrace?.ToString()
+                Details = ex.StackTrace?.ToString() // To remove when switching to production
             };
 
             var json = JsonSerializer.Serialize(response);
