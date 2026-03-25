@@ -1,17 +1,16 @@
-﻿using Application.Dtos;
-using Domain.Entities;
+﻿using Domain.Entities;
 
 namespace Application.Interfaces
 {
     public interface IUserRepository
     {
-        Task<User?> GetById(int id);
-        Task<User?> GetUserByEmail(string email);
-        Task<User?> GetUserByUsername(string username);
+        Task<User?> GetByIdAsync(int id);
+        Task<User?> GetUserByEmailAsync(string email);
+        Task<User?> GetUserByUsernameAsync(string username);
         Task<List<User>> SearchUsersAsync(string search, int userId);
-        Task AddUser(User user);
-        Task<bool> UpdateUser(User user);
-        Task<bool> DeleteUserById(int userId);
-        Task<Group> GetGroupById(int groupId);
+        Task AddUserAsync(User user);
+        Task<bool> UpdateUserAsync(User user);
+        Task<bool> DeleteUserByIdAsync(int userId);
+        Task<Group?> GetGroupByIdAsync(int groupId);
     }
 }

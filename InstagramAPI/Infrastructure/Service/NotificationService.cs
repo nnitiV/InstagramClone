@@ -1,10 +1,9 @@
 ﻿using Application.Dtos;
 using Application.Interfaces;
-using Application.Services;
 using Domain.Entities;
-using Microsoft.AspNetCore.SignalR;
+using Domain.Exceptions;
 
-namespace Infrastructure.Service
+namespace Application.Services
 {
     public class NotificationService : INotificationService
     {
@@ -19,8 +18,8 @@ namespace Infrastructure.Service
 
         public async Task AddNotificationAsync(NotificationDto notificationDto, int receiverId)
         {
+            if (notificationDto == null) throw new BadRequestException("Please, provide a notification.");
             if (notificationDto.TriggerById == receiverId) return;
-            if (notificationDto == null) throw new ArgumentNullException("Please, provide a notification.");
 
             var notification = new Notification
             {
@@ -52,13 +51,9 @@ namespace Infrastructure.Service
 
         public async Task<List<NotificationDto>> GetUserNotificationsAsync(int userId)
         {
-            if (userId <= 0)
-            {
-                throw new ArgumentOutOfRangeException("Please, provide a valid user id.");
-            }
-
             List<Notification> notifications = await _notificationRepository.GetUserNotificationsAsync(userId);
-            return [.. notifications.Select(n => new NotificationDto
+
+            return notifications.Select(n => new NotificationDto
             {
                 Id = n.Id,
                 Type = n.Type,
@@ -70,7 +65,7 @@ namespace Infrastructure.Service
                 TriggerByPhoto = n.TriggerBy.ProfilePictureUrl,
                 PostId = n.PostId,
                 StoryId = n.StoryId
-            })];
+            }).ToList();
         }
     }
 }

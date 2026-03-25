@@ -10,7 +10,7 @@ namespace Application.Services
         Task<ResponseUserDto?> GetUserByEmail(string email);
         Task<List<SearchUserDto>> SearchUsersAsync(string search, int userId);
         Task<int> AddUser(CreateUserDto user);
-        Task UpdateUser(UpdateUserDto user, int userId);
+        Task<bool> UpdateUser(UpdateUserDto user, int userId);
         Task<bool> UpdateUserInternally(UpdateUserDto userDto);
         Task<bool> DeleteUserById(int userId);
         Task<Group> GetGroupById(int groupId);

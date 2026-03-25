@@ -1,5 +1,6 @@
 ﻿
 using Application.Services;
+using Domain.Exceptions;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using System.Runtime.CompilerServices;
@@ -11,6 +12,7 @@ namespace Infrastructure.Service
     public class FileService : IFileService
     {
         private readonly IWebHostEnvironment _environment;
+        private const long MaxFileSizeBytes = 20971520;
         public FileService(IWebHostEnvironment env) 
         {
             _environment = env;
@@ -20,7 +22,11 @@ namespace Infrastructure.Service
         {
             if(file == null || file.Length == 0)
             {
-                throw new ArgumentException("File is empty.");
+                throw new BadRequestException("File is empty.");
+            }
+            if (file.Length > MaxFileSizeBytes)
+            {
+                throw new BadRequestException("File exceeds the maximum allowed size of 20MB.");
             }
             var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".gif", ".webp", ".jfif", ".mp4",
             ".webm",".ogg",".mov",".avi"};
@@ -28,7 +34,7 @@ namespace Infrastructure.Service
 
             if (!allowedExtensions.Contains(extension))
             {
-                throw new ArgumentException("Invalid file type. Only images are allowed for now.");
+                throw new BadRequestException("Invalid file type.");
             }
 
             var fileName = $"{Guid.NewGuid()}{extension}";

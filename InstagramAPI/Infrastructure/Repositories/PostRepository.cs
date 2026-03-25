@@ -30,7 +30,6 @@ namespace Infrastructure.Repositories
         public async Task<List<Post>> GetAllUserPostsAsync(int userId, int page, int pageSize)
         {
             return await _context.Posts.Where(p => p.UserId == userId)
-                .Include(p => p.Comments)
                 .Include(p => p.User)
                 .Include(p => p.PostLikes)
                 .Include(p => p.Contents)
@@ -41,8 +40,12 @@ namespace Infrastructure.Repositories
         {
             DateTime cutoffDate = cursor ?? DateTime.UtcNow;
 
-            return await _context.Posts
+            return await _context.Followers
                 .Where(p => _context.Followers.Any(f => f.UserIdFollowing == userId && f.UserIdFollowed == p.UserId))
+                .Join(_context.Posts,
+                  f => f.UserIdFollowed,         
+                  p => p.UserId,               
+                  (f, p) => p)
                 .Where(p => p.CreatedAt < cutoffDate)
                 .Include(p => p.Comments)
                 .Include(p => p.User)
@@ -57,10 +60,9 @@ namespace Infrastructure.Repositories
         {
             return await _context.Posts.CountAsync(p => p.UserId == userId);
         }
-        public async Task<bool> UpdatePostAsync(Post updatePost)
+        public async Task UpdatePostAsync()
         {
-            var rowsChanged = await _context.SaveChangesAsync();
-            return rowsChanged > 0;
+            await _context.SaveChangesAsync();
         }
         public async Task<bool> DeletePostByIdAsync(int postId, int userId)
         {

@@ -1,16 +1,16 @@
 ﻿using Application.Dtos;
 using Application.Interfaces;
-using Application.Services;
 using Domain.Entities;
 using Domain.Exceptions;
 
-namespace Infrastructure.Service
+namespace Application.Services
 {
     public class StoryService : IStoryService
     {
         private readonly IStoryRepository _storyRepository;
         private readonly IFileService _fileService;
         private readonly IUserService _userService;
+
         public StoryService(IStoryRepository storyRepository, IFileService fileService, IUserService userService)
         {
             _storyRepository = storyRepository;
@@ -20,17 +20,12 @@ namespace Infrastructure.Service
 
         public async Task<StoryDto?> GetStoryById(int storyId)
         {
-            if (storyId <= 0)
-            {
-                throw new ArgumentException("Please, provide a valid post id.");
-            }
+            if (storyId <= 0) throw new BadRequestException("Please, provide a valid story id.");
+
             Story? story = await _storyRepository.GetStoryByIdAsync(storyId);
-            if (story == null)
-            {
-                return null;
-            }
-            Console.WriteLine("Story id: " + story.User?.Id);
-            StoryDto storyToReturn = new StoryDto
+            if (story == null) return null;
+
+            return new StoryDto
             {
                 Id = story.Id,
                 Username = story.User?.Username ?? "",
@@ -40,21 +35,17 @@ namespace Infrastructure.Service
                 ProfilePictureUrl = story.User?.ProfilePictureUrl ?? "",
                 CreatedAt = story.CreatedAt
             };
-            return storyToReturn;
         }
 
         public async Task<StoryDto?> GetStoryByUsernameAsync(int currentUserId, string username)
         {
-            if (string.IsNullOrEmpty(username))
-            {
-                throw new ArgumentException("Please, provide a valid username");
-            }
+            if (string.IsNullOrWhiteSpace(username))
+                throw new BadRequestException("Please, provide a valid username.");
+
             Story? story = await _storyRepository.GetStoryByUsernameAsync(username);
-            if (story == null)
-            {
-                return null;
-            }
-            StoryDto storyToReturn = new StoryDto
+            if (story == null) return null;
+
+            return new StoryDto
             {
                 Id = story.Id,
                 Username = story.User?.Username ?? "",
@@ -64,24 +55,15 @@ namespace Infrastructure.Service
                 ProfilePictureUrl = story.User?.ProfilePictureUrl ?? "",
                 CreatedAt = story.CreatedAt
             };
-            return storyToReturn;
         }
 
         public async Task<StoryDto> CreateStoryAsync(int userId, CreateStoryDto dto)
         {
-            if(userId <= 0)
-            {
-                throw new ArgumentException("User id can't be null.");
-            }
+            if (dto.File == null) throw new BadRequestException("Please, provide a file for story creation.");
+
             ResponseUserDto user = await _userService.GetById(userId);
-            if(user == null)
-            {
-                throw new NotFoundException("Couldn't find user with id" + userId);
-            }
-            if (dto.File == null)
-            {
-                throw new ArgumentException("Please, provide a file for story creation.");
-            }
+            if (user == null) throw new NotFoundException($"Couldn't find user with id {userId}");
+
             string fileUrl = await _fileService.SaveFileAsync(dto.File);
 
             Story story = new Story
@@ -91,6 +73,7 @@ namespace Infrastructure.Service
                 CreatedAt = DateTimeOffset.UtcNow,
                 ExpiresAt = DateTimeOffset.UtcNow.AddHours(24)
             };
+
             await _storyRepository.CreateStoryAsync(story);
 
             return new StoryDto
@@ -109,7 +92,7 @@ namespace Infrastructure.Service
         {
             var stories = await _storyRepository.GetActiveStoriesAsync(currentUserId);
 
-            var storyDtos = stories.Select(story => new StoryDto
+            return stories.Select(story => new StoryDto
             {
                 Id = story.Id,
                 MediaUrl = story.MediaUrl,
@@ -119,12 +102,11 @@ namespace Infrastructure.Service
                 Username = story.User?.Username ?? "Unknown",
                 ProfilePictureUrl = story.User?.ProfilePictureUrl
             }).ToList();
-
-            return storyDtos;
         }
 
         public async Task<bool> CheckIfStoryStillActive(int storyId)
         {
+            if (storyId <= 0) throw new BadRequestException("Please, provide a valid story id.");
             return await _storyRepository.CheckIfStoryStillActive(storyId);
         }
     }

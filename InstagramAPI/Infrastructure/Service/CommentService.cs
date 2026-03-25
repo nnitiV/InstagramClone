@@ -21,7 +21,7 @@ namespace Infrastructure.Service
         {
             if(postId <= 0)
             {
-                throw new ArgumentException("Post id can't be null.");
+                throw new BadRequestException("Post id can't be null.");
             }
             ResponsePostDto? post = await _postService.GetPostByIdAsync(currentUserId, postId);
             if (post == null)
@@ -50,7 +50,7 @@ namespace Infrastructure.Service
         {
             if(commentId <= 0)
             {
-                throw new ArgumentException("Comment id is invalid.");
+                throw new BadRequestException("Comment id is invalid.");
             }
             Comment? comment = await _commentRepository.GetCommentByIdAsync(commentId);
             if(comment == null)
@@ -74,38 +74,26 @@ namespace Infrastructure.Service
         {
             if(comment == null)
             {
-                throw new ArgumentException("Comment can't be null.");
-            }
-            if(userId <= 0)
-            {
-                throw new ArgumentException("Invalid user id.");
+                throw new BadRequestException("Comment can't be null.");
             }
             if(string.IsNullOrEmpty(comment.Text))
             {
-                throw new ArgumentException("Please, insert a text.");
+                throw new BadRequestException("Please, insert a text.");
             }
             if(comment.Text.Length > 255)
             {
-                throw new ArgumentException("Comment text can't be bigger than 255 characters.");
+                throw new BadRequestException("Comment text can't be bigger than 255 characters.");
             }
             if(comment.UserId <= 0)
             {
-                throw new ArgumentException("Invalid user id.");
+                throw new BadRequestException("Invalid user id.");
             }
             if(comment.PostId <= 0)
             {
-                throw new ArgumentException("Invalid post id.");
+                throw new BadRequestException("Invalid post id.");
             }
-            ResponsePostDto? postDto = await _postService.GetPostByIdAsync(userId, comment.PostId); 
-            if (postDto == null)
-            {
-                throw new ArgumentException($"Post {comment.PostId} not found.");
-            }
-            ResponseUserDto? userDto = await _userService.GetById(comment.UserId); 
-            if (userDto == null)
-            {
-                throw new ArgumentException($"Post {comment.PostId} not found.");
-            }
+            ResponsePostDto? postDto = await _postService.GetPostByIdAsync(userId, comment.PostId) ?? throw new BadRequestException($"Post {comment.PostId} not found.");
+
             Comment commentToSave = new Comment
             {
                 Text = comment.Text,
@@ -121,14 +109,14 @@ namespace Infrastructure.Service
         {
             if (commentToUpdate == null)
             {
-                throw new ArgumentException("Comment can't be null.");
+                throw new BadRequestException("Comment can't be null.");
             }
             if (commentToUpdate.Id <= 0)
             {
-                throw new ArgumentException("Comment id can't be null.");
+                throw new BadRequestException("Comment id can't be null.");
             }
-            Comment? comment = await _commentRepository.GetCommentByIdAsync(commentToUpdate.Id);
-             
+            Comment? comment = await _commentRepository.GetCommentByIdAsync(commentToUpdate.Id) ?? throw new NotFoundException("Comment not found.");
+            
             if (comment.UserId != userId)
             {
                 throw new UnauthorizedAccessException("You can only edit your own comments.");
@@ -140,13 +128,8 @@ namespace Infrastructure.Service
         {
             if (commentId <= 0)
             {
-                throw new ArgumentException("Comment id is invalid.");
+                throw new BadRequestException("Comment id is invalid.");
             }
-            if (userId <= 0)
-            {
-                throw new ArgumentException("User id is invalid.");
-            }
-            ResponseUserDto? userDto = await _userService.GetById(userId);
              
             bool deletedIt = await _commentRepository.DeleteCommentByIdAsync(commentId, userId);
             if(!deletedIt)

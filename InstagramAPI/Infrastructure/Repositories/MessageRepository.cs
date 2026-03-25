@@ -42,7 +42,7 @@ namespace Infrastructure.Repositories
 
         public async Task<List<Message>> GetGroupChatHistoryAsync(int groupId)
         {
-            return await _context.Messages.Include(m => m.Sender).Where(m => m.GroupId == groupid).OrderBy(m => m.SentAt).ToListAsync();
+            return await _context.Messages.Include(m => m.Sender).Where(m => m.GroupId == groupId).OrderBy(m => m.SentAt).ToListAsync();
         }
 
         public async Task<Group?> GetGroupWithMembersAsync(int groupId)
@@ -61,7 +61,6 @@ namespace Infrastructure.Repositories
         .Select(g => g.OrderByDescending(m => m.SentAt).Select(m => m.Id).FirstOrDefault())
         .ToListAsync();
 
-            // Agora buscamos as mensagens completas com os Includes usando os IDs que encontramos
             return await _context.Messages
                 .Include(m => m.Sender)
                 .Include(m => m.Receiver)

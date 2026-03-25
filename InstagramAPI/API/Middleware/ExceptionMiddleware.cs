@@ -37,10 +37,7 @@ namespace API.Middleware
 
             switch(ex)
             {
-                case UserAlreadyExistsException:
-                    statusCode = (int)HttpStatusCode.Conflict;
-                    message = ex.Message;
-                    break;
+                case BadRequestException: // Add this!
                 case ArgumentException:
                     statusCode = (int)HttpStatusCode.BadRequest; // 400
                     message = ex.Message;
@@ -51,6 +48,11 @@ namespace API.Middleware
                     break;
                 case NotFoundException:
                     statusCode = (int)HttpStatusCode.NotFound; // 404
+                    message = ex.Message;
+                    break;
+            case UserAlreadyExistsException:
+            case ConflictException:
+                    statusCode = (int)HttpStatusCode.Conflict; // 409
                     message = ex.Message;
                     break;
                 default:

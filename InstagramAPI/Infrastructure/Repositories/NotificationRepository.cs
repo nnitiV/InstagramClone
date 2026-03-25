@@ -23,7 +23,7 @@ namespace Infrastructure.Repositories
             var rowsAffected = await _context.Notifications
                 .Where(n => n.UserId == receiverId
                          && n.TriggerById == triggerUserId
-                         && n.Type.ToLower() == notificationType.ToLower())
+                         && n.Type == notificationType)
                 .ExecuteDeleteAsync();
 
             return rowsAffected > 0;
@@ -31,7 +31,6 @@ namespace Infrastructure.Repositories
 
         public async Task<List<Notification>> GetUserNotificationsAsync(int userId)
         {
-            Console.WriteLine($"Fetching notification for user: {userId}");
             return await _context.Notifications.Include(n => n.TriggerBy).Where(n => n.UserId == userId)
                 .OrderByDescending(n => n.CreatedAt).ToListAsync();
         }

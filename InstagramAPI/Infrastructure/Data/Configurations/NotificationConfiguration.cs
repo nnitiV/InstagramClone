@@ -12,7 +12,7 @@ namespace Infrastructure.Data.Configurations
 
             builder.Property(n => n.Type).HasMaxLength(50).IsRequired();
 
-            builder.HasOne(n => n.User).WithMany().OnDelete(DeleteBehavior.Cascade); 
+            builder.HasOne(n => n.User).WithMany().HasForeignKey(n => n.UserId).OnDelete(DeleteBehavior.Cascade); 
 
             builder.HasOne(n => n.TriggerBy).WithMany().OnDelete(DeleteBehavior.Restrict);
 

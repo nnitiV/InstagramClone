@@ -1,5 +1,4 @@
-﻿using Application.Dtos;
-using Domain.Entities;
+﻿using Domain.Entities;
 
 namespace Application.Interfaces
 {
@@ -10,7 +9,7 @@ namespace Application.Interfaces
         Task<List<Post>> GetUserFeedAsync(int userId, DateTime? cursor, int pageSize);
         Task<int> GetUserPostCountAsync(int userId);
         Task AddPostAsync(Post post);
-        Task<bool> UpdatePostAsync(Post updatePost);
+        Task UpdatePostAsync();
         Task<bool> DeletePostByIdAsync(int postId, int userId);
     }
 }

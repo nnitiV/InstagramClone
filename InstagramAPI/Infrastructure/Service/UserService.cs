@@ -1,33 +1,25 @@
 ﻿using Application.Dtos;
 using Application.Interfaces;
-using Application.Services;
 using Domain.Entities;
 using Domain.Exceptions;
-using Microsoft.IdentityModel.Tokens;
 
-namespace Infrastructure.Service
+namespace Application.Services
 {
-    public class UserService: IUserService
+    public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+
         public UserService(IUserRepository userRepository)
         {
             _userRepository = userRepository;
         }
+
         public async Task<ResponseUserDto?> GetById(int id)
         {
-            if(id <= 0)
-            {
-                throw new ArgumentException("Please, provide a valid id");
-            }
+            User? user = await _userRepository.GetByIdAsync(id);
+            if (user == null) return null;
 
-            User? user = await _userRepository.GetById(id);
-            if(user == null)
-            {
-                return null;
-            }
-
-            ResponseUserDto userDto = new ResponseUserDto
+            return new ResponseUserDto
             {
                 Id = user.Id,
                 Username = user.Username,
@@ -41,22 +33,16 @@ namespace Infrastructure.Service
                 FollowingCount = user.FollowingCount,
                 PostsCount = user.PostsCount
             };
-
-            return userDto;
         }
 
         public async Task<ResponseUserDto?> GetUserByUsername(string username)
         {
-            if (string.IsNullOrEmpty(username))
-            {
-                throw new ArgumentException("Username can't be null!");
-            }
-            User? userDB = await _userRepository.GetUserByUsername(username);
-            if (userDB == null)
-            {
-                return null;
-            }
-            ResponseUserDto? userDto = new ResponseUserDto
+            if (string.IsNullOrWhiteSpace(username)) throw new BadRequestException("Username can't be empty!");
+
+            User? userDB = await _userRepository.GetUserByUsernameAsync(username);
+            if (userDB == null) return null;
+
+            return new ResponseUserDto
             {
                 Id = userDB.Id,
                 Username = userDB.Username,
@@ -70,21 +56,16 @@ namespace Infrastructure.Service
                 FollowingCount = userDB.FollowingCount,
                 PostsCount = userDB.PostsCount
             };
-            return userDto;
         }
 
         public async Task<ResponseUserDto?> GetUserByEmail(string email)
         {
-            if (string.IsNullOrEmpty(email))
-            {
-                throw new ArgumentException("Email can't be null!");
-            }
-            User? userDB = await _userRepository.GetUserByEmail(email);
-            if (userDB == null)
-            {
-                return null;
-            }
-            ResponseUserDto? userDto = new ResponseUserDto
+            if (string.IsNullOrWhiteSpace(email)) throw new BadRequestException("Email can't be empty!");
+
+            User? userDB = await _userRepository.GetUserByEmailAsync(email);
+            if (userDB == null) return null;
+
+            return new ResponseUserDto
             {
                 Id = userDB.Id,
                 Username = userDB.Username,
@@ -98,14 +79,12 @@ namespace Infrastructure.Service
                 FollowingCount = userDB.FollowingCount,
                 PostsCount = userDB.PostsCount
             };
-            return userDto;
         }
+
         public async Task<List<SearchUserDto>> SearchUsersAsync(string search, int userId)
         {
-            if(string.IsNullOrEmpty(search))
-            {
-                return null;
-            }
+            if (string.IsNullOrWhiteSpace(search)) return new List<SearchUserDto>(); // Always return empty list, not null!
+
             List<User> users = await _userRepository.SearchUsersAsync(search, userId);
             return users.Select(u => new SearchUserDto
             {
@@ -118,27 +97,17 @@ namespace Infrastructure.Service
 
         public async Task<int> AddUser(CreateUserDto userDto)
         {
-            if(userDto == null)
-            {
-                throw new ArgumentException("Please, provide an user.");
-            }
+            if (userDto == null) throw new BadRequestException("Please, provide a user.");
 
-            User? userDB = await _userRepository.GetUserByEmail(userDto.Email);
-            if(userDB != null)
-            {
-                throw new UserAlreadyExistsException("Email is already taken.");
-            }
-            userDB = await _userRepository.GetUserByUsername(userDto.Username);
-            if(userDB != null)
-            {
-                throw new UserAlreadyExistsException("Username is already taken.");
-            }
+            User? userDB = await _userRepository.GetUserByEmailAsync(userDto.Email);
+            if (userDB != null) throw new UserAlreadyExistsException("Email is already taken.");
 
-            DateOnly today = DateOnly.FromDateTime(DateTime.Today);
+            userDB = await _userRepository.GetUserByUsernameAsync(userDto.Username);
+            if (userDB != null) throw new UserAlreadyExistsException("Username is already taken.");
 
+            DateOnly today = DateOnly.FromDateTime(DateTime.UtcNow); // Use UtcNow
             int age = today.Year - userDto.DateOfBirth.Year;
-
-            if(today.DayOfYear < userDto.DateOfBirth.DayOfYear)
+            if (today.DayOfYear < userDto.DateOfBirth.DayOfYear)
             {
                 age--;
             }
@@ -157,110 +126,91 @@ namespace Infrastructure.Service
                 FollowingCount = 0,
                 PostsCount = 0,
             };
-            
-            await _userRepository.AddUser(user);
+
+            await _userRepository.AddUserAsync(user);
 
             return user.Id;
         }
 
-        public async Task DeleteUserById(int userId)
+        public async Task<bool> DeleteUserById(int userId)
         {
-            if(userId <= 0)
-            {
-                throw new ArgumentException("Please, provide a valid id.");
-            }
-
-            await _userRepository.DeleteUserById(userId);
+            return await _userRepository.DeleteUserByIdAsync(userId);
         }
 
         public async Task<bool> UpdateUser(UpdateUserDto userDto, int userId)
         {
-            if(userDto == null)
-            {
-                throw new ArgumentException("Please, provide a valid user.");
-            }
+            if (userDto == null) throw new BadRequestException("Please, provide a valid user.");
 
-            User? user = await _userRepository.GetById(userDto.Id);
-            if (user == null)
-            {
-                throw new ArgumentException("Provided user doesn't exist.");
-            }
+            User? user = await _userRepository.GetByIdAsync(userDto.Id);
+            if (user == null) throw new NotFoundException("Provided user doesn't exist.");
 
-            if(user.Id != userId)
-            {
-                throw new UnauthorizedAccessException("You can only update yourself.");
-            }
+            if (user.Id != userId) throw new UnauthorizedAccessException("You can only update yourself.");
 
-            if(!string.IsNullOrEmpty(userDto.Username) && 
-                !user.Username.ToLower().Equals(userDto.Username.ToLower()))
+            if (!string.IsNullOrWhiteSpace(userDto.Username) &&
+                !string.Equals(user.Username, userDto.Username, StringComparison.OrdinalIgnoreCase))
                 user.Username = userDto.Username;
 
-            if (!string.IsNullOrEmpty(userDto.Name) && 
-                !user.Name.ToLower().Equals(userDto.Name.ToLower()))
+            if (!string.IsNullOrWhiteSpace(userDto.Name) &&
+                !string.Equals(user.Name, userDto.Name, StringComparison.OrdinalIgnoreCase))
                 user.Name = userDto.Name;
 
-            if (!string.IsNullOrEmpty(userDto.Email) && 
-                !user.Email.ToLower().Equals(userDto.Email.ToLower()))
-                user.Email = userDto.Email; 
-
-            if (!string.IsNullOrEmpty(userDto.Password))
-                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password);
-
-            if(!string.IsNullOrEmpty(userDto.Bio) && 
-                !user.Bio.ToLower().Equals(userDto.Bio.ToLower()))
-                user.Bio = userDto.Bio;
-
-            if (!string.IsNullOrEmpty(userDto.ProfilePictureUrl) && 
-                !user.ProfilePictureUrl.ToLower().Equals(userDto.ProfilePictureUrl.ToLower()))
-                user.ProfilePictureUrl = userDto.ProfilePictureUrl;
-            
-            return await _userRepository.UpdateUser(user);
-        }
-        public async Task<bool> UpdateUserInternally(UpdateUserDto userDto)
-        {
-            User? user = await _userRepository.GetById(userDto.Id);
-            if (user == null)
-            {
-                throw new ArgumentException("Provided user doesn't exist.");
-            }
-
-            if (!string.IsNullOrEmpty(userDto.Username) &&
-                !user.Username.ToLower().Equals(userDto.Username.ToLower()))
-                user.Username = userDto.Username;
-
-            if (!string.IsNullOrEmpty(userDto.Name) &&
-                !user.Name.ToLower().Equals(userDto.Name.ToLower()))
-                user.Name = userDto.Name;
-
-            if (!string.IsNullOrEmpty(userDto.Email) &&
-                !user.Email.ToLower().Equals(userDto.Email.ToLower()))
+            if (!string.IsNullOrWhiteSpace(userDto.Email) &&
+                !string.Equals(user.Email, userDto.Email, StringComparison.OrdinalIgnoreCase))
                 user.Email = userDto.Email;
 
-            if (!string.IsNullOrEmpty(userDto.Password))
+            if (!string.IsNullOrWhiteSpace(userDto.Password))
                 user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password);
 
-            if (!string.IsNullOrEmpty(userDto.Bio) &&
-                !user.Bio.ToLower().Equals(userDto.Bio.ToLower()))
+            if (!string.IsNullOrWhiteSpace(userDto.Bio) &&
+                !string.Equals(user.Bio, userDto.Bio, StringComparison.OrdinalIgnoreCase))
                 user.Bio = userDto.Bio;
 
-            if (!string.IsNullOrEmpty(userDto.ProfilePictureUrl) &&
-                !user.ProfilePictureUrl.ToLower().Equals(userDto.ProfilePictureUrl.ToLower()))
+            if (!string.IsNullOrWhiteSpace(userDto.ProfilePictureUrl) &&
+                !string.Equals(user.ProfilePictureUrl, userDto.ProfilePictureUrl, StringComparison.OrdinalIgnoreCase))
                 user.ProfilePictureUrl = userDto.ProfilePictureUrl;
 
-            if (userDto.FollowersCount != null && user.FollowersCount != userDto.FollowersCount)
-                user.FollowersCount = userDto.FollowersCount;
-
-            if (userDto.FollowingCount != null && user.FollowingCount != userDto.FollowingCount)
-                user.FollowingCount = userDto.FollowingCount;
-            
-            if (userDto.PostsCount != null && user.PostsCount != userDto.PostsCount)
-                user.PostsCount = userDto.PostsCount;
-
-            return await _userRepository.UpdateUser(user);
+            return await _userRepository.UpdateUserAsync(user);
         }
+
+        public async Task<bool> UpdateUserInternally(UpdateUserDto userDto)
+        {
+            User? user = await _userRepository.GetByIdAsync(userDto.Id);
+            if (user == null) throw new NotFoundException("Provided user doesn't exist.");
+
+            if (!string.IsNullOrWhiteSpace(userDto.Username) &&
+                !string.Equals(user.Username, userDto.Username, StringComparison.OrdinalIgnoreCase))
+                user.Username = userDto.Username;
+
+            if (!string.IsNullOrWhiteSpace(userDto.Name) &&
+                !string.Equals(user.Name, userDto.Name, StringComparison.OrdinalIgnoreCase))
+                user.Name = userDto.Name;
+
+            if (!string.IsNullOrWhiteSpace(userDto.Email) &&
+                !string.Equals(user.Email, userDto.Email, StringComparison.OrdinalIgnoreCase))
+                user.Email = userDto.Email;
+
+            if (!string.IsNullOrWhiteSpace(userDto.Password))
+                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(userDto.Password);
+
+            if (!string.IsNullOrWhiteSpace(userDto.Bio) &&
+                !string.Equals(user.Bio, userDto.Bio, StringComparison.OrdinalIgnoreCase))
+                user.Bio = userDto.Bio;
+
+            if (!string.IsNullOrWhiteSpace(userDto.ProfilePictureUrl) &&
+                !string.Equals(user.ProfilePictureUrl, userDto.ProfilePictureUrl, StringComparison.OrdinalIgnoreCase))
+                user.ProfilePictureUrl = userDto.ProfilePictureUrl;
+
+            // Handled nullable DTO counts beautifully
+            user.FollowersCount = userDto.FollowersCount;
+            user.FollowingCount = userDto.FollowingCount;
+            user.PostsCount = userDto.PostsCount;
+
+            return await _userRepository.UpdateUserAsync(user);
+        }
+
         public async Task<Group> GetGroupById(int groupId)
         {
-            return await _userRepository.GetGroupById(groupId);
+            return await _userRepository.GetGroupByIdAsync(groupId);
         }
     }
 }

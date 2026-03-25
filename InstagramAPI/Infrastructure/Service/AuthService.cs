@@ -16,6 +16,10 @@ namespace Infrastructure.Service
         private readonly IUserRepository _userRepository;
         private readonly IUserService _userService;
         private readonly IConfiguration _configuration;
+        private static readonly Regex UppercaseRegex = new Regex("[A-Z]", RegexOptions.Compiled);
+        private static readonly Regex LowercaseRegex = new Regex("[a-z]", RegexOptions.Compiled);
+        private static readonly Regex DigitRegex = new Regex("[0-9]", RegexOptions.Compiled);
+        private static readonly Regex SpecialCharRegex = new Regex("[!@#$%^&*(),.?\":{}|<>]", RegexOptions.Compiled);
         public AuthService(IUserRepository userRepository, IConfiguration configuration, IUserService userService)
         {
             _userRepository = userRepository;
@@ -53,20 +57,11 @@ namespace Infrastructure.Service
         }
         private bool IsPasswordStrong(string password)
         {
-            // 1. Check Length (e.g., min 8 chars)
             if (password.Length < 8) return false;
-
-            // 2. Check for Uppercase
-            if (!Regex.IsMatch(password, "[A-Z]")) return false;
-
-            // 3. Check for Lowercase
-            if (!Regex.IsMatch(password, "[a-z]")) return false;
-
-            // 4. Check for Digits
-            if (!Regex.IsMatch(password, "[0-9]")) return false;
-
-            // 5. Check for Special Characters (Optional but recommended)
-            if (!Regex.IsMatch(password, "[!@#$%^&*(),.?\":{}|<>]")) return false;
+            if (!UppercaseRegex.IsMatch(password)) return false;
+            if (!LowercaseRegex.IsMatch(password)) return false;
+            if (!DigitRegex.IsMatch(password)) return false;
+            if (!SpecialCharRegex.IsMatch(password)) return false;
 
             return true;
         }
@@ -76,10 +71,10 @@ namespace Infrastructure.Service
             {
                 throw new ArgumentException("Invalid username or password.");
             }
-            User? user = await _userRepository.GetUserByEmail(loginDto.Login);
+            User? user = await _userRepository.GetUserByEmailAsync(loginDto.Login);
             if (user == null)
             {
-                user = await _userRepository.GetUserByUsername(loginDto.Login);
+                user = await _userRepository.GetUserByUsernameAsync(loginDto.Login);
                 if (user == null)
                 {
                     throw new ArgumentException("Invalid username or password.");

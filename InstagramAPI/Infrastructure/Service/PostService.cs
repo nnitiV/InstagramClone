@@ -1,17 +1,15 @@
 ﻿using Application.Dtos;
 using Application.Interfaces;
-using Application.Services;
 using Domain.Entities;
 using Domain.Exceptions;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.IdentityModel.Tokens;
 
-namespace Infrastructure.Service
+namespace Application.Services
 {
     public class PostService : IPostService
     {
         private readonly IPostRepository _postRepository;
         private readonly IUserService _userService;
+
         public PostService(IPostRepository postRepository, IUserService userService)
         {
             _postRepository = postRepository;
@@ -20,16 +18,12 @@ namespace Infrastructure.Service
 
         public async Task<ResponsePostDto?> GetPostByIdAsync(int currentUserId, int postId)
         {
-            if (postId <= 0)
-            {
-                throw new ArgumentException("Please, provide a valid post id.");
-            }
+            if (postId <= 0) throw new BadRequestException("Please, provide a valid post id.");
+
             Post? post = await _postRepository.GetPostByIdAsync(postId);
-            if (post == null)
-            {
-                return null;
-            }
-            ResponsePostDto postToReturn = new ResponsePostDto
+            if (post == null) return null;
+
+            return new ResponsePostDto
             {
                 Id = post.Id,
                 Title = post.Title,
@@ -43,25 +37,29 @@ namespace Infrastructure.Service
                 ContentUrls = post.Contents.Select(c => c.ContentUrl).ToList(),
                 CreatedAt = post.CreatedAt
             };
-            return postToReturn;
         }
 
         public async Task<PagedResult<ResponsePostDto>> GetAllUserPostsAsync(int currentUserId, int userId, int page, int pageSize)
         {
-            if (userId <= 0)
-            {
-                throw new ArgumentException("Please, provide a valid user id.");
-            }
-
             if (page < 1) page = 1;
             if (pageSize < 1) pageSize = 10;
             if (pageSize > 50) pageSize = 50;
 
             List<Post> posts = await _postRepository.GetAllUserPostsAsync(userId, page, pageSize);
+            int totalCount = await _postRepository.GetUserPostCountAsync(userId);
+
             if (posts.Count <= 0)
             {
-                return null;
+                // Returning an empty result is better than null for frontends
+                return new PagedResult<ResponsePostDto>
+                {
+                    Items = new List<ResponsePostDto>(),
+                    TotalCount = totalCount,
+                    PageNumber = page,
+                    PageSize = pageSize
+                };
             }
+
             List<ResponsePostDto> postDtos = posts.Select(post => new ResponsePostDto
             {
                 Id = post.Id,
@@ -76,7 +74,7 @@ namespace Infrastructure.Service
                 UserId = post.UserId,
                 CreatedAt = post.CreatedAt
             }).ToList();
-            int totalCount = await _postRepository.GetUserPostCountAsync(userId);
+
             return new PagedResult<ResponsePostDto>
             {
                 Items = postDtos,
@@ -85,10 +83,11 @@ namespace Infrastructure.Service
                 PageSize = pageSize
             };
         }
+
         public async Task<List<ResponsePostDto>> GetUserFeedAsync(int currentUserId, DateTime? cursor, int pageSize)
         {
             var posts = await _postRepository.GetUserFeedAsync(currentUserId, cursor, pageSize);
-            return [.. posts.Select(p => new ResponsePostDto
+            return posts.Select(p => new ResponsePostDto
             {
                 Id = p.Id,
                 CreatedAt = p.CreatedAt,
@@ -101,32 +100,22 @@ namespace Infrastructure.Service
                 LikeCount = p.PostLikes.Count,
                 CommentCount = p.Comments.Count,
                 IsLiked = p.PostLikes.Any(pl => pl.UserId == currentUserId)
-            })];
+            }).ToList();
         }
+
         public async Task<int> GetUserPostCountAsync(int userId)
         {
-            if (userId <= 0)
-            {
-                throw new ArgumentException("Invalid user id. Please, send a valid one.");
-            }
             return await _postRepository.GetUserPostCountAsync(userId);
         }
+
         public async Task<CreatedPostDto> AddPostAsync(CreatePostDto createPostDto, int userId)
         {
-            if (createPostDto == null)
-            {
-                throw new ArgumentException("Post can't be empty.");
-            }
-            if (userId <= 0)
-            {
-                throw new ArgumentException("Please, provide a valid user id!");
-            }
-            ResponseUserDto responseUserDto = await _userService.GetById(userId);
-            if (responseUserDto == null)
-            {
-                throw new NotFoundException("Couldn't find user by id " + userId);
-            }
+            if (createPostDto == null) throw new BadRequestException("Post can't be empty.");
 
+            ResponseUserDto responseUserDto = await _userService.GetById(userId);
+            if (responseUserDto == null) throw new NotFoundException($"Couldn't find user by id {userId}");
+
+            // Keeping your manual user update logic per your request
             responseUserDto.PostsCount += 1;
             await _userService.UpdateUserInternally(new UpdateUserDto
             {
@@ -142,7 +131,7 @@ namespace Infrastructure.Service
                 Caption = createPostDto.Caption,
                 Contents = new List<PostContent>(),
                 UserId = userId,
-                CreatedAt = DateTimeOffset.Now,
+                CreatedAt = DateTimeOffset.UtcNow, // Changed to UtcNow
             };
 
             if (createPostDto.ContentUrls != null)
@@ -159,35 +148,37 @@ namespace Infrastructure.Service
             }
 
             await _postRepository.AddPostAsync(post);
+
             CreatedPostDto postToReturn = new CreatedPostDto
             {
                 Id = post.Id,
             };
-            if(post.Contents != null)
+
+            if (post.Contents != null && post.Contents.Any())
             {
-                postToReturn.ContentUrl = post.Contents.ElementAt(0).ContentUrl;
+                postToReturn.ContentUrl = post.Contents.First().ContentUrl;
             }
             return postToReturn;
         }
+
         public async Task UpdatePostAsync(UpdatePostDto updatePostDto, int userId)
         {
-            if (updatePostDto == null) throw new ArgumentException("Post can't be empty.");
-            if (updatePostDto.Id <= 0) throw new ArgumentException("Please, provide a valid post id.");
-            if (userId <= 0) throw new ArgumentException("Please, provide a valid user id.");
+            if (updatePostDto == null) throw new BadRequestException("Post can't be empty.");
+            if (updatePostDto.Id <= 0) throw new BadRequestException("Please, provide a valid post id.");
 
             if (string.IsNullOrWhiteSpace(updatePostDto.Caption))
-                throw new ArgumentException("Caption can't be empty.");
+                throw new BadRequestException("Caption can't be empty.");
 
             if (updatePostDto.ContentUrls == null || updatePostDto.ContentUrls.Count == 0)
-                throw new ArgumentException("Contents can't be empty.");
+                throw new BadRequestException("Contents can't be empty.");
 
             Post? post = await _postRepository.GetPostByIdAsync(updatePostDto.Id);
 
-            if (post == null || post.UserId != userId) return false;
+            if (post == null || post.UserId != userId)
+                throw new UnauthorizedAccessException("You do not have permission to edit this post or it does not exist.");
 
             post.Title = updatePostDto.Title;
-            post.Caption = updatePostDto.Caption ?? string.Empty;
-
+            post.Caption = updatePostDto.Caption;
 
             var urlsToRemove = post.Contents
                 .Where(dbContent => !updatePostDto.ContentUrls.Contains(dbContent.ContentUrl))
@@ -207,7 +198,7 @@ namespace Infrastructure.Service
 
             foreach (var newUrl in newUrlsToAdd)
             {
-                post.Contents.Add(new PostContent // Troque 'PostContent' pro nome exato da sua entidade se for diferente
+                post.Contents.Add(new PostContent
                 {
                     ContentUrl = newUrl,
                     OrderIndex = nextOrderIndex++
@@ -220,24 +211,18 @@ namespace Infrastructure.Service
                 finalContents[i].OrderIndex = i;
             }
 
-            await _postRepository.UpdatePostAsync(post);
+            await _postRepository.UpdatePostAsync();
         }
+
         public async Task DeletePostByIdAsync(int postId, int userId)
         {
-            if (postId <= 0)
-            {
-                throw new ArgumentException("Please, provide a valid post id.");
-            }
-            if (userId <= 0)
-            {
-                throw new ArgumentException("Please, provide a valid user id.");
-            }
+            if (postId <= 0) throw new BadRequestException("Please, provide a valid post id.");
+
             ResponseUserDto responseUserDto = await _userService.GetById(userId);
-            if (responseUserDto == null)
-            {
-                throw new NotFoundException("Couldn't find user by id " + userId);
-            }
+            if (responseUserDto == null) throw new NotFoundException($"Couldn't find user by id {userId}");
+
             bool wasDeleted = await _postRepository.DeletePostByIdAsync(postId, userId);
+
             if (wasDeleted)
             {
                 await _userService.UpdateUserInternally(new UpdateUserDto
@@ -248,7 +233,10 @@ namespace Infrastructure.Service
                     PostsCount = responseUserDto.PostsCount - 1,
                 });
             }
+            else
+            {
+                throw new NotFoundException("Post not found or you don't have permission to delete it.");
+            }
         }
-
     }
 }

@@ -86,24 +86,29 @@ namespace Infrastructure.Service
 
             await _messageRepository.AddMessageAsync(message);
             var sender = await _userService.GetById(currentUserId);
-            var receive = await _userService.GetById(messageDto.ReceiverId.Value);
 
             MessageDto messageToReturn = new MessageDto
             {
                 Id = message.Id,
                 Content = message.Content,
                 SenderId = message.SenderId,
-                ReceiverId = message.ReceiverId.Value,
                 SenderName = sender.Username,
                 SenderPhoto = sender.ProfilePictureUrl,
-                ReceiverName = receive.Username,
-                ReceiverPhoto = receive.ProfilePictureUrl
+                StoryId = message.StoryId,
+                GroupId = message.GroupId
             };
-            if (message.StoryId.HasValue) messageToReturn.StoryId = message.StoryId;
-            if (message.GroupId.HasValue) messageToReturn.GroupId = message.GroupId;
+
+            if (messageDto.ReceiverId.HasValue)
+            {
+                var receive = await _userService.GetById(messageDto.ReceiverId.Value);
+                messageToReturn.ReceiverId = messageDto.ReceiverId.Value;
+                messageToReturn.ReceiverName = receive.Username;
+                messageToReturn.ReceiverPhoto = receive.ProfilePictureUrl;
+            }
+
             return messageToReturn;
         }
-        public async Task<Group> CreateGroupAsync(int creatorId, CreateGroupDto groupDto)
+        public async Task<GroupDto> CreateGroupAsync(int creatorId, CreateGroupDto groupDto)
         {
             Group group = new Group
             {
@@ -128,7 +133,32 @@ namespace Infrastructure.Service
                     IsAdmin = false
                 });
             }
-            return group;
+
+            return new GroupDto
+            {
+                Name = group.Name,
+                GroupImage = group.GroupImage,
+
+                Members = group.Members.Select(member => new GroupMemberDto
+                {
+                    GroupId = member.GroupId,
+                    UserId = member.UserId,
+                    JoinedAt = member.JoinedAt,
+                    IsAdmin = member.IsAdmin
+                }).ToList(),
+
+                Messages = group.Messages.Select(m => new MessageDto
+                {
+                    Id = m.Id,
+                    SenderId = m.SenderId,
+                    SenderName = m.Sender.Username, 
+                    SenderPhoto = m.Sender.ProfilePictureUrl,
+                    GroupId = m.GroupId,
+                    Content = m.Content,
+                    SentAt = m.SentAt,
+                    IsRead = m.IsRead
+                }).ToList()
+            };
         }
         public async Task<List<MessageDto>> GetGroupChatHistoryAsync(int groupId)
         {
@@ -139,8 +169,6 @@ namespace Infrastructure.Service
                 SenderId = m.SenderId,
                 SenderName = m.Sender.Username,
                 SenderPhoto = m.Sender.ProfilePictureUrl,
-                ReceiverName = m.Receiver.Username,
-                ReceiverPhoto = m.Receiver.ProfilePictureUrl,
                 GroupId = m.GroupId,
                 Content = m.Content,
                 SentAt = m.SentAt,

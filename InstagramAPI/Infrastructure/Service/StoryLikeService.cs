@@ -1,12 +1,9 @@
-﻿
-using Application.Dtos;
+﻿using Application.Dtos;
 using Application.Interfaces;
-using Application.Services;
 using Domain.Entities;
 using Domain.Exceptions;
-using Microsoft.AspNetCore.Http.HttpResults;
 
-namespace Infrastructure.Service
+namespace Application.Services
 {
     public class StoryLikeService : IStoryLikeService
     {
@@ -15,7 +12,7 @@ namespace Infrastructure.Service
         private readonly IStoryService _storyService;
         private readonly IUserService _userService;
 
-        public StoryLikeService(IStoryLikeRepository storyLikeRepository, 
+        public StoryLikeService(IStoryLikeRepository storyLikeRepository,
             INotificationService notificationService, IStoryService storyService,
             IUserService userService)
         {
@@ -27,75 +24,60 @@ namespace Infrastructure.Service
 
         public async Task<bool> HasUserLikedItAsync(int storyId, int userId)
         {
-            if (storyId <= 0)
-            {
-                throw new ArgumentException("Please, provide a valid post id.");
-            }
-            if (userId <= 0)
-            {
-                throw new ArgumentException("Please, provide a valid user id.");
-            }
+            if (storyId <= 0) throw new BadRequestException("Please, provide a valid story id.");
+
             return await _storyLikeRepository.HasUserLikedItAsync(storyId, userId);
         }
 
         public async Task LikeStoryAsync(int storyId, int userId)
         {
-            if (storyId <= 0)
-            {
-                throw new ArgumentException("Please, provide a valid post id.");
-            }
+            if (storyId <= 0) throw new BadRequestException("Please, provide a valid story id.");
+
             if (await HasUserLikedItAsync(storyId, userId))
-            {
-                throw new ArgumentException("You already liked this!");
-            }
+                throw new ConflictException("You already liked this!");
+
             StoryDto storyDto = await _storyService.GetStoryById(storyId);
-            if(storyDto == null)
-            {
-                throw new ArgumentException("Couldn't find post by id " + storyId);
-            }
+            if (storyDto == null)
+                throw new NotFoundException($"Couldn't find story by id {storyId}");
+
             ResponseUserDto responseUser = await _userService.GetById(userId);
             if (responseUser == null)
-            {
-                throw new ArgumentException("Couldn't find user by id " + userId);
-            }
-            StoryLike postToLikeToAdd = new StoryLike
+                throw new NotFoundException($"Couldn't find user by id {userId}");
+
+            StoryLike storyLikeToAdd = new StoryLike
             {
                 StoryId = storyId,
                 UserId = userId,
                 CreatedAt = DateTimeOffset.UtcNow
             };
-            await _storyLikeRepository.LikeStoryAsync(postToLikeToAdd);
-            await _notificationService.AddNotificationAsync(new NotificationDto
+
+            await _storyLikeRepository.LikeStoryAsync(storyLikeToAdd);
+
+            // Prevent notifying the user if they like their own story
+            if (storyDto.UserId.Value != userId)
             {
-                TriggerById = userId,
-                TriggerByUsername = responseUser.Username,
-                TriggerByPhoto = responseUser.ProfilePictureUrl,
-                Type = "StoryLike",
-                Message = "Curtiu seu story.",
-                PostId = storyId,
-                StoryId = null
-            }, storyDto.UserId.Value);
+                await _notificationService.AddNotificationAsync(new NotificationDto
+                {
+                    TriggerById = userId,
+                    TriggerByUsername = responseUser.Username,
+                    TriggerByPhoto = responseUser.ProfilePictureUrl,
+                    Type = "StoryLike",
+                    Message = "curtiu seu story.",
+                    PostId = null, // Fixed to null
+                    StoryId = storyId // Fixed to map the storyId
+                }, storyDto.UserId.Value);
+            }
         }
 
         public async Task UnlikeStoryAsync(int storyId, int userId)
         {
-            if (storyId <= 0)
-            {
-                throw new ArgumentException("Please, provide a valid post id.");
-            }
-            if (userId <= 0)
-            {
-                throw new ArgumentException("Please, provide a valid user id.");
-            }
+            if (storyId <= 0) throw new BadRequestException("Please, provide a valid story id.");
 
             var wasUnliked = await _storyLikeRepository.UnlikeStoryAsync(storyId, userId);
             if (!wasUnliked) return;
 
             StoryDto storyDto = await _storyService.GetStoryById(storyId);
-            if (storyDto == null)
-            {
-                throw new ArgumentException("Couldn't find post by id " + storyId);
-            }
+            if (storyDto == null) return;
 
             await _notificationService.DeleteNotificationAsync(storyDto.UserId.Value, userId, "StoryLike");
         }
