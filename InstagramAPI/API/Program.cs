@@ -19,7 +19,7 @@ builder.Services.AddCors(options =>
     {
         policy.WithOrigins(
                 "http://localhost:3000",
-                "https://instagram-clone-ui-livid.vercel.app/"
+                "https://instagram-clone-ui-livid.vercel.app"
               )
               .AllowAnyHeader()
               .AllowAnyMethod()
