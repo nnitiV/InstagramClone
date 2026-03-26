@@ -65,7 +65,6 @@ namespace API.Middleware
             {
                 StatusCode = statusCode,
                 Message = message,
-                Details = ex.StackTrace?.ToString() // To remove when switching to production
             };
 
             var json = JsonSerializer.Serialize(response);
