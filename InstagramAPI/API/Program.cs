@@ -12,15 +12,17 @@ using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("CorsPolicy", policy =>
+    options.AddPolicy("ProductionCors", policy =>
     {
-        policy.WithOrigins("http://localhost:3000") 
-              .AllowAnyMethod()
+        policy.WithOrigins(
+                "http://localhost:3000", 
+                "https://your-future-frontend-domain.com" 
+              )
               .AllowAnyHeader()
+              .AllowAnyMethod()
               .AllowCredentials(); 
     });
 });
@@ -99,9 +101,9 @@ var app = builder.Build();
 
 app.UseMiddleware<API.Middleware.ExceptionMiddleware>();
 
-app.UseStaticFiles(); 
+app.UseStaticFiles();
 
-app.UseCors("CorsPolicy");
+app.UseCors("ProductionCors");
 
 app.UseAuthentication();
 app.UseAuthorization();
