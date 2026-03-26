@@ -9,7 +9,12 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const token = await getLoggedUserTokenInfo();
+  let token = null;
+  try {
+    token = await getLoggedUserTokenInfo();
+  } catch(error) {
+    token = null;
+  }
   return (
     <html lang="en" data-bs-theme="light" suppressHydrationWarning>
       <head>

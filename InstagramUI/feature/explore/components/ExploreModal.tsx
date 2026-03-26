@@ -9,7 +9,7 @@ import { Post, PostComment, PostCommentTree } from "@/types/feed";
 import { useRouter } from "next/navigation";
 import { useEffect, useState, useCallback, SetStateAction, Dispatch, useRef } from "react";
 import { getLoggedUserInfo } from "@/services/user.service";
-import { addPostComments, getPostComments } from "@/services/comments.service";
+import { addPostComment, getPostComments } from "@/services/comments.service";
 
 type ExploreProps = {
   post: Post;
@@ -30,25 +30,29 @@ export default function ExploreModal({ post, onClose, username, setPostToUpdate 
     const [newCommentText, setNewCommentText] = useState<string>('');
     const closeBtnRef = useRef<HTMLButtonElement>(null);
 
-    const buildCommentTree = useCallback((comments: PostComment[]): PostCommentTree[] => {
+    const buildCommentTree = useCallback(
+      (comments: PostComment[]): PostCommentTree[] => {
+        if (!comments || (comments as any).comments?.length <= 0) return [];
         const commentMap: Record<number, PostCommentTree> = {};
         const roots: PostCommentTree[] = [];
 
-        comments.forEach(comment => {
-            commentMap[comment.id] = { comment, replies: [] };
+        comments.forEach((comment) => {
+          commentMap[comment.id] = { comment, replies: [] };
         });
 
-        comments.forEach(comment => {
-            const parentId = comment.parentCommentId;
-            if (parentId !== null && commentMap[parentId]) {
-                commentMap[parentId].replies.push(commentMap[comment.id]);
-            } else {
-                roots.push(commentMap[comment.id]);
-            }
+        comments.forEach((comment) => {
+          const parentId = comment.parentCommentId;
+          if (parentId !== null && commentMap[parentId]) {
+            commentMap[parentId].replies.push(commentMap[comment.id]);
+          } else {
+            roots.push(commentMap[comment.id]);
+          }
         });
 
         return roots;
-    }, []);
+      },
+      [],
+    );
     useEffect(() => {
         document.body.style.overflow = 'hidden';
         return () => {
@@ -78,7 +82,7 @@ export default function ExploreModal({ post, onClose, username, setPostToUpdate 
             parentCommentId: parentId,
             createdAt: new Date().toISOString()
         };
-        await addPostComments(newComment);
+        await addPostComment(newComment);
 
         const newCommentTree: PostCommentTree = {
             comment: newComment,
@@ -107,14 +111,15 @@ export default function ExploreModal({ post, onClose, username, setPostToUpdate 
             parentCommentId: null,
             createdAt: new Date().toISOString()
         };
-        const res = await addPostComments(newComment);
+        const res = await addPostComment(newComment);
         if(res){
-           setComments(prevComments => {
-                const updatedComments = [...prevComments, newComment];
-                setTree(buildCommentTree(updatedComments)); // Build tree using the updated array!
-                return updatedComments;
-            });
-            setNewCommentText('');
+           setComments((prevComments) => {
+             const safePrev = Array.isArray(prevComments) ? prevComments : [];
+             const updatedComments = [...safePrev, newComment];
+             setTree(buildCommentTree(updatedComments));
+             return updatedComments;
+           });
+           setNewCommentText("");
         }
     }, [post.id, post.authorProfilePicture, comments, buildCommentTree]);
     useEffect(() => {
@@ -145,7 +150,6 @@ export default function ExploreModal({ post, onClose, username, setPostToUpdate 
     }
 
     const handleSetPostToUpdate = () => {
-        console.log(post);
         if(setPostToUpdate) setPostToUpdate(post);
         onClose();
     }

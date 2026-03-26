@@ -28,9 +28,14 @@ export default function SendMessageModal() {
     useEffect(() => {
         const getUsersIFollow = async () => {
             const userInfo = await getLoggedUserInfo();
-            const res = await getFollowingList(userInfo.id);
-            setFollowing(res.following);
-            setFilteredFollowing(res.following);
+            if(userInfo.id) {
+                const res = await getFollowingList(userInfo.id);
+                setFollowing(res.following);
+                setFilteredFollowing(res.following);
+            } else {
+                setFollowing([]);
+                setFilteredFollowing([]);
+            }
         }
         getUsersIFollow();
     }, []);

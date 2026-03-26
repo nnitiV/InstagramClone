@@ -38,6 +38,8 @@ export default function SearchOffcanvas() {
         return () => { isCurrent = false; }
     }, [debounceSearch]);
 
+    useEffect(() => setIsSearching(true), [searchText])
+
     return (
         <div className="offcanvas offcanvas-start" tabIndex={-1} id="searchOffcanvas" aria-labelledby="searchOffcanvasLabel">
             <div className="offcanvas-header d-flex flex-column">

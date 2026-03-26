@@ -11,7 +11,9 @@ type PostStore = {
 
 export const usePostStore = create<PostStore>((set) => ({
     posts: [],
-    setPosts: (posts) => set({ posts }),
+    setPosts: (posts) => set({ 
+        posts: Array.isArray(posts) ? posts : [] 
+    }),
     addPost: (post) => set((state) => ({ 
             posts: [post, ...state.posts] // Adiciona no topo
     })),

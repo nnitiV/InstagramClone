@@ -41,18 +41,18 @@ namespace Infrastructure.Repositories
             DateTime cutoffDate = cursor ?? DateTime.UtcNow;
 
             return await _context.Followers
-                .Where(p => _context.Followers.Any(f => f.UserIdFollowing == userId && f.UserIdFollowed == p.UserId))
+                .Where(f => f.UserIdFollowing == userId)
                 .Join(_context.Posts,
-                  f => f.UserIdFollowed,         
-                  p => p.UserId,               
-                  (f, p) => p)
+                      f => f.UserIdFollowed,
+                      p => p.UserId,
+                      (f, p) => p)
                 .Where(p => p.CreatedAt < cutoffDate)
-                .Include(p => p.Comments)
-                .Include(p => p.User)
-                .Include(p => p.PostLikes)
+                .Include(p => p.User)      
                 .Include(p => p.Contents)
+                .Include(p => p.PostLikes)
+                .Include(p => p.Comments)
                 .OrderByDescending(p => p.CreatedAt)
-                .Take(pageSize) 
+                .Take(pageSize)
                 .AsSplitQuery()
                 .ToListAsync();
         }

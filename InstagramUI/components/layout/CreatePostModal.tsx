@@ -8,6 +8,7 @@ import { useRef, useState } from "react";
 
 export default function CreatePostModal() {
   const addPost = usePostStore((state) => state.addPost);
+  const [error, setError] = useState<string>("");
   const [loading, setLoading] = useState<boolean>(false);
   const [editIndex, setEditIndex] = useState<number | null>(null);
   const [caption, setCaption] = useState<string>("");
@@ -44,37 +45,64 @@ export default function CreatePostModal() {
   };
 
   const handlePostCreation = async () => {
-    setLoading(true);
-    if (caption.length <= 0 || previewUrls.length <= 0) return;
-    let urls: string[] = [];
-    if (selectedFiles && selectedFiles.length > 0) {
-      urls = await Promise.all(
-        selectedFiles.map(async (selectedFile) => {
-          const url = await uploadFile(selectedFile);
-          return url;
-        }),
-      );
+  setError("");
+  setLoading(true);
+
+  // 1. Validation
+  if (caption.length <= 0 || previewUrls.length <= 0) {
+    setLoading(false);
+    return;
+  }
+
+  let urls: string[] = []; // This is the ONLY urls variable we need
+
+  // 2. Upload Files
+  if (selectedFiles && selectedFiles.length > 0) {
+    for (const selectedFile of selectedFiles) {
+      try {
+        const url = await uploadFile(selectedFile);
+        urls.push(url);
+      } catch (error) {
+        // Use the error text we fixed earlier
+        const msg = error instanceof Error ? error.message : String(error);
+        setError(msg);
+        // We keep going (continue) because that's your preferred logic
+      }
     }
-    console.log(urls);
-    if (urls.length > 0) {
-      let post: PostToSave = {
-        title: "",
-        caption,
-        contentUrls: urls,
-      };
-      const res = await createPost(post);
-      console.log("Res:", res);
+  }
+
+  console.log("Final URLs to save:", urls);
+
+  // 3. Create Post
+  if (urls.length > 0) {
+    const postToSave: PostToSave = {
+      title: "",
+      caption,
+      contentUrls: urls,
+    };
+
+    try {
+      const res = await createPost(postToSave);
+
       if (res) {
         addPost({
-          id: res.post.id,
+          id: res.post.id, 
           contentUrls: [res.post.contentUrl],
+          authorName: "You", 
+          caption: caption,
+          createdAt: new Date().toISOString()
         } as Post);
       }
+
       handleDiscard();
       closeBtnRef.current?.click();
+    } catch (error) {
+      setError(error instanceof Error ? error.message : "Failed to create post");
     }
-    setLoading(false);
-  };
+  }
+
+  setLoading(false);
+};
 
   const handleDiscard = () => {
     previewUrls.forEach(url => {
@@ -99,181 +127,192 @@ export default function CreatePostModal() {
     );
   };
   return (
-    <div
-      className="modal fade"
-      id="createModal"
-      tabIndex={-1}
-      aria-labelledby="createModalLabel"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h1 className="modal-title fs-5" id="createModalLabel">
-              Create post
-            </h1>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
-          <div className="modal-body">
-            <div className="mb-3">
-              <label htmlFor="caption" className="form-label">
-                Caption
-              </label>
-              <input
-                type="text"
-                className="form-control"
-                id="caption"
-                value={caption}
-                onChange={(e) => setCaption(e.target.value)}
-              />
-            </div>
-            <div className="d-flex flex-column align-items-center mb-4">
-              {previewUrls.length <= 0 ? (
-                <div
-                  className="mb-3 position-relative"
-                  style={{ height: "250px" }}
-                  onClick={() => {
-                    setEditIndex(null);
-                    fileInputRef.current?.click();
-                  }}
-                >
-                  <img
-                    src="https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png"
-                    alt="Profile Preview"
-                    className="border object-fit-cover mb-3"
-                    style={{ maxWidth: "100%", maxHeight: "100%" }}
-                  />
-                </div>
-              ) : (
-                <div className="row">
-                  {previewUrls.map((previewUrl, index) => {
-                    const colClass =
-                      previewUrls.length === 1
-                        ? "col-12"
-                        : previewUrls.length === 2
-                          ? "col-6"
-                          : "col-4";
-                    const containerHeight =
-                      previewUrls.length === 1 ? "250px" : "150px";
-
-                    const isVideo =
-                      selectedFiles[index]?.type.startsWith("video/");
-
-                    return (
-                      <div
-                        key={index}
-                        className={`mb-3 position-relative ${colClass}`}
-                        style={{ height: containerHeight }}
-                      >
-                        {isVideo ? (
-                          <video
-                            src={previewUrl}
-                            className="border object-fit-cover rounded bg-dark"
-                            style={{ width: "100%", height: "100%" }}
-                            controls
-                          />
-                        ) : (
-                          <img
-                            src={previewUrl}
-                            alt="Content Preview"
-                            className="border object-fit-cover rounded"
-                            style={{ width: "100%", height: "100%" }}
-                          />
-                        )}
-
-                        <i
-                          role="button"
-                          className="bi-pencil-square position-absolute"
-                          onClick={() => {
-                            setEditIndex(index);
-                            document.getElementById("post-upload")?.click();
-                          }}
-                          style={{
-                            right: "45px",
-                            top: "7px",
-                            color: "rgba(155,185,255,1)",
-                            zIndex: 10,
-                          }}
-                        ></i>
-                        <i
-                          role="button"
-                          className="bi-trash text-danger position-absolute"
-                          onClick={() => removeImage(index)}
-                          style={{ right: "20px", top: "7px", zIndex: 10 }}
-                        ></i>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-              <div className="d-flex gap-2">
-                {previewUrls.length <= 0 && (
-                  <label
-                    htmlFor="post-upload"
-                    id="upload-image-label"
-                    onClick={() => setEditIndex(null)}
-                    className="btn btn-primary btn-sm fw-bold m-0 cursor-pointer"
+    <>
+      <div
+        className="modal fade"
+        id="createModal"
+        tabIndex={-1}
+        aria-labelledby="createModalLabel"
+        aria-hidden="true"
+      >
+        <div className="modal-dialog">
+          <div className="modal-content">
+                {error && (
+                  <div
+                    className="alert mt-3 alert-danger d-block w-75 mx-auto"
+                    role="alert"
                   >
-                    Select Image
-                  </label>
+                    {error}
+                  </div>
                 )}
+            <div className="modal-header">
+                <h1 className="modal-title fs-5" id="createModalLabel">
+                  Create post
+                </h1>
+                <button
+                  type="button"
+                  className="btn-close"
+                  data-bs-dismiss="modal"
+                  aria-label="Close"
+                ></button>
+            </div>
+            <div className="modal-body">
+              <div className="mb-3">
+                <label htmlFor="caption" className="form-label">
+                  Caption
+                </label>
                 <input
-                  type="file"
-                  id="post-upload"
-                  className="d-none"
-                  accept="image/*,video/*"
-                  ref={fileInputRef}
-                  key={previewUrls.length}
-                  onChange={handleImageChange}
+                  type="text"
+                  className="form-control"
+                  id="caption"
+                  value={caption}
+                  onChange={(e) => setCaption(e.target.value)}
                 />
-                {previewUrls.length > 0 && (
-                  <>
-                    <label
-                      role="button"
-                      className="btn btn-primary btn-sm fw-bold m-0 cursor-pointer"
-                      htmlFor="post-upload"
-                      onClick={() => setEditIndex(null)}
-                    >
-                      Add another image
-                    </label>
-                    <button
-                      type="button"
-                      className="btn btn-primary btn-sm fw-bold m-0 cursor-pointer"
-                      onClick={() => {
-                        setSelectedFiles([]);
-                        setPreviewUrls([]);
-                      }}
-                    >
-                      Clear all images
-                    </button>
-                  </>
+              </div>
+              <div className="d-flex flex-column align-items-center mb-4">
+                {previewUrls.length <= 0 ? (
+                  <div
+                    className="mb-3 position-relative"
+                    style={{ height: "250px" }}
+                    onClick={() => {
+                      setEditIndex(null);
+                      fileInputRef.current?.click();
+                    }}
+                  >
+                    <img
+                      src="https://icons.veryicon.com/png/o/internet--web/prejudice/user-128.png"
+                      alt="Profile Preview"
+                      className="border object-fit-cover mb-3"
+                      style={{ maxWidth: "100%", maxHeight: "100%" }}
+                    />
+                  </div>
+                ) : (
+                  <div className="row">
+                    {previewUrls.map((previewUrl, index) => {
+                      const colClass =
+                        previewUrls.length === 1
+                          ? "col-12"
+                          : previewUrls.length === 2
+                            ? "col-6"
+                            : "col-4";
+                      const containerHeight =
+                        previewUrls.length === 1 ? "250px" : "150px";
+
+                      const isVideo =
+                        selectedFiles[index]?.type.startsWith("video/");
+
+                      return (
+                        <div
+                          key={index}
+                          className={`mb-3 position-relative ${colClass}`}
+                          style={{ height: containerHeight }}
+                        >
+                          {isVideo ? (
+                            <video
+                              src={previewUrl}
+                              className="border object-fit-cover rounded bg-dark"
+                              style={{ width: "100%", height: "100%" }}
+                              controls
+                            />
+                          ) : (
+                            <img
+                              src={previewUrl}
+                              alt="Content Preview"
+                              className="border object-fit-cover rounded"
+                              style={{ width: "100%", height: "100%" }}
+                            />
+                          )}
+
+                          <i
+                            role="button"
+                            className="bi-pencil-square position-absolute"
+                            onClick={() => {
+                              setEditIndex(index);
+                              document.getElementById("post-upload")?.click();
+                            }}
+                            style={{
+                              right: "45px",
+                              top: "7px",
+                              color: "rgba(155,185,255,1)",
+                              zIndex: 10,
+                            }}
+                          ></i>
+                          <i
+                            role="button"
+                            className="bi-trash text-danger position-absolute"
+                            onClick={() => removeImage(index)}
+                            style={{ right: "20px", top: "7px", zIndex: 10 }}
+                          ></i>
+                        </div>
+                      );
+                    })}
+                  </div>
                 )}
+                <div className="d-flex gap-2">
+                  {previewUrls.length <= 0 && (
+                    <label
+                      htmlFor="post-upload"
+                      id="upload-image-label"
+                      onClick={() => setEditIndex(null)}
+                      className="btn btn-primary btn-sm fw-bold m-0 cursor-pointer"
+                    >
+                      Select Image
+                    </label>
+                  )}
+                  <input
+                    type="file"
+                    id="post-upload"
+                    className="d-none"
+                    accept="image/*,video/*"
+                    ref={fileInputRef}
+                    key={previewUrls.length}
+                    onChange={handleImageChange}
+                  />
+                  {previewUrls.length > 0 && (
+                    <>
+                      <label
+                        role="button"
+                        className="btn btn-primary btn-sm fw-bold m-0 cursor-pointer"
+                        htmlFor="post-upload"
+                        onClick={() => setEditIndex(null)}
+                      >
+                        Add another image
+                      </label>
+                      <button
+                        type="button"
+                        className="btn btn-primary btn-sm fw-bold m-0 cursor-pointer"
+                        onClick={() => {
+                          setSelectedFiles([]);
+                          setPreviewUrls([]);
+                        }}
+                      >
+                        Clear all images
+                      </button>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-          <div className="modal-footer">
-            <button
-              type="button"
-              className="btn btn-secondary"
-              id="discardChanges"
-              ref={closeBtnRef}
-              data-bs-dismiss="modal"
-              onClick={handleDiscard}
-            >
-              Discard
-            </button>
-            {
-              loading ?
+            <div className="modal-footer">
+              <button
+                type="button"
+                className="btn btn-secondary"
+                id="discardChanges"
+                ref={closeBtnRef}
+                data-bs-dismiss="modal"
+                onClick={handleDiscard}
+              >
+                Discard
+              </button>
+              {loading ? (
                 <button className="btn btn-primary" type="button" disabled>
-                  <span className="spinner-border spinner-border-sm" aria-hidden="true"></span>
+                  <span
+                    className="spinner-border spinner-border-sm"
+                    aria-hidden="true"
+                  ></span>
                   <span role="status">Loading...</span>
                 </button>
-                :
+              ) : (
                 <button
                   type="button"
                   className="btn btn-primary"
@@ -281,10 +320,11 @@ export default function CreatePostModal() {
                 >
                   Create post
                 </button>
-            }
+              )}
+            </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

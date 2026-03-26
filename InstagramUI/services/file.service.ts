@@ -14,7 +14,10 @@ export const uploadFile = async (selectedFile: File) => {
         },
         body: formData
     });
-    if(!res.ok) return "";
+    if(!res.ok) {
+        const errorData = await res.json().catch(() => null);
+        throw new Error(errorData?.Message || "An error occurred while uploading the file.");
+    }
     const data = await res.json();
     return data.url;
 }

@@ -1,5 +1,4 @@
 import { Post } from '@/types/feed';
-import { MOCK_EXPLORE_POSTS } from '../constants/data';
 import ExploreGridItem from './ExploreGridItem';
 
 type ExploreGridItemsProps = {

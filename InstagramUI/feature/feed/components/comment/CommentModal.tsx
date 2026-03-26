@@ -6,8 +6,8 @@ import { Post, PostComment, PostCommentTree } from "@/types/feed";
 import { useEffect, useState, useCallback, useRef } from "react";
 import CommentsList from "./CommentList";
 import { BASE_URL } from "@/constants";
-import { addPostComments, getPostComments } from "@/services/comments.service";
 import { getLoggedUserInfo } from "@/services/user.service";
+import { addPostComment, getPostComments } from "@/services/comments.service";
 
 type CommentModalProps = {
     post: Post;
@@ -86,7 +86,7 @@ export default function CommentModal({ post, onClose, goToUserProfile }: Comment
         setReplyTarget(null);
         setReplyText('');
         try {
-            await addPostComments(newComment)
+            await addPostComment(newComment)
         } catch(error) {
             setReplyText(previousReplyText);
             setReplyTarget(previousReplyTarget);
@@ -115,7 +115,7 @@ export default function CommentModal({ post, onClose, goToUserProfile }: Comment
         setTree(buildCommentTree([...comments, newComment]));
         setNewCommentText('');
         try {
-            await addPostComments(newComment)
+            await addPostComment(newComment)
         } catch(error) {
             setComments(prev => prev.filter(c => c.id != tempId));
             setTree(buildCommentTree(comments.filter(c => c.id != tempId)));

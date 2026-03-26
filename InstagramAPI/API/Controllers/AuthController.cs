@@ -17,7 +17,7 @@ namespace API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto login)
         {
-            return Ok(new { token = await _authService.Login(login) });
+            return Ok(new { token = await _authService.LoginAsync(login) });
         }
         [HttpPost("register")]
         public async Task<IActionResult> Register(RegisterDto register)

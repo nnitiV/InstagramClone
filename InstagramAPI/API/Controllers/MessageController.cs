@@ -41,7 +41,7 @@ namespace API.Controllers
         public async Task<IActionResult> CreateGroup(CreateGroupDto createGroupDto)
         {
             var currentUserId = User.GetUserId();
-            Group group = await _messageService.CreateGroupAsync(currentUserId, createGroupDto);
+            GroupDto group = await _messageService.CreateGroupAsync(currentUserId, createGroupDto);
             return Ok(new { group });
         }
 

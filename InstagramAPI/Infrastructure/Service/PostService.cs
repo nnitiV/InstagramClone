@@ -50,7 +50,6 @@ namespace Application.Services
 
             if (posts.Count <= 0)
             {
-                // Returning an empty result is better than null for frontends
                 return new PagedResult<ResponsePostDto>
                 {
                     Items = new List<ResponsePostDto>(),
@@ -86,8 +85,9 @@ namespace Application.Services
 
         public async Task<List<ResponsePostDto>> GetUserFeedAsync(int currentUserId, DateTime? cursor, int pageSize)
         {
-            var posts = await _postRepository.GetUserFeedAsync(currentUserId, cursor, pageSize);
-            return posts.Select(p => new ResponsePostDto
+            List<Post> posts = await _postRepository.GetUserFeedAsync(currentUserId, cursor, pageSize);
+            Console.WriteLine(posts.Count);
+            return [.. posts.Select(p => new ResponsePostDto
             {
                 Id = p.Id,
                 CreatedAt = p.CreatedAt,
@@ -96,11 +96,11 @@ namespace Application.Services
                 UserId = p.UserId,
                 AuthorName = p.User.Username,
                 AuthorProfilePicture = p.User.ProfilePictureUrl,
-                ContentUrls = p.Contents.Select(c => c.ContentUrl).ToList(),
+                ContentUrls = [.. p.Contents.Select(c => c.ContentUrl)],
                 LikeCount = p.PostLikes.Count,
                 CommentCount = p.Comments.Count,
                 IsLiked = p.PostLikes.Any(pl => pl.UserId == currentUserId)
-            }).ToList();
+            })];
         }
 
         public async Task<int> GetUserPostCountAsync(int userId)

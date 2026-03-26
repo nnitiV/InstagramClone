@@ -32,7 +32,7 @@ export const getLoggedUserInfo = async () => {
     }
 
     const data = await res.json();
-    return data;
+    return data.user;
 }
 
 export const getUserById = async (id: number) => {

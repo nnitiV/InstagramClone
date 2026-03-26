@@ -33,10 +33,10 @@ export const getPostsFeed = async () => {
         cache: 'no-store'
     });
     if (!res.ok) {
-        console.error(res.status);
         return [];
     }
-    return await res.json();
+    const data = await res.json();
+    return data.feed;
 }
 
 export const getUserPosts = async (userId: number) => {
@@ -48,7 +48,8 @@ export const getUserPosts = async (userId: number) => {
         }
     })
     if(!res.ok) return [];
-    return await res.json();
+    const data = await res.json();
+    return data.posts;
 }
 
 // --- POST / PUT / DELETE / WRITE / ACTIONS ---

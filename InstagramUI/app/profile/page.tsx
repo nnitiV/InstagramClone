@@ -34,6 +34,7 @@ export default function UserProfilePage() {
       setUser(userInfo);
       if (userInfo != null) {
         let userPosts = await getUserPosts(userInfo.id);
+        console.log(userPosts);
         setPosts(userPosts.items);
       }
       setIsLoading(false);

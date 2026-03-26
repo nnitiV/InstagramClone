@@ -7,6 +7,7 @@ import { getPostsFeed } from "@/services/post.service";
 
 export default async function Home() {
   const [stories, posts] = await Promise.all([getStories(), getPostsFeed()]);
+  console.log("Posts:", posts);
   return (
     <div className="container-fluid mt-3">
       <div className="row justify-content-center">
