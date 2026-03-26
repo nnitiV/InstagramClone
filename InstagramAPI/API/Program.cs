@@ -29,7 +29,7 @@ builder.Services.AddCors(options =>
 
 var connectionSting = builder.Configuration.GetConnectionString("Url");
 
-builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(connectionSting));
+builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionSting));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
