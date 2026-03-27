@@ -17,6 +17,7 @@ export default function SearchPage({
   const [isMobile, setIsMobile] = useState<boolean>(false);
   const sideBarChats = useChatStore((state) => state.sideBarChats);
   const setSideBarChats = useChatStore((state) => state.setSideBarChats);
+
   useEffect(() => {
     const getAllUserLastMessages = async () => {
       const res = await fetchUserLastMessages();
@@ -31,18 +32,19 @@ export default function SearchPage({
     window.addEventListener("resize", checkWidth);
     return () => window.removeEventListener("resize", checkWidth);
   }, []);
+
   return (
     <>
       <div className="vh-100 d-flex justify-content-center align-items-center">
         <MessageSidebar
           lastMessages={sideBarChats}
-          shouldHideSidebar={!isInsideChat && isMobile}
+          // Fix: Hide sidebar ONLY when mobile AND already inside a chat
+          shouldHideSidebar={isMobile && isInsideChat}
           width={isMobile ? "100vw" : "clamp(300px, 40%, 400px)"}
         />
         <div
-          className={`d-flex justify-content-center align-items-center h-100 w-100  
-            ${!isInsideChat && isMobile ? "d-none" : "d-flex"}`
-          }
+          className={`justify-content-center align-items-center h-100 w-100  
+            ${isMobile && !isInsideChat ? "d-none" : "d-flex"}`}
         >
           {children}
         </div>
