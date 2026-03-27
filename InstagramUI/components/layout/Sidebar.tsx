@@ -63,7 +63,10 @@ const SIDEBAR_LINKS = [
 
 export default function Sidebar({ children, picture }: SidebarProps) {
   return (
-    <div className="d-flex vh-100 overflow-hidden" style={{ height: "100dvh" }}>
+    <div
+      className="d-flex overflow-hidden"
+      style={{ height: "100dvh", width: "100vw" }}
+    >
       <div
         className="d-flex flex-column justify-content-between flex-shrink-0 shadow-sm px-2 py-3 border-end"
         style={{ width: "fit-content" }}
