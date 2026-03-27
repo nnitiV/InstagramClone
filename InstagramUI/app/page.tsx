@@ -9,7 +9,7 @@ export default async function Home() {
   const [stories, posts] = await Promise.all([getStories(), getPostsFeed()]);
   console.log("Posts:", posts);
   return (
-    <div className="container-fluid mt-3">
+    <div className="container-fluid pt-3"> 
       <div className="row justify-content-center">
         <div className="col-12 col-md-10 col-lg-8" style={{ maxWidth: "730px" }}>
           {stories.stories.length > 0 ? (
