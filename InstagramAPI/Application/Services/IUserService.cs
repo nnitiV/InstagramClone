@@ -5,14 +5,14 @@ namespace Application.Services
 {
     public interface IUserService
     {
-        Task<ResponseUserDto?> GetById(int id);
-        Task<ResponseUserDto> GetUserByUsername(string username);
-        Task<ResponseUserDto?> GetUserByEmail(string email);
+        Task<ResponseUserDto?> GetByIdAsync(int id);
+        Task<ResponseUserDto> GetUserByUsernameAsync(string username);
+        Task<ResponseUserDto?> GetUserByEmailAsync(string email);
         Task<List<SearchUserDto>> SearchUsersAsync(string search, int userId);
-        Task<int> AddUser(CreateUserDto user);
-        Task<bool> UpdateUser(UpdateUserDto user, int userId);
-        Task<bool> UpdateUserInternally(UpdateUserDto userDto);
-        Task<bool> DeleteUserById(int userId);
-        Task<Group> GetGroupById(int groupId);
+        Task<int> AddUserAsync(CreateUserDto user);
+        Task<bool> UpdateUserAsync(UpdateUserDto user, int userId);
+        Task<bool> UpdateUserInternallyAsync(UpdateUserDto userDto);
+        Task<bool> DeleteUserByIdAsync(int userId);
+        Task<Group> GetGroupByIdAsync(int groupId);
     }
 }

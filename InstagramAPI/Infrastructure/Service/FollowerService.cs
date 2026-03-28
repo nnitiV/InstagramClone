@@ -4,6 +4,7 @@ using Application.Interfaces;
 using Application.Services;
 using Domain.Entities;
 using Domain.Exceptions;
+using Infrastructure.Repositories;
 
 namespace Infrastructure.Service
 {
@@ -31,8 +32,8 @@ namespace Infrastructure.Service
                 throw new ConflictException("You are already following this user.");
 
             
-            ResponseUserDto followedUser = await _userService.GetById(followedUserId);
-            ResponseUserDto followingUser = await _userService.GetById(followingUserId);
+            ResponseUserDto followedUser = await _userService.GetByIdAsync(followedUserId);
+            ResponseUserDto followingUser = await _userService.GetByIdAsync(followingUserId);
 
             if (followedUser == null || followingUser == null)
             {
@@ -47,6 +48,22 @@ namespace Infrastructure.Service
             };
 
             await _followerRepository.AddFollowAsync(follower);
+
+            await _userService.UpdateUserInternallyAsync(new UpdateUserDto
+            {
+                Id = followingUser.Id,
+                FollowingCount = followingUser.FollowingCount + 1,
+                FollowersCount = followingUser.FollowersCount, 
+                PostsCount = followingUser.PostsCount         
+            });
+
+            await _userService.UpdateUserInternallyAsync(new UpdateUserDto
+            {
+                Id = followedUser.Id,
+                FollowersCount = followedUser.FollowersCount + 1,
+                FollowingCount = followedUser.FollowingCount, 
+                PostsCount = followedUser.PostsCount          
+            });
 
             await _notificationService.AddNotificationAsync(new NotificationDto
             {
@@ -71,8 +88,8 @@ namespace Infrastructure.Service
             if (!await IsFollowingAsync(followingUserId, followedUserId))
                 throw new ArgumentException("You are not following this user.");
 
-            ResponseUserDto followedUser = await _userService.GetById(followedUserId);
-            ResponseUserDto followingUser = await _userService.GetById(followingUserId);
+            ResponseUserDto followedUser = await _userService.GetByIdAsync(followedUserId);
+            ResponseUserDto followingUser = await _userService.GetByIdAsync(followingUserId);
 
             if (followedUser == null || followingUser == null)
                 throw new ArgumentException("One or both users do not exist.");
@@ -80,6 +97,22 @@ namespace Infrastructure.Service
             bool isUnfollowed = await _followerRepository.DeleteFollowerAsync(followingUserId, followedUserId);
 
             if (!isUnfollowed) return false;
+
+            await _userService.UpdateUserInternallyAsync(new UpdateUserDto
+            {
+                Id = followingUser.Id,
+                FollowingCount = followingUser.FollowingCount > 0 ? followingUser.FollowingCount - 1 : 0,
+                FollowersCount = followingUser.FollowersCount, 
+                PostsCount = followingUser.PostsCount        
+            });
+
+            await _userService.UpdateUserInternallyAsync(new UpdateUserDto
+            {
+                Id = followedUser.Id,
+                FollowersCount = followedUser.FollowersCount > 0 ? followedUser.FollowersCount - 1 : 0,
+                FollowingCount = followedUser.FollowingCount, 
+                PostsCount = followedUser.PostsCount         
+            });
 
             await _notificationService.DeleteNotificationAsync(followedUserId, followingUserId, "Follow");
 

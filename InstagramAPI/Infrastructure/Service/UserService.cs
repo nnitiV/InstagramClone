@@ -14,7 +14,7 @@ namespace Application.Services
             _userRepository = userRepository;
         }
 
-        public async Task<ResponseUserDto?> GetById(int id)
+        public async Task<ResponseUserDto?> GetByIdAsync(int id)
         {
             User? user = await _userRepository.GetByIdAsync(id);
             if (user == null) return null;
@@ -35,7 +35,7 @@ namespace Application.Services
             };
         }
 
-        public async Task<ResponseUserDto?> GetUserByUsername(string username)
+        public async Task<ResponseUserDto?> GetUserByUsernameAsync(string username)
         {
             if (string.IsNullOrWhiteSpace(username)) throw new BadRequestException("Username can't be empty!");
 
@@ -58,7 +58,7 @@ namespace Application.Services
             };
         }
 
-        public async Task<ResponseUserDto?> GetUserByEmail(string email)
+        public async Task<ResponseUserDto?> GetUserByEmailAsync(string email)
         {
             if (string.IsNullOrWhiteSpace(email)) throw new BadRequestException("Email can't be empty!");
 
@@ -95,7 +95,7 @@ namespace Application.Services
             }).ToList();
         }
 
-        public async Task<int> AddUser(CreateUserDto userDto)
+        public async Task<int> AddUserAsync(CreateUserDto userDto)
         {
             if (userDto == null) throw new BadRequestException("Please, provide a user.");
 
@@ -132,12 +132,12 @@ namespace Application.Services
             return user.Id;
         }
 
-        public async Task<bool> DeleteUserById(int userId)
+        public async Task<bool> DeleteUserByIdAsync(int userId)
         {
             return await _userRepository.DeleteUserByIdAsync(userId);
         }
 
-        public async Task<bool> UpdateUser(UpdateUserDto userDto, int userId)
+        public async Task<bool> UpdateUserAsync(UpdateUserDto userDto, int userId)
         {
             if (userDto == null) throw new BadRequestException("Please, provide a valid user.");
 
@@ -172,7 +172,7 @@ namespace Application.Services
             return await _userRepository.UpdateUserAsync(user);
         }
 
-        public async Task<bool> UpdateUserInternally(UpdateUserDto userDto)
+        public async Task<bool> UpdateUserInternallyAsync(UpdateUserDto userDto)
         {
             User? user = await _userRepository.GetByIdAsync(userDto.Id);
             if (user == null) throw new NotFoundException("Provided user doesn't exist.");
@@ -208,7 +208,7 @@ namespace Application.Services
             return await _userRepository.UpdateUserAsync(user);
         }
 
-        public async Task<Group> GetGroupById(int groupId)
+        public async Task<Group> GetGroupByIdAsync(int groupId)
         {
             return await _userRepository.GetGroupByIdAsync(groupId);
         }
