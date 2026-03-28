@@ -27,9 +27,9 @@ builder.Services.AddCors(options =>
     });
 });
 
-var connectionSting = builder.Configuration.GetConnectionString("Url");
+var connectionString = builder.Configuration.GetConnectionString("Url");
 
-builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionSting));
+builder.Services.AddDbContext<AppDbContext>(options => options.UseNpgsql(connectionString));
 
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IPostRepository, PostRepository>();
@@ -58,6 +58,8 @@ builder.Services.AddScoped<IStoryLikeService, StoryLikeService>();
 
 builder.Services.AddControllers();
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
@@ -117,5 +119,13 @@ using (var scope = app.Services.CreateScope())
     var context = services.GetRequiredService<AppDbContext>();
     context.Database.Migrate();
 }
+
+app.UseSwagger();
+app.UseSwaggerUI(options =>
+{
+    options.SwaggerEndpoint("/swagger/v1/swagger.json", "v1");
+
+    options.RoutePrefix = string.Empty;
+});
 
 app.Run();
