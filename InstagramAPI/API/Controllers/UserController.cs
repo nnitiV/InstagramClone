@@ -20,7 +20,7 @@ namespace API.Controllers
         public async Task<IActionResult> GetUserById(int id)
         {
             ResponseUserDto? user = null;
-            user = await _userService.GetById(id);
+            user = await _userService.GetByIdAsync(id);
             if (user == null)
             {
                 return NotFound(new { message = $"User with id {id} not found." });
@@ -33,14 +33,14 @@ namespace API.Controllers
         {
             if (string.IsNullOrWhiteSpace(username))
                 return BadRequest(new { message = "Username cannot be empty." });
-            ResponseUserDto user = await _userService.GetUserByUsername(username);
+            ResponseUserDto user = await _userService.GetUserByUsernameAsync(username);
             if (user == null) return NotFound(new { message = "User not found." });
             return Ok(new { user });
         }
         [HttpPost]
         public async Task<IActionResult> AddUser(CreateUserDto createUserDto)
         {
-            int createdUserId = await _userService.AddUser(createUserDto);
+            int createdUserId = await _userService.AddUserAsync(createUserDto);
             return CreatedAtAction(nameof(GetUserById), new { id = createdUserId }, createUserDto);
         }
         [Authorize]
@@ -48,7 +48,7 @@ namespace API.Controllers
         public async Task<IActionResult> DeleteUserById()
         {
             int userId = User.GetUserId();
-            var wasDeleted = await _userService.DeleteUserById(userId);
+            var wasDeleted = await _userService.DeleteUserByIdAsync(userId);
             if(!wasDeleted)
             {
                 return NotFound(new { message = $"Could not delete user with id {userId} or didn't exist" });
@@ -60,7 +60,7 @@ namespace API.Controllers
         public async Task<IActionResult> UpdateUserAsync(UpdateUserDto updateUserDto)
         {
             int userId = User.GetUserId();
-            bool wasUpdated = await _userService.UpdateUser(updateUserDto, userId);
+            bool wasUpdated = await _userService.UpdateUserAsync(updateUserDto, userId);
             if(!wasUpdated)
             {
                 return Ok(new { message = "Nothing changed." });

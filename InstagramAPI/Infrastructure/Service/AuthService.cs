@@ -53,7 +53,7 @@ namespace Infrastructure.Service
                 Name = registerDto.Name,
                 DateOfBirth = registerDto.DateOfBirth
             };
-            await _userService.AddUser(createUserDto);
+            await _userService.AddUserAsync(createUserDto);
         }
         private bool IsPasswordStrong(string password)
         {

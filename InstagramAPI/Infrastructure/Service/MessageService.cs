@@ -19,7 +19,7 @@ namespace Infrastructure.Service
 
         public async Task<List<MessageDto>> GetChatHistoryAsync(int currentUserId, int otherUserId)
         {
-            var otherUser = await _userService.GetById(otherUserId);
+            var otherUser = await _userService.GetByIdAsync(otherUserId);
             if (otherUser == null)
             {
                 throw new NotFoundException($"User with ID {otherUserId} not found.");
@@ -72,7 +72,7 @@ namespace Infrastructure.Service
             }
             else if (messageDto.ReceiverId.HasValue)
             {
-                var receiver = await _userService.GetById(messageDto.ReceiverId.Value);
+                var receiver = await _userService.GetByIdAsync(messageDto.ReceiverId.Value);
                 if (receiver == null)
                 {
                     throw new NotFoundException($"User with ID {messageDto.ReceiverId} not found.");
@@ -85,7 +85,7 @@ namespace Infrastructure.Service
             }
 
             await _messageRepository.AddMessageAsync(message);
-            var sender = await _userService.GetById(currentUserId);
+            var sender = await _userService.GetByIdAsync(currentUserId);
 
             MessageDto messageToReturn = new MessageDto
             {
@@ -100,7 +100,7 @@ namespace Infrastructure.Service
 
             if (messageDto.ReceiverId.HasValue)
             {
-                var receive = await _userService.GetById(messageDto.ReceiverId.Value);
+                var receive = await _userService.GetByIdAsync(messageDto.ReceiverId.Value);
                 messageToReturn.ReceiverId = messageDto.ReceiverId.Value;
                 messageToReturn.ReceiverName = receive.Username;
                 messageToReturn.ReceiverPhoto = receive.ProfilePictureUrl;

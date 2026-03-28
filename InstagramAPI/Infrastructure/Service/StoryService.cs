@@ -61,7 +61,7 @@ namespace Application.Services
         {
             if (dto.File == null) throw new BadRequestException("Please, provide a file for story creation.");
 
-            ResponseUserDto user = await _userService.GetById(userId);
+            ResponseUserDto user = await _userService.GetByIdAsync(userId);
             if (user == null) throw new NotFoundException($"Couldn't find user with id {userId}");
 
             string fileUrl = await _fileService.SaveFileAsync(dto.File);

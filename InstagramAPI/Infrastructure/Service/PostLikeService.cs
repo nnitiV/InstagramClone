@@ -46,7 +46,7 @@ namespace Application.Services
             if (responsePost == null)
                 throw new NotFoundException($"Couldn't find post by id {postId}");
 
-            ResponseUserDto responseUser = await _userService.GetById(userId);
+            ResponseUserDto responseUser = await _userService.GetByIdAsync(userId);
             if (responseUser == null)
                 throw new NotFoundException($"Couldn't find user by id {userId}");
 
