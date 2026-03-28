@@ -69,6 +69,7 @@ export const handleLogin = async (login: string, password: string, rememberMe: b
             secure: true,
         });
     }
+    return { error: null };
 }
 
 export const handleRegister = async (registerInfo: RegisterUser) => {
