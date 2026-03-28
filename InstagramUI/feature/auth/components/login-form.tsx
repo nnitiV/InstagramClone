@@ -15,10 +15,16 @@ export default function Login() {
         e.preventDefault();
         setIsLogginIn(true);
         try {
-            await handleLogin(login, password, rememberMe);
+            const result = await handleLogin(login, password, rememberMe);
+
+            if (result?.error) {
+              throw new Error(result.error);
+            }
+
             route.push("/");
             setError("");
         } catch (error) {
+            console.log(error);
             setError((error as Error).message);
         } finally {
             setIsLogginIn(false);
