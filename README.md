@@ -49,6 +49,14 @@ This project follows **Clean Architecture** to ensure that business logic is ind
 
 ---
 
+## 🛤️ Roadmap & Known Improvements
+While the core application is fully deployed and functional, there is always room to scale. Here are the next features on my radar:
+
+* **Frontend Pagination (Infinite Scroll):** The backend API already has pagination fully implemented; the next step is connecting the Next.js UI to fetch posts dynamically as the user scrolls.
+* **Reels Feature:** Build out a dedicated, vertical-scrolling video feed page to match the modern Instagram experience.
+
+---
+
 ## 📊 Database Schema (ERD)
 The system is built on a relational PostgreSQL database designed for high connectivity between users, posts, and real-time messaging.
 
