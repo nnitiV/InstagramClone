@@ -13,7 +13,9 @@
         public string Type { get; set; }
 
         public int? PostId { get; set; }
+        public Post Post { get; set; }
         public int? StoryId { get; set; }
+        public Story Story { get; set; }
 
         public string Message { get; set; }
         public bool IsRead { get; set; }

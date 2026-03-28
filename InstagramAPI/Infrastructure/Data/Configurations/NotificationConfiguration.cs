@@ -14,8 +14,11 @@ namespace Infrastructure.Data.Configurations
 
             builder.HasOne(n => n.User).WithMany().HasForeignKey(n => n.UserId).OnDelete(DeleteBehavior.Cascade); 
 
-            builder.HasOne(n => n.TriggerBy).WithMany().OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(n => n.TriggerBy).WithMany().HasForeignKey(n => n.TriggerById).OnDelete(DeleteBehavior.Restrict);
 
+            builder.HasOne(n => n.Post).WithMany().HasForeignKey(n => n.PostId).OnDelete(DeleteBehavior.Cascade);
+
+            builder.HasOne(n => n.Story).WithMany().HasForeignKey(n => n.StoryId).OnDelete(DeleteBehavior.Cascade);
         }
     }
 }
