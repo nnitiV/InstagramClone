@@ -24,7 +24,7 @@ export const getPostByid = async (postId: number) => {
 export const getPostsFeed = async () => {
     const token = await getLoggedUserToken();
     if (!token) return [];
-    const res = await fetch(`${BASE_ROUTE_URL}/post/feed`, {
+    const res = await fetch(`${BASE_ROUTE_URL}${route}/feed`, {
         method: "GET",
         headers: {
             'Authorization': `Bearer ${token}`,

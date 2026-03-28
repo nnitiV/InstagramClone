@@ -125,6 +125,7 @@ namespace Application.Services
                 FollowersCount = 0,
                 FollowingCount = 0,
                 PostsCount = 0,
+                CreatedAt = DateTimeOffset.UtcNow
             };
 
             await _userRepository.AddUserAsync(user);

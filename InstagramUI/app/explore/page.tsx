@@ -13,7 +13,8 @@ export default function ExplorePage() {
   useEffect(() => {
     const fetchPosts = async () => {
       const feedPosts = await getPostsFeed();
-      setPosts(feedPosts.feed);
+      console.log(feedPosts);
+      setPosts(feedPosts);
     }
     fetchPosts();
   }, []);

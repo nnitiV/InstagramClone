@@ -112,19 +112,6 @@ namespace Application.Services
         {
             if (createPostDto == null) throw new BadRequestException("Post can't be empty.");
 
-            ResponseUserDto responseUserDto = await _userService.GetByIdAsync(userId);
-            if (responseUserDto == null) throw new NotFoundException($"Couldn't find user by id {userId}");
-
-            // Keeping your manual user update logic per your request
-            responseUserDto.PostsCount += 1;
-            await _userService.UpdateUserInternallyAsync(new UpdateUserDto
-            {
-                Id = responseUserDto.Id,
-                FollowersCount = responseUserDto.FollowersCount,
-                FollowingCount = responseUserDto.FollowingCount,
-                PostsCount = responseUserDto.PostsCount,
-            });
-
             Post post = new Post
             {
                 Title = createPostDto.Title,
@@ -148,6 +135,18 @@ namespace Application.Services
             }
 
             await _postRepository.AddPostAsync(post);
+
+            ResponseUserDto responseUserDto = await _userService.GetByIdAsync(userId);
+            if (responseUserDto == null) throw new NotFoundException($"Couldn't find user by id {userId}");
+
+            responseUserDto.PostsCount += 1;
+            await _userService.UpdateUserInternallyAsync(new UpdateUserDto
+            {
+                Id = responseUserDto.Id,
+                FollowersCount = responseUserDto.FollowersCount,
+                FollowingCount = responseUserDto.FollowingCount,
+                PostsCount = responseUserDto.PostsCount,
+            });
 
             CreatedPostDto postToReturn = new CreatedPostDto
             {
