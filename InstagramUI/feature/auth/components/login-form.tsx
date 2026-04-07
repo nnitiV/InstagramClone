@@ -24,7 +24,6 @@ export default function Login() {
             route.push("/");
             setError("");
         } catch (error) {
-            console.log(error);
             setError((error as Error).message);
         } finally {
             setIsLogginIn(false);

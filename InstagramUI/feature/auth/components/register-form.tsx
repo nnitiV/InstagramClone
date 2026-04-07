@@ -46,7 +46,10 @@ export default function Register() {
             return;
         }
         try {
-            await handleRegister(registerInfo);
+            const result = await handleRegister(registerInfo);
+            if(result?.error) {
+                throw new Error(result.error);
+            }
             route.push("/login");
             setError("");
         } catch (error) {

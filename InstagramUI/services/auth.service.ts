@@ -81,9 +81,10 @@ export const handleRegister = async (registerInfo: RegisterUser) => {
         }
     })
     if (!res.ok) {
+        let errorMessage = "Register failed.";
         const text = await res.text();
-        const json = JSON.parse(text);
-        throw new Error(json.Message);
+        const error = JSON.parse(text);
+        return {error: error.Message + " " + errorMessage};
     }
 }
 
